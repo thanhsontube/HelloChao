@@ -1,0 +1,57 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivityFragment">
+
+    <TextView
+        style="@style/txt_green_14"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:text="Great! You're working on improving your English !" />
+
+    <TextView
+        android:background="?selectableItemBackground"
+        android:padding="8dp"
+        style="@style/txt_black_18"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center"
+        android:id="@+id/main_hello"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="~~~~" />
+
+    <Button
+        android:id="@+id/main_btn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Let's start" />
+
+    <Button
+        android:id="@+id/main_sign_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign up" />
+
+    <Button
+        android:id="@+id/main_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login" />
+
+    <Button
+        android:id="@+id/main_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TOP" />
+
+</LinearLayout>
