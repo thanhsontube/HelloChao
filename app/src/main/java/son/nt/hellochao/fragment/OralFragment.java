@@ -3,6 +3,7 @@ package son.nt.hellochao.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -63,7 +64,7 @@ public class OralFragment extends AFragment {
 
     // TODO: Rename and change types of parameters
     private String mParam1;
-    private String mParam2;
+    private boolean isTest;
 
     List<DailySpeakDto> list = new ArrayList<>();
 
@@ -86,6 +87,7 @@ public class OralFragment extends AFragment {
     Handler handler = new Handler();
     int score = 0;
     int totalTimes = 0;
+    ProgressDialog progressDialog;
 
 
     /**
@@ -97,11 +99,11 @@ public class OralFragment extends AFragment {
      * @return A new instance of fragment OralFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static OralFragment newInstance(String param1, String param2) {
+    public static OralFragment newInstance(String param1, boolean param2) {
         OralFragment fragment = new OralFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putBoolean(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -116,7 +118,7 @@ public class OralFragment extends AFragment {
         OttoBus.register(this);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            isTest = getArguments().getBoolean(ARG_PARAM2);
         }
 
         getActivity().bindService(new Intent(getActivity(), ServiceMedia.class), serviceConnectionMedia, Service.BIND_AUTO_CREATE);
@@ -126,13 +128,11 @@ public class OralFragment extends AFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_oral, container, false);
     }
 
     @Override
     protected void initData() {
-//        HTTPParseUtils.getInstance().withHelloChao();
         list.clear();
         list.addAll(ResourceManager.getInstance().getDailySpeakDtoList());
         initPlayer();
@@ -205,16 +205,19 @@ public class OralFragment extends AFragment {
 
                 currentPoint++;
 
-                if (chbVoice.isChecked() && currentPoint >= 10) {
-                    //show top
-                    showTop();
-                } else {
-                    if (currentPoint >= 10) {
-                        currentPoint = 0;
+                if (currentPoint >= 10) {
+                    currentPoint = 0;
+                    if (isTest) {
+                        showTop();
+                    } else {
+                        updateSentence();
+                        playSentence();
                     }
+                } else {
                     updateSentence();
                     playSentence();
                 }
+
             }
         });
 
@@ -240,14 +243,16 @@ public class OralFragment extends AFragment {
         player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                if (!isSafe()) {
+                    return;
+                }
 
                 if (chbVoice.isChecked()) {
-
                     startVoiceRecognitionActivity();
                 } else {
                     if (isAutoNext) {
                         currentPoint++;
-                        if (currentPoint == 10) {
+                        if (currentPoint >= 10) {
                             currentPoint = 0;
                         }
                         updateSentence();
@@ -272,6 +277,13 @@ public class OralFragment extends AFragment {
 
     @Override
     protected void updateLayout() {
+        getAActivity().getSupportActionBar().setTitle(isTest ? "Oral Test" : "Practice");
+        if (isTest) {
+            chbVoice.setChecked(true);
+        }
+
+        chbVoice.setEnabled(!isTest);
+
 
         updateSentence();
         playSentence();
@@ -353,7 +365,7 @@ public class OralFragment extends AFragment {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Your sentence ...");
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Now, Your turn Pro ...");
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -364,14 +376,7 @@ public class OralFragment extends AFragment {
             // Populate the wordsList with the String values the recognition engine thought it heard
             ArrayList<String> matches = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
-            StringBuilder stringBuilder = new StringBuilder();
-            for (String s : matches) {
-                stringBuilder.append(s);
-                stringBuilder.append("-");
-            }
-
             final String yourVoice = matches.get(0);
-
             txtYourVoice.setText(matches.get(0));
             viewChecking.setVisibility(View.VISIBLE);
             handler.postDelayed(new Runnable() {
@@ -386,22 +391,28 @@ public class OralFragment extends AFragment {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                if (!isSafe()) {
+                                    return;
+                                }
                                 if (isAutoNext) {
-
                                     currentPoint++;
 
-                                    if (chbVoice.isChecked() && currentPoint >= 10) {
-                                        //show top
-                                        showTop();
-                                    } else {
-                                        if (currentPoint >= 10) {
-                                            currentPoint = 0;
+                                    if (currentPoint >= 10) {
+                                        currentPoint = 0;
+                                        if (isTest) {
+                                            showTop();
+                                        } else {
+                                            if (isAutoNext) {
+                                                updateSentence();
+                                                playSentence();
+                                            }
                                         }
-                                        updateSentence();
-                                        playSentence();
+                                    } else {
+                                        if (isAutoNext) {
+                                            updateSentence();
+                                            playSentence();
+                                        }
                                     }
-
-
                                 }
                             }
                         }, 1500);
@@ -427,6 +438,11 @@ public class OralFragment extends AFragment {
         if (parseUser == null) {
 
         } else {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setMessage("Submitting......");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
             upResult();
         }
     }
@@ -445,7 +461,6 @@ public class OralFragment extends AFragment {
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
-//
                 if (parseObject != null) {
                     int beforeScore = parseObject.getInt("score");
                     int total = parseObject.getInt("total");
@@ -464,10 +479,11 @@ public class OralFragment extends AFragment {
 
 
                                         btnNext.setEnabled(false);
-                                        mListener.onTop();
+                                        progressDialog.dismiss();
                                         if (e != null) {
                                             Toast.makeText(getActivity(), "updated your score", Toast.LENGTH_SHORT).show();
                                         }
+                                        mListener.onTop();
 
                                     }
                                 });
@@ -491,10 +507,11 @@ public class OralFragment extends AFragment {
 
 
                             btnNext.setEnabled(false);
-                            mListener.onTop();
+                            progressDialog.dismiss();
                             if (e != null) {
                                 Toast.makeText(getActivity(), "Show top", Toast.LENGTH_SHORT).show();
                             }
+                            mListener.onTop();
 
                         }
                     });

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.hellochao.dto.DailySpeakDto;
+import son.nt.hellochao.dto.TopDto;
 import son.nt.hellochao.loader.ContentManager;
 import son.nt.hellochao.loader.MyPath;
 import son.nt.hellochao.utils.FileUtil;
@@ -22,6 +23,7 @@ public class ResourceManager {
     private MyPath myPath;
     private ContentManager contentManager;
     private List<DailySpeakDto> dailySpeakDtoList = new ArrayList<>();
+    private List<TopDto> listTops = new ArrayList<>();
 
     public List<DailySpeakDto> getDailySpeakDtoList() {
         return dailySpeakDtoList;
@@ -30,6 +32,14 @@ public class ResourceManager {
     public void setDailySpeakDtoList(List<DailySpeakDto> dailySpeakDtoList) {
         this.dailySpeakDtoList.clear();
         this.dailySpeakDtoList.addAll(dailySpeakDtoList);
+    }
+
+    public List<TopDto> getListTops() {
+        return listTops;
+    }
+
+    public void setListTops(List<TopDto> listTops) {
+        this.listTops = listTops;
     }
 
     public String folderSave;

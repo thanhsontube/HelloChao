@@ -13,7 +13,8 @@ import son.nt.hellochao.fragment.SignUpFragment;
 import son.nt.hellochao.fragment.TopFragment;
 
 
-public class MainActivity extends AActivity implements MainActivityFragment.IInteraction, OralFragment.OnFragmentInteractionListener{
+public class MainActivity extends AActivity implements MainActivityFragment.IInteraction, OralFragment.OnFragmentInteractionListener,
+        LoginFragment.OnFragmentInteractionListener, SignUpFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +25,7 @@ public class MainActivity extends AActivity implements MainActivityFragment.IInt
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -57,7 +57,7 @@ public class MainActivity extends AActivity implements MainActivityFragment.IInt
 
     @Override
     public void onGotoOral() {
-        showFragment(OralFragment.newInstance("",""), true);
+        showFragment(OralFragment.newInstance("", false), true);
     }
 
     @Override
@@ -77,11 +77,54 @@ public class MainActivity extends AActivity implements MainActivityFragment.IInt
 
     @Override
     public void onTop() {
+        if (mFragmentTagStack.size() > 0) {
+            getSafeFragmentManager().popBackStackImmediate();
+        }
         showFragment(TopFragment.newInstance("", ""), true);
     }
 
     @Override
     public void onGoTop() {
         showFragment(TopFragment.newInstance("", ""), true);
+    }
+
+    @Override
+    public void onGoPractice() {
+        showFragment(OralFragment.newInstance("", false), true);
+
+    }
+
+    @Override
+    public void onGoTest() {
+        showFragment(OralFragment.newInstance("", true), true);
+
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        super.onBackStackChanged();
+        if (mFragmentTagStack.size() == 0) {
+            getSupportActionBar().setTitle("Hello Chao");
+        }
+    }
+
+    @Override
+    public void onLoginSuccess() {
+
+        if (mFragmentTagStack.size() > 0) {
+            getSafeFragmentManager().popBackStackImmediate();
+        }
+
+        MainActivityFragment f = (MainActivityFragment) getSafeFragmentManager().findFragmentByTag(AActivity.FRAGMENT_KEY);
+        f.updateStatus(true);
+    }
+
+    @Override
+    public void onRegister() {
+        if (mFragmentTagStack.size() > 0) {
+            getSafeFragmentManager().popBackStackImmediate();
+        }
+        MainActivityFragment f = (MainActivityFragment) getSafeFragmentManager().findFragmentByTag(AActivity.FRAGMENT_KEY);
+        f.updateStatus(true);
     }
 }

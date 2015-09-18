@@ -50,6 +50,7 @@ public class TopFragment extends AFragment {
 
     @Override
     protected void initLayout(View view) {
+        getAActivity().getSupportActionBar().setTitle("Top Daily");
         recyclerView = (RecyclerView) view.findViewById(R.id.roles_rcv);
         adapterRoles = new AdapterRoles(getActivity(), list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);

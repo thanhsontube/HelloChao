@@ -2,12 +2,14 @@ package son.nt.hellochao.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
@@ -44,6 +46,8 @@ public class LoginFragment extends AFragment {
     View viewReset;
     @Override
     protected void initLayout(View view) {
+
+        getAActivity().getSupportActionBar().setTitle("Login");
         txtUsername = (AppCompatEditText) view.findViewById(R.id.login_username);
         txtPassword = (AppCompatEditText) view.findViewById(R.id.login_password);
         txtEmail = (AppCompatEditText) view.findViewById(R.id.login_email);
@@ -66,7 +70,13 @@ public class LoginFragment extends AFragment {
                         if (e != null) {
                             Toast.makeText(getActivity(), "Login Error!", Toast.LENGTH_SHORT).show();
                         } else {
+                            View view = getActivity().getCurrentFocus();
+                            if (view != null) {
+                                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                            }
                             Toast.makeText(getActivity(), "Hello:" + parseUser.getUsername(), Toast.LENGTH_SHORT).show();
+                            mListener.onLoginSuccess();
                         }
 
                     }
@@ -95,6 +105,11 @@ public class LoginFragment extends AFragment {
                     public void done(ParseException e) {
                         if (e == null) {
                             // An email was successfully sent with reset instructions.
+                            View view = getActivity().getCurrentFocus();
+                            if (view != null) {
+                                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                            }
                             Toast.makeText(getActivity(), "An email was successfully sent with reset instructions.", Toast.LENGTH_SHORT).show();
                         } else {
                             // Something went wrong. Look at the ParseException to see what's up.
@@ -180,6 +195,7 @@ public class LoginFragment extends AFragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+        void onLoginSuccess();
     }
 
     @Override

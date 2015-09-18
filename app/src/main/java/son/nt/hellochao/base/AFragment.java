@@ -2,6 +2,7 @@ package son.nt.hellochao.base;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 /**
@@ -23,5 +24,20 @@ public abstract class AFragment extends Fragment {
         initLayout(view);
         initListener(view);
         updateLayout();
+    }
+
+    protected AppCompatActivity getAActivity () {
+        return (AppCompatActivity) getActivity();
+    }
+
+    protected boolean isSafe()
+    {
+        if (this.isRemoving() || this.getActivity() == null || this.isDetached() || !this.isAdded()
+                || this.getView() == null)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -2,14 +2,18 @@ package son.nt.hellochao;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -22,6 +26,7 @@ import java.util.List;
 
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.DailySpeakDto;
+import son.nt.hellochao.dto.TopDto;
 import son.nt.hellochao.loader.HTTPParseUtils;
 import son.nt.hellochao.otto.GoOnList;
 import son.nt.hellochao.utils.Logger;
@@ -35,6 +40,14 @@ public class MainActivityFragment extends AFragment {
     public static final String TAG = "MainActivityFragment";
     ProgressDialog progressDialog;
     TextView txtWelcome;
+    TextView txtUserName;
+    TextView txtSentence;
+    TextView txtTimes;
+    TextView txtTop;
+
+    View viewLogin;
+    View viewLogout;
+    List<TopDto> listTops = new ArrayList<>();
 
     @Override
     protected void initLayout(View view) {
@@ -45,18 +58,20 @@ public class MainActivityFragment extends AFragment {
         progressDialog.show();
 
         txtWelcome = (TextView) view.findViewById(R.id.main_hello);
+        txtUserName = (TextView) view.findViewById(R.id.txtUsername);
+        txtSentence = (TextView) view.findViewById(R.id.main_txt_sentences);
+        txtTimes = (TextView) view.findViewById(R.id.main_txt_time);
+        txtTop = (TextView) view.findViewById(R.id.main_txt_top);
+        viewLogin = view.findViewById(R.id.main_login);
+        viewLogout =  view.findViewById(R.id.main_logout);
+        txtUserName.setText("No Name");
 
 
     }
 
     @Override
     protected void initListener(View view) {
-        view.findViewById(R.id.main_btn1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onGotoOral();
-            }
-        });
+
 
         view.findViewById(R.id.main_sign_up).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,10 +79,22 @@ public class MainActivityFragment extends AFragment {
                 mListener.onGoSignUp();
             }
         });
-        view.findViewById(R.id.main_login).setOnClickListener(new View.OnClickListener() {
+        viewLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onGoLogin();
+            }
+        });
+        viewLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseUser.logOutInBackground(new LogOutCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        updateStatus(false);
+
+                    }
+                });
             }
         });
 
@@ -77,8 +104,26 @@ public class MainActivityFragment extends AFragment {
                 mListener.onGoTop();
             }
         });
+        view.findViewById(R.id.main_txt_practice).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onGoPractice();
+            }
+        });
+        view.findViewById(R.id.main_txt_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ParseUser.getCurrentUser() == null) {
+                    Toast.makeText(getActivity(), "Please Register an account to take a test !", Toast.LENGTH_SHORT).show();
+                } else {
+                    mListener.onGoTest();
+                }
+            }
+        });
+
 
     }
+
 
     public MainActivityFragment() {
     }
@@ -107,6 +152,10 @@ public class MainActivityFragment extends AFragment {
         void onGoSignUp();
         void onGoLogin();
         void onGoTop();
+
+        void onGoPractice();
+
+        void onGoTest();
     }
 
     IInteraction mListener;
@@ -138,6 +187,7 @@ public class MainActivityFragment extends AFragment {
             txtWelcome.setText("");
         } else {
             txtWelcome.setText("Welcome " + parseUser.getUsername());
+            txtUserName.setText(parseUser.getUsername());
         }
 
         Calendar calendar = Calendar.getInstance();
@@ -175,6 +225,91 @@ public class MainActivityFragment extends AFragment {
 
             }
         });
+
+        getTotalSubmitInDay();
+
+    }
+
+    private void getTotalSubmitInDay () {
+        try {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("TopScore");
+            query.addAscendingOrder("score");
+            query.addAscendingOrder("total");
+            Calendar calendar = Calendar.getInstance();
+            final int day = calendar.get(Calendar.DAY_OF_MONTH);
+            final int month = calendar.get(Calendar.MONTH);
+            final int year = calendar.get(Calendar.YEAR);
+            //check first
+            query.whereEqualTo("day", day);
+            query.whereEqualTo("month", month);
+            query.whereEqualTo("year", year);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> l, ParseException e) {
+                    listTops.clear();
+                    TopDto dto;
+                    int i = 1;
+                    for (ParseObject p :l) {
+                        dto = new TopDto();
+                        dto.setNo(i);
+                        dto.setName(p.getString("username"));
+                        dto.setScore(p.getInt("score"));
+                        dto.setTotalTime(p.getInt("total"));
+                        dto.setSubmitTime(p.getLong("submitTime"));
+                        i++;
+                        listTops.add(dto);
+                    }
+                    ResourceManager.getInstance().setListTops(listTops);
+                    updateStatus(false);
+                }
+            });
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void updateStatus (boolean isTryRequest) {
+        ParseUser parseUser = ParseUser.getCurrentUser();
+        if (ParseUser.getCurrentUser() == null) {
+            viewLogin.setVisibility(View.VISIBLE);
+            viewLogout.setVisibility(View.GONE);
+            txtUserName.setText("No Name");
+            txtSentence.setText("Sentences:" + 0 + "/10");
+            txtTimes.setText("Duration :" + "---");
+            txtTop.setText("Top      :" + "---" + "/" + listTops.size());
+            return;
+        }
+
+
+
+        txtUserName.setText(parseUser.getUsername());
+        viewLogin.setVisibility(View.GONE);
+        viewLogout.setVisibility(View.VISIBLE);
+
+        if (isTryRequest) {
+            updateLayout();
+
+        } else {
+            TopDto userTop = null;
+            for (TopDto d : listTops) {
+                if (d.getName().equals(parseUser.getUsername())) {
+                    userTop = d;
+
+                    break;
+                }
+            }
+            if (userTop == null) {
+                txtSentence.setText("Sentences:" + 0 + "/10");
+                txtTimes.setText("Duration :" + "---");
+                txtTop.setText("Top      :" + "---" + "/" + listTops.size());
+            } else {
+                txtSentence.setText("Sentences:" + userTop.getScore() + "/10");
+                txtTimes.setText   ("Duration :" + userTop.getTotalTime());
+                txtTop.setText     ("Top      :" + userTop.getNo() + "/" + listTops.size());
+            }
+        }
+
 
     }
 
@@ -221,4 +356,25 @@ public class MainActivityFragment extends AFragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            View view = getActivity().getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+    }
 }

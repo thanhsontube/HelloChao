@@ -10,40 +10,55 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:orientation="horizontal">
-
-
-        <CheckBox
-            android:id="@+id/oral_chb_auto_next"
-            android:layout_width="0dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:checked="true"
-            android:text="Auto next sentence" />
+            android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/oral_chb_hide_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:checked="true"
-            android:text="Show English sentence" />
+            <CheckBox
+                android:id="@+id/oral_chb_auto_next"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Auto next" />
 
-        <CheckBox
-            android:id="@+id/oral_chb_hide_voice"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:checked="true"
-            android:text="Your voice" />
+            <CheckBox
+                android:id="@+id/oral_chb_hide_voice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Your voice" />
 
-        <CheckBox
-            android:id="@+id/oral_chb_translate"
-            android:layout_width="0dp"
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:checked="true"
-            android:text="Show translation" />
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/oral_chb_hide_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="English sentence" />
+
+
+
+            <CheckBox
+                android:id="@+id/oral_chb_translate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Translation" />
+            </LinearLayout>
+
+
+
     </LinearLayout>
 
     <LinearLayout

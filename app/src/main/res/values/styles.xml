@@ -5,4 +5,25 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="TextViewStyleNormal">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@color/md_black_1000</item>
+    </style>
+
+    <style name="PickupTextStyle">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/md_black_1000</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="GrayTextStyle">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/md_grey_500</item>
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+    </style>
+
 </resources>
