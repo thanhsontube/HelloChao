@@ -4,21 +4,19 @@ package son.nt.hellochao.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.app.Service;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
+import android.os.SystemClock;
 import android.speech.RecognizerIntent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +30,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,7 +43,6 @@ import son.nt.hellochao.ResourceManager;
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.DailySpeakDto;
 import son.nt.hellochao.otto.GoDownload;
-import son.nt.hellochao.service.ServiceMedia;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.OttoBus;
 import son.nt.hellochao.utils.PreferenceUtil;
@@ -71,11 +69,10 @@ public class OralFragment extends AFragment {
     TextView txtEngSentence;
     TextView txtYourVoice;
     TextView txtViSentence;
-    Button btnNext;
+    View btnNext;
 
     int currentPoint = 0;
 
-    ServiceMedia serviceMedia;
     MediaPlayer player;
     boolean isAutoNext = false;
     CheckBox chbAutoNext;
@@ -88,6 +85,9 @@ public class OralFragment extends AFragment {
     int score = 0;
     int totalTimes = 0;
     ProgressDialog progressDialog;
+    MediaRecorder mediaRecorder;
+
+    Chronometer chronometer;
 
 
     /**
@@ -120,8 +120,6 @@ public class OralFragment extends AFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             isTest = getArguments().getBoolean(ARG_PARAM2);
         }
-
-        getActivity().bindService(new Intent(getActivity(), ServiceMedia.class), serviceConnectionMedia, Service.BIND_AUTO_CREATE);
     }
 
 
@@ -140,10 +138,10 @@ public class OralFragment extends AFragment {
 
     @Override
     protected void initLayout(View view) {
-        btnNext = (Button) view.findViewById(R.id.oral_btn_next);
+        btnNext = view.findViewById(R.id.oral_btn_next);
         txtEngSentence = (TextView) view.findViewById(R.id.oral_eng_sentence);
         txtYourVoice = (TextView) view.findViewById(R.id.oral_your_voice);
-        txtEngSentence.setText("Please wait...");
+        txtEngSentence.setText(getString(R.string.waiting));
 
         chbAutoNext = (CheckBox) view.findViewById(R.id.oral_chb_auto_next);
 
@@ -158,9 +156,11 @@ public class OralFragment extends AFragment {
         viewChecking = view.findViewById(R.id.oral_checking_ll);
         viewChecking.setVisibility(View.INVISIBLE);
 
+        chronometer = (Chronometer) view.findViewById(R.id.timer);
+
 
         chbText.setChecked(PreferenceUtil.getPreference(getActivity(), MsConst.KEY_SHOW_ENG, true));
-        chbTranslation.setChecked(PreferenceUtil.getPreference(getActivity(), MsConst.KEY_SHOW_VI, true));
+        chbTranslation.setChecked(PreferenceUtil.getPreference(getActivity(), MsConst.KEY_SHOW_VI, false));
         chbVoice.setChecked(PreferenceUtil.getPreference(getActivity(), MsConst.KEY_VOICE, true));
         chbAutoNext.setChecked(PreferenceUtil.getPreference(getActivity(), MsConst.KEY_AUTO_NEXT, true));
 
@@ -279,7 +279,19 @@ public class OralFragment extends AFragment {
     protected void updateLayout() {
         getAActivity().getSupportActionBar().setTitle(isTest ? "Oral Test" : "Practice");
         if (isTest) {
+            chronometer.setVisibility(View.VISIBLE);
             chbVoice.setChecked(true);
+            timeBase = SystemClock.elapsedRealtime();
+            chronometer.setBase(timeBase);
+            chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                @Override
+                public void onChronometerTick(Chronometer chronometer) {
+
+                }
+            });
+            chronometer.start();
+        } else {
+            chronometer.setVisibility(View.GONE);
         }
 
         chbVoice.setEnabled(!isTest);
@@ -331,33 +343,12 @@ public class OralFragment extends AFragment {
 
     }
 
-    //MEDIA MUSIC service
-    private ServiceMedia mediaService;
-    ServiceConnection serviceConnectionMedia = new ServiceConnection() {
 
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            ServiceMedia.LocalBinder binder = (ServiceMedia.LocalBinder) service;
-            mediaService = binder.getService();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            try {
-                mediaService = null;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
     @Override
     public void onDestroy() {
         OttoBus.unRegister(this);
         super.onDestroy();
-        if (mediaService != null) {
-            getActivity().unbindService(serviceConnectionMedia);
-        }
     }
 
     private void startVoiceRecognitionActivity() {
@@ -365,7 +356,7 @@ public class OralFragment extends AFragment {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Now, Your turn Pro ...");
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, list.get(currentPoint).getSentenceEng());
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -432,15 +423,22 @@ public class OralFragment extends AFragment {
 
 
 
+    long timeBase;
     private void showTop () {
-        Logger.debug(TAG, ">>>" + "showTop currentPoint:" + currentPoint);
+
+
+        totalTimes = (int)((SystemClock.elapsedRealtime() - timeBase) / 1000);
+
+
+        Logger.debug(TAG, ">>>" + "showTop currentPoint:" + currentPoint + ";timeTest:" + totalTimes);
+        chronometer.stop();
         ParseUser parseUser = ParseUser.getCurrentUser();
         if (parseUser == null) {
 
         } else {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMessage("Submitting......");
+            progressDialog.setMessage(getString(R.string.submitting));
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.show();
             upResult();
@@ -481,7 +479,7 @@ public class OralFragment extends AFragment {
                                         btnNext.setEnabled(false);
                                         progressDialog.dismiss();
                                         if (e != null) {
-                                            Toast.makeText(getActivity(), "updated your score", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), R.string.updated_your_score, Toast.LENGTH_SHORT).show();
                                         }
                                         mListener.onTop();
 
@@ -489,6 +487,12 @@ public class OralFragment extends AFragment {
                                 });
                             }
                         });
+                    } else {
+                        progressDialog.dismiss();
+                        if (e != null) {
+                            Toast.makeText(getActivity(), R.string.before_test_better, Toast.LENGTH_SHORT).show();
+                        }
+                        mListener.onTop();
                     }
 
 
@@ -508,9 +512,6 @@ public class OralFragment extends AFragment {
 
                             btnNext.setEnabled(false);
                             progressDialog.dismiss();
-                            if (e != null) {
-                                Toast.makeText(getActivity(), "Show top", Toast.LENGTH_SHORT).show();
-                            }
                             mListener.onTop();
 
                         }
@@ -551,5 +552,13 @@ public class OralFragment extends AFragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
         void onTop();
+    }
+
+    private void initRecorder () {
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        mediaRecorder.setOutputFile(ResourceManager.getInstance().folderBlur + File.separator + "t1.mp3");
     }
 }

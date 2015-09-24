@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Auto next" />
+                android:text="@string/auto_next" />
 
             <CheckBox
                 android:id="@+id/oral_chb_hide_voice"
@@ -30,22 +31,23 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Your voice" />
+                android:text="@string/your_voice" />
 
         </LinearLayout>
+
         <LinearLayout
-            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:orientation="horizontal">
+
             <CheckBox
                 android:id="@+id/oral_chb_hide_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="English sentence" />
-
+                android:text="@string/english_sentence" />
 
 
             <CheckBox
@@ -54,9 +56,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Translation" />
-            </LinearLayout>
-
+                android:text="@string/translation" />
+        </LinearLayout>
 
 
     </LinearLayout>
@@ -65,6 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <ImageView
             android:id="@+id/oral_re_listen"
             android:layout_width="wrap_content"
@@ -74,17 +76,18 @@
             android:src="@drawable/ic_av_volume_up" />
 
         <LinearLayout
-            android:layout_gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/oral_eng_sentence"
                 style="@style/txt_green_18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Where Am I" />
+                tools:text="Where Am I" />
 
             <TextView
                 android:id="@+id/oral_vi_sentence"
@@ -92,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Where Am I" />
+                tools:text="Where Am I" />
 
         </LinearLayout>
 
@@ -106,48 +109,90 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:padding="16dp"
-        android:text="Where Am I" />
+        tools:text="Where Am I" />
 
     <LinearLayout
         android:id="@+id/oral_checking_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <android.support.v4.widget.ContentLoadingProgressBar
             style="?android:attr/progressBarStyleInverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:contentDescription="checking..." />
+            android:contentDescription="@string/checking" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Checking..."/>
+            android:text="@string/checking" />
     </LinearLayout>
 
-    <Button
-        android:padding="16dp"
-        android:id="@+id/oral_btn_try"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:text="Try One more" />
+        <Chronometer
+            android:padding="8dp"
+            style="@style/txt_red_18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/timer"
+            android:format="%s"
+            android:visibility="visible"/>
+    </LinearLayout>
 
-    <Button
-        android:padding="16dp"
-        android:id="@+id/oral_btn_next"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:text="Next Question" />
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/md_grey_500">
+
+            <TextView
+                android:id="@+id/oral_btn_try"
+                style="@style/txt_black_18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="@string/try_one_more" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="1"
+            android:background="@color/md_green_500">
+
+            <TextView
+                android:id="@+id/oral_btn_next"
+                style="@style/txt_black_18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="@string/next" />
+
+        </FrameLayout>
+
+
+    </LinearLayout>
 
 
 </LinearLayout>

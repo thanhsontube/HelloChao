@@ -104,6 +104,9 @@ public class ResourceManager {
             folderNotification = fNoti.getPath();
 
             File fAlarm = new File(folderSave, "/alarm/");
+            if (!fAlarm.exists()) {
+                fAlarm.mkdirs();
+            }
             folderAlarm = fAlarm.getPath();
 
         }catch (Exception e) {

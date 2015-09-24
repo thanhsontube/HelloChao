@@ -56,8 +56,8 @@ public abstract class DailyTalkLoader extends ContentLoader<List<DailySpeakDto>>
                     sentenceVi = sentenceVi.substring(sentenceEng.length(), sentenceVi.length());
 
                     String link = tagLink.getChildTagList().get(0).getAttributeByName("href");
-                    Logger.debug(TAG, ">>>" + "link:" + link);
                     Logger.debug(TAG, ">>>" + "sentenceVi:" + sentenceVi);
+                    Logger.debug(TAG, ">>>" + "link:" + link);
 
                     dto = new DailySpeakDto(link, sentenceEng, sentenceVi);
                     Calendar calendar = Calendar.getInstance();

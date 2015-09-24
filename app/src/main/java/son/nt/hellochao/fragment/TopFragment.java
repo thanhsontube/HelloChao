@@ -150,8 +150,8 @@ public class TopFragment extends AFragment {
     @Override
     protected void updateLayout() {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("TopScore");
-        query.addAscendingOrder("score");
-        query.addAscendingOrder("total");
+        query.addDescendingOrder("score");
+        query.addDescendingOrder("total");
         Calendar calendar = Calendar.getInstance();
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
         final int month = calendar.get(Calendar.MONTH);
