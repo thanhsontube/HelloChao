@@ -150,6 +150,13 @@ public class MainActivityFragment extends AFragment {
         });
 
 
+        view.findViewById(R.id.test1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onTest1();
+            }
+        });
+
     }
 
 
@@ -181,6 +188,8 @@ public class MainActivityFragment extends AFragment {
         void onGoPractice();
 
         void onGoTest();
+
+        void onTest1();
     }
 
     IInteraction mListener;

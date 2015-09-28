@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<resources>
+    <string name="app_name">HelloChao</string>
+    <string name="waiting">Vui lòng đợi</string>
+    <string name="no_name">No Name</string>
+    <string name="error_network">Vui lòng kiểm tra kết nối internet !</string>
+    <string name="welcome">Welcome</string>
+    <string name="total_sentences">Số câu:</string>
+    <string name="total_duration">Thời gian:</string>
+    <string name="my_top">Xếp hạng:</string>
+    <string name="seconds">s</string>
+    <string name="practice">Luyện tập</string>
+    <string name="test">Thi</string>
+    <string name="make_a_test">Tôi đã sẵn sàng Test</string>
+    <string name="today_challenge">Thủ thách hôm nay</string>
+    <string name="inventory">Thống kê</string>
+    <string name="today_top">Xếp hạng hôm nay</string>
+    <string name="account_setting">Cài đặt tài khoản</string>
+    <string name="login">Đăng nhập</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="register">Đăng ký</string>
+    <string name="register_new_account">Đăng ký tài khoản</string>
+    <string name="submitting">Đang nộp bài ...</string>
+    <string name="updated_your_score">Điểm của bạn đã được cập nhật.</string>
+    <string name="before_test_better">Bài thi lần trước tốt hơn lần này rồi :(</string>
+    <string name="checking">Đang kiểm tra ...</string>
+    <string name="auto_next">Tự chuyển câu</string>
+    <string name="your_voice">Giọng bạn</string>
+    <string name="english_sentence">Hiển thị câu English</string>
+    <string name="translation">Hiển thị lời dịch</string>
+    <string name="try_one_more">Làm lại</string>
+    <string name="next">Câu tiếp</string>
+</resources>

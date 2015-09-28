@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import son.nt.hellochao.base.AActivity;
+import son.nt.hellochao.fragment.EslLabFragment;
 import son.nt.hellochao.fragment.LoginFragment;
 import son.nt.hellochao.fragment.OralFragment;
 import son.nt.hellochao.fragment.SignUpFragment;
@@ -126,5 +127,11 @@ public class MainActivity extends AActivity implements MainActivityFragment.IInt
         }
         MainActivityFragment f = (MainActivityFragment) getSafeFragmentManager().findFragmentByTag(AActivity.FRAGMENT_KEY);
         f.updateStatus(true);
+    }
+
+
+    @Override
+    public void onTest1() {
+        showFragment(EslLabFragment.newInstance("",""), true);
     }
 }

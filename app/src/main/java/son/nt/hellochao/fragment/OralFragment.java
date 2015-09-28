@@ -373,10 +373,14 @@ public class OralFragment extends AFragment {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    int spaceCorrect = list.get(currentPoint).getSentenceEng().split(" ").length;
                     int spaceYours = yourVoice.split(" ").length;
                     viewChecking.setVisibility(View.INVISIBLE);
-                    if (list.get(currentPoint).getSentenceEng().toLowerCase().contains(yourVoice.toLowerCase()) && spaceCorrect == spaceYours) {
+
+                    String fromOther = list.get(currentPoint).getSentenceEng().toLowerCase().trim();
+
+                    fromOther = fromOther.replace(" - ", " ").replace(". ", " ").replace(", "," ").replace("? "," ");
+                    int spaceCorrect = fromOther.split(" ").length;
+                    if (fromOther.contains(yourVoice.toLowerCase()) && spaceCorrect == spaceYours) {
                         txtYourVoice.setBackgroundColor(getResources().getColor(R.color.md_green_500));
                         score++;
                         handler.postDelayed(new Runnable() {
