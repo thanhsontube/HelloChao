@@ -340,7 +340,7 @@ public class MainActivityFragment extends AFragment {
             } else {
                 txtSentence.setText(getString(R.string.total_sentences) + userTop.getScore() + "/10");
                 txtTimes.setText(getString(R.string.total_duration) + userTop.getTotalTime() + getString(R.string.seconds));
-                txtTop.setText(getString(R.string.my_top + userTop.getNo()) + "/" + listTops.size());
+                txtTop.setText(getString(R.string.my_top) + userTop.getNo() + "/" + listTops.size());
             }
         }
 

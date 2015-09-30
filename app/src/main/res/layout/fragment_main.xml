@@ -184,14 +184,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="4dp"
-                    android:background="@color/md_grey_500">
+                    android:background="@drawable/box_black_with_corner">
 
                     <TextView
                         android:id="@+id/main_txt_practice"
-                        style="@style/txt_white_18"
+                        style="@style/txt_black_14"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:textStyle="bold"
                         android:background="?selectableItemBackground"
                         android:gravity="center"
                         android:maxLines="1"
@@ -225,11 +226,12 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/md_green_500">
+                    android:background="@drawable/box_blue_with_corner">
 
                     <TextView
                         android:id="@+id/main_txt_test"
-                        style="@style/txt_white_18"
+                        style="@style/txt_blue_14"
+                        android:textStyle="bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
