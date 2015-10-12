@@ -133,5 +133,6 @@ public class MainActivity extends AActivity implements MainActivityFragment.IInt
     @Override
     public void onTest1() {
         showFragment(EslLabFragment.newInstance("",""), true);
+
     }
 }

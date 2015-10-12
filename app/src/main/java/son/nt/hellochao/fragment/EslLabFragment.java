@@ -1,15 +1,20 @@
 package son.nt.hellochao.fragment;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.File;
+
 import son.nt.hellochao.R;
+import son.nt.hellochao.ResourceManager;
 import son.nt.hellochao.base.AFragment;
+import son.nt.hellochao.loader.HTTPParseUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -119,6 +124,19 @@ public class EslLabFragment extends AFragment {
     @Override
     protected void initData() {
 
+//        HTTPParseUtils.getInstance().withESL();
+//        HTTPParseUtils.getInstance().withESLDetails(ResourceManager.getInstance().getMyPath().getESLDetailsTest1());
+            new Download().execute();
+
+    }
+
+    class Download extends AsyncTask {
+        @Override
+        protected Object doInBackground(Object[] params) {
+//            HTTPParseUtils.getInstance().withESLDetails2();
+            HTTPParseUtils.getInstance().withSavePages(ResourceManager.getInstance().getMyPath().getESL(), ResourceManager.getInstance().folderAudio + File.separator + "esl.xml");
+            return null;
+        }
     }
 
 

@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -23,6 +23,12 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/test1"
                 android:text="test1"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/test2"
+                android:text="test2"/>
         </LinearLayout>
 
         <de.hdodenhof.circleimageview.CircleImageView

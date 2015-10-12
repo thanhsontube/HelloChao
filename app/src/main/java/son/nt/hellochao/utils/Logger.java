@@ -1,5 +1,6 @@
 package son.nt.hellochao.utils;
 
+import android.content.Context;
 import android.util.Log;
 
 /**
@@ -11,6 +12,10 @@ public final class Logger {
     private Logger() {
         // enforcing singleton
         super();
+    }
+    public static void start(final Context context, final boolean debug)
+    {
+        Logger.DEBUG = debug;
     }
 
     /**

@@ -6,6 +6,7 @@ import com.parse.Parse;
 import com.parse.ParseInstallation;
 
 import son.nt.hellochao.loader.HTTPParseUtils;
+import son.nt.hellochao.utils.Logger;
 
 /**
  * Created by Sonnt on 9/14/15.
@@ -14,6 +15,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Logger.start(this, BuildConfig.DEBUG);
         ResourceManager.createInstance(getApplicationContext());
         HTTPParseUtils.createInstance(getApplicationContext());
 

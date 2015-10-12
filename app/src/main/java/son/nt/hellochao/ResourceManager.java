@@ -11,6 +11,7 @@ import son.nt.hellochao.dto.DailySpeakDto;
 import son.nt.hellochao.dto.TopDto;
 import son.nt.hellochao.loader.ContentManager;
 import son.nt.hellochao.loader.MyPath;
+import son.nt.hellochao.retrofit.esl.ESLApi;
 import son.nt.hellochao.utils.FileUtil;
 
 /**
@@ -24,6 +25,7 @@ public class ResourceManager {
     private ContentManager contentManager;
     private List<DailySpeakDto> dailySpeakDtoList = new ArrayList<>();
     private List<TopDto> listTops = new ArrayList<>();
+    public ESLApi eslApi;
 
     public List<DailySpeakDto> getDailySpeakDtoList() {
         return dailySpeakDtoList;
@@ -59,6 +61,7 @@ public class ResourceManager {
     public ResourceManager(Context context) {
         this.context = context;
         initialize();
+        eslApi = new ESLApi();
     }
 
     public static ResourceManager getInstance() {
@@ -171,5 +174,9 @@ public class ResourceManager {
 
     public MyPath getMyPath() {
         return myPath;
+    }
+
+    public void setMyPath(MyPath myPath) {
+        this.myPath = myPath;
     }
 }

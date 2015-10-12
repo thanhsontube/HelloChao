@@ -32,7 +32,6 @@ import java.util.List;
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.DailySpeakDto;
 import son.nt.hellochao.dto.TopDto;
-import son.nt.hellochao.loader.HTTPParseUtils;
 import son.nt.hellochao.otto.GoOnList;
 import son.nt.hellochao.service.DownloadIntentService;
 import son.nt.hellochao.utils.Logger;
@@ -61,7 +60,7 @@ public class MainActivityFragment extends AFragment {
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setMessage(getString(R.string.waiting));
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
+//        progressDialog.show();
 
         txtWelcome = (TextView) view.findViewById(R.id.main_hello);
         txtUserName = (TextView) view.findViewById(R.id.txtUsername);
@@ -157,6 +156,13 @@ public class MainActivityFragment extends AFragment {
             }
         });
 
+        view.findViewById(R.id.test2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onTest1();
+            }
+        });
+
     }
 
 
@@ -215,53 +221,51 @@ public class MainActivityFragment extends AFragment {
     @Override
     protected void updateLayout() {
 
-//        HTTPParseUtils.getInstance().withHelloChao();
-
-        ParseUser parseUser = ParseUser.getCurrentUser();
-        if (parseUser == null) {
-            txtWelcome.setText("");
-        } else {
-            txtWelcome.setText(getString(R.string.welcome) + " " + parseUser.getUsername());
-            txtUserName.setText(parseUser.getUsername());
-        }
-
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(DailySpeakDto.class.getSimpleName());
-        query.whereEqualTo("day", day);
-        query.whereEqualTo("month", month);
-        query.whereEqualTo("year", year);
-
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> list, ParseException e) {
-                if (e != null || list == null || list.size() != 10) {
-                    HTTPParseUtils.getInstance().withHelloChao();
-                    return;
-                }
-
-                Logger.debug(TAG, ">>>" + "size:" + list.size());
-                List<DailySpeakDto> dailyList = new ArrayList<DailySpeakDto>();
-                DailySpeakDto d;
-                for (ParseObject p : list) {
-                    d = new DailySpeakDto();
-                    d.setMonth(p.getInt("month"));
-                    d.setYear(p.getInt("year"));
-                    d.setDay(p.getInt("day"));
-                    d.setLinkMp3(p.getString("linkMp3"));
-                    d.setSentenceEng(p.getString("sentenceEng"));
-                    d.setSentenceVi(p.getString("sentenceVi"));
-                    dailyList.add(d);
-                }
-                ResourceManager.getInstance().setDailySpeakDtoList(dailyList);
-                progressDialog.dismiss();
-
-            }
-        });
-
-        getTotalSubmitInDay();
+//        ParseUser parseUser = ParseUser.getCurrentUser();
+//        if (parseUser == null) {
+//            txtWelcome.setText("");
+//        } else {
+//            txtWelcome.setText(getString(R.string.welcome) + " " + parseUser.getUsername());
+//            txtUserName.setText(parseUser.getUsername());
+//        }
+//
+//        Calendar calendar = Calendar.getInstance();
+//        int day = calendar.get(Calendar.DAY_OF_MONTH);
+//        int month = calendar.get(Calendar.MONTH);
+//        int year = calendar.get(Calendar.YEAR);
+//        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(DailySpeakDto.class.getSimpleName());
+//        query.whereEqualTo("day", day);
+//        query.whereEqualTo("month", month);
+//        query.whereEqualTo("year", year);
+//
+//        query.findInBackground(new FindCallback<ParseObject>() {
+//            @Override
+//            public void done(List<ParseObject> list, ParseException e) {
+//                if (e != null || list == null || list.size() != 10) {
+//                    HTTPParseUtils.getInstance().withHelloChao();
+//                    return;
+//                }
+//
+//                Logger.debug(TAG, ">>>" + "size:" + list.size());
+//                List<DailySpeakDto> dailyList = new ArrayList<DailySpeakDto>();
+//                DailySpeakDto d;
+//                for (ParseObject p : list) {
+//                    d = new DailySpeakDto();
+//                    d.setMonth(p.getInt("month"));
+//                    d.setYear(p.getInt("year"));
+//                    d.setDay(p.getInt("day"));
+//                    d.setLinkMp3(p.getString("linkMp3"));
+//                    d.setSentenceEng(p.getString("sentenceEng"));
+//                    d.setSentenceVi(p.getString("sentenceVi"));
+//                    dailyList.add(d);
+//                }
+//                ResourceManager.getInstance().setDailySpeakDtoList(dailyList);
+//                progressDialog.dismiss();
+//
+//            }
+//        });
+//
+//        getTotalSubmitInDay();
 
     }
 
