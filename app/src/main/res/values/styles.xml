@@ -3,6 +3,13 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@color/md_blue_A200</item>
+        <item name="colorPrimary">@color/md_blue_200</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:statusBarColor">@color/pink_transparent</item>
     </style>
 
     <style name="TextViewStyleNormal">
@@ -25,5 +32,14 @@
         <item name="android:textColor">@color/md_grey_500</item>
         <item name="android:textAppearance">?android:textAppearanceSmall</item>
     </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="theme1" parent="Theme.AppCompat.Light"></style>
+    <style name="theme2" parent="Theme.AppCompat.Light.DarkActionBar"></style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>
