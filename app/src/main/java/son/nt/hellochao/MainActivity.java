@@ -12,6 +12,7 @@ import son.nt.hellochao.fragment.LoginFragment;
 import son.nt.hellochao.fragment.OralFragment;
 import son.nt.hellochao.fragment.SignUpFragment;
 import son.nt.hellochao.fragment.TopFragment;
+import son.nt.hellochao.utils.OttoBus;
 
 
 public class MainActivity extends AActivity implements MainActivityFragment.IInteraction, OralFragment.OnFragmentInteractionListener,
@@ -21,8 +22,14 @@ public class MainActivity extends AActivity implements MainActivityFragment.IInt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        OttoBus.register(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OttoBus.unRegister(this);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -132,7 +139,10 @@ public class MainActivity extends AActivity implements MainActivityFragment.IInt
 
     @Override
     public void onTest1() {
-        showFragment(EslLabFragment.newInstance("",""), true);
+        showFragment(EslLabFragment.newInstance("", ""), true);
 
     }
+
+
+
 }

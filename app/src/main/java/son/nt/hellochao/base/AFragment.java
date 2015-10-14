@@ -26,6 +26,11 @@ public abstract class AFragment extends Fragment {
         updateLayout();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     protected AppCompatActivity getAActivity () {
         return (AppCompatActivity) getActivity();
     }

@@ -9,6 +9,9 @@ public class HotEntity extends AObject {
 
     private HomeEntity homeEntity;
 
+    public HotEntity() {
+    }
+
     public HotEntity(HomeEntity homeEntity) {
         this.homeEntity = homeEntity;
     }

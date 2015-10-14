@@ -102,8 +102,8 @@ public class ScrollFragment extends AFragment {
     protected void initLayout(View view) {
         pagerHot = (ViewPager) view.findViewById(R.id.scroll_pager);
         adapterHot = new AdapterHot(getFragmentManager(), listHot);
+        pagerHot.setHorizontalScrollBarEnabled(true);
         pagerHot.setAdapter(adapterHot);
-
     }
 
     @Override

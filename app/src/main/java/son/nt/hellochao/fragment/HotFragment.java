@@ -1,8 +1,8 @@
 package son.nt.hellochao.fragment;
 
 
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +13,15 @@ import butterknife.ButterKnife;
 import son.nt.hellochao.R;
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.HotEntity;
+import son.nt.hellochao.otto.GoHot;
+import son.nt.hellochao.utils.Logger;
+import son.nt.hellochao.utils.OttoBus;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class HotFragment extends AFragment {
+    public final String TAG = this.getClass().getSimpleName();
     HotEntity hotEntity;
     @Bind(R.id.hot_txt_title)
     TextView txtTitle;
@@ -49,6 +53,13 @@ public class HotFragment extends AFragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.view_recommend, container, false);
         ButterKnife.bind(this, view);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Logger.debug(TAG, ">>>" + "onClick");
+                OttoBus.post(new GoHot(hotEntity));
+            }
+        });
         return view;
 
     }
