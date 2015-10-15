@@ -7,11 +7,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import son.nt.hellochao.base.AActivity;
-import son.nt.hellochao.fragment.EslLabFragment;
+import son.nt.hellochao.dto.LessonEntity;
 import son.nt.hellochao.fragment.LoginFragment;
 import son.nt.hellochao.fragment.OralFragment;
 import son.nt.hellochao.fragment.SignUpFragment;
 import son.nt.hellochao.fragment.TopFragment;
+import son.nt.hellochao.loader.LessonLoader;
+import son.nt.hellochao.loader.LoaderManager;
 import son.nt.hellochao.utils.OttoBus;
 
 
@@ -139,7 +141,26 @@ public class MainActivity extends AActivity implements MainActivityFragment.IInt
 
     @Override
     public void onTest1() {
-        showFragment(EslLabFragment.newInstance("", ""), true);
+//        showFragment(EslLabFragment.newInstance("", ""), true);
+        LoaderManager manager = new LoaderManager();
+        String link ="http://www.esl-lab.com/dating/datingrd1.htm";
+//        String link ="http://www.esl-lab.com/night/nightrd1.htm";
+        manager.execute(new LessonLoader(getApplicationContext(), link) {
+            @Override
+            public void onLoaderStart() {
+
+            }
+
+            @Override
+            public void onLoaderSuccess(LessonEntity entity) {
+
+            }
+
+            @Override
+            public void onLoaderFail(Throwable e) {
+
+            }
+        });
 
     }
 

@@ -11,6 +11,7 @@ public class HomeEntity extends AObject {
     private String homeTitle;
     private String homeHref;
     private String homeQuizLink;
+    private String homeMp3;
 
     public HomeEntity() {
     }
@@ -53,5 +54,13 @@ public class HomeEntity extends AObject {
 
     public void setHomeQuizLink(String homeQuizLink) {
         this.homeQuizLink = homeQuizLink;
+    }
+
+    public String getHomeMp3() {
+        return homeMp3;
+    }
+
+    public void setHomeMp3(String homeMp3) {
+        this.homeMp3 = homeMp3;
     }
 }

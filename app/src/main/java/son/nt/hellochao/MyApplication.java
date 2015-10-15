@@ -17,6 +17,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Logger.start(this, BuildConfig.DEBUG);
         ResourceManager.createInstance(getApplicationContext());
+        DataManager.createInstance(getApplicationContext());
         HTTPParseUtils.createInstance(getApplicationContext());
 
         Parse.enableLocalDatastore(this);

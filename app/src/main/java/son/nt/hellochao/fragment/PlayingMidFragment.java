@@ -22,8 +22,8 @@ import son.nt.hellochao.base.AFragment;
  * A simple {@link Fragment} subclass.
  */
 public class PlayingMidFragment extends AFragment implements View.OnTouchListener, SpringListener{
-    private static double TENSION = 40;
-    private static double DAMPER = 3; //friction
+    private static double TENSION = 400;
+    private static double DAMPER = 30; //friction
 
     ImageView mImageToAnimate;
     private SpringSystem mSpringSystem;

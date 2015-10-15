@@ -7,6 +7,7 @@
     android:padding="16dp">
 
     <SeekBar
+        android:id="@+id/media_seek_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:max="100"
@@ -17,6 +18,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/media_txt_current_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
@@ -24,6 +26,7 @@
             android:text="00:00" />
 
         <TextView
+            android:id="@+id/media_txt_max_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
@@ -39,18 +42,21 @@
         android:paddingRight="50dp">
 
         <ImageView
+            android:id="@+id/media_prev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical"
             android:src="@mipmap/ic_previous" />
 
         <ImageView
+            android:id="@+id/media_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@mipmap/ic_play" />
 
         <ImageView
+            android:id="@+id/media_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"

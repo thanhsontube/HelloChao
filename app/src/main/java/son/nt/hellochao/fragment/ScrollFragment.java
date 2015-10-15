@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import son.nt.hellochao.DataManager;
 import son.nt.hellochao.R;
 import son.nt.hellochao.adapter.AdapterHot;
 import son.nt.hellochao.base.AFragment;
@@ -123,6 +124,7 @@ public class ScrollFragment extends AFragment {
             @Override
             public void onLoaderSuccess(HomeObject entity) {
                 Logger.debug(TAG, ">>>" + "onLoaderSuccess:" + entity.getListHomeEntity().size());
+                DataManager.getInstance().setHomeEntities(entity.getListHomeEntity());
                 listHot.clear();
                 listHot.add(new HotEntity(getRandom(entity.getListHomeEntity(), 0)));
                 listHot.add(new HotEntity(getRandom(entity.getListHomeEntity(), 1)));

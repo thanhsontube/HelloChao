@@ -36,7 +36,9 @@ public abstract class LessonLoader extends BaseLoader<LessonEntity> {
 //            getHelpTip(tagNode);
 //            lessonEntity.setImage(getImage(tagNode));
 
-            getLessonDescription(tagNode);
+//            getLessonDescription(tagNode);
+
+            lessonEntity.setMp3Link(getMp3Link(tagNode));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,6 +111,36 @@ public abstract class LessonLoader extends BaseLoader<LessonEntity> {
 
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public String getMp3Link (TagNode tagNode) {
+        Logger.debug(TAG, ">>>" + "-----getMp3Link");
+        try {
+            String path = "//table[@width='480']/tbody/tr/td/script[@type = 'text/javascript']";
+            Object[] object = tagNode.evaluateXPath(path);
+            Logger.debug(TAG, ">>>" + "object:" + object.length);
+            if (object == null || object.length == 0) {
+                return null;
+            }
+
+            TagNode tagA = (TagNode) object[0];
+            String text = cleanString(tagA.getText().toString());
+            Logger.debug(TAG, ">>>" + "TagA:" + text);
+            String []arr = text.split(",");
+            for (String s : arr) {
+                if (s.contains("/audio/mp3/")) {
+                    String link = s.replace("\"","").replace("..","http://www.esl-lab.com").replace("file: ","");
+                    Logger.debug(TAG, ">>>" + "Mp3:" + link);
+                    return cleanString(link);
+                }
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

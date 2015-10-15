@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 public class DatetimeUtils {
     // SimpleDateFormat can be used to control the date/time display format:
@@ -88,6 +89,19 @@ public class DatetimeUtils {
             e.printStackTrace();
             return time;
         }
+    }
+
+
+    public static String covertMillisToMediaTime (long millis) {
+        try {
+            String hms = String.format("%02d:%02d",
+                    TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
+            return hms;
+        }catch (Exception e) {
+
+        }
+        return "00:00";
     }
 
 }
