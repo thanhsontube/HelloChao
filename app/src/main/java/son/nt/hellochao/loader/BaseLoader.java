@@ -37,6 +37,7 @@ public abstract class BaseLoader<T> {
         this (context, link, false);
     }
 
+
     private BaseLoader (Context context, String link, boolean isSaveToXml) {
         this.context = context;
         this.link = link;
@@ -57,7 +58,7 @@ public abstract class BaseLoader<T> {
         this.isSaveToXml = isSaveToXml;
     }
 
-    protected abstract T handleTagNode (TagNode tagNode);
+    protected abstract T handleTagNode (TagNode tagNode, String link);
 
     public  void execute (LoaderManager manager) {
         task.execute(manager);
@@ -118,7 +119,7 @@ public abstract class BaseLoader<T> {
                 }
 
                 if (tagNode != null) {
-                    entity = handleTagNode(tagNode);
+                    entity = handleTagNode(tagNode, link);
                 }
                 if (entity == null) {
                     error = new Throwable("tagNode from :" + link + " is NULL");

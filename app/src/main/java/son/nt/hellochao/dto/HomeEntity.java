@@ -12,6 +12,9 @@ public class HomeEntity extends AObject {
     private String homeHref;
     private String homeQuizLink;
     private String homeMp3;
+    private String homeDescription;
+    private String homeImage;
+    private String homeFullText;
 
     public HomeEntity() {
     }
@@ -22,6 +25,14 @@ public class HomeEntity extends AObject {
         this.homeTitle = homeTitle;
         this.homeHref = homeHref;
         this.homeQuizLink = homeQuizLink;
+    }
+
+    public String getHomeImage() {
+        return homeImage;
+    }
+
+    public void setHomeImage(String homeImage) {
+        this.homeImage = homeImage;
     }
 
     public String getHomeGroup() {
@@ -62,5 +73,21 @@ public class HomeEntity extends AObject {
 
     public void setHomeMp3(String homeMp3) {
         this.homeMp3 = homeMp3;
+    }
+
+    public String getHomeDescription() {
+        return homeDescription;
+    }
+
+    public void setHomeDescription(String homeDescription) {
+        this.homeDescription = homeDescription;
+    }
+
+    public String getHomeFullText() {
+        return homeFullText;
+    }
+
+    public void setHomeFullText(String homeFullText) {
+        this.homeFullText = homeFullText;
     }
 }

@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,8 +27,12 @@ import son.nt.hellochao.utils.OttoBus;
 public class HotFragment extends AFragment {
     public final String TAG = this.getClass().getSimpleName();
     HotEntity hotEntity;
-    @Bind(R.id.hot_txt_title)
-    TextView txtTitle;
+    @Bind(R.id.hot_txt_title) TextView txtTitle;
+    @Bind(R.id.hot_txt_des) TextView txtDes;
+    @Bind(R.id.hot_img_topc)
+    ImageView  imgTopic;
+
+
 
 
 
@@ -87,7 +95,10 @@ public class HotFragment extends AFragment {
 
     @Override
     protected void updateLayout() {
-        txtTitle.setText(hotEntity.getHomeEntity().getHomeTitle() + ":" + hotEntity.getHomeEntity().getHomeGroup());
+        txtTitle.setText(hotEntity.getHomeEntity().getHomeTitle() + " (" + hotEntity.getHomeEntity().getHomeGroup() + ")");
+        txtDes.setText(hotEntity.getHomeEntity().getHomeDescription());
+        Glide.with(this).load(hotEntity.getHomeEntity().getHomeImage()).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(imgTopic);
+
 
     }
 }

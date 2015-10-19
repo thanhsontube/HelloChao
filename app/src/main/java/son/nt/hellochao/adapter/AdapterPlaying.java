@@ -7,6 +7,7 @@ import java.util.List;
 
 import son.nt.hellochao.base.BasePagerAdapter;
 import son.nt.hellochao.dto.HotEntity;
+import son.nt.hellochao.fragment.FullTextFragment;
 import son.nt.hellochao.fragment.PlayingMidFragment;
 
 /**
@@ -23,12 +24,21 @@ public class AdapterPlaying extends BasePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        switch (position) {
+            case 0:
+                return FullTextFragment.newInstance(list.get(position).getHomeEntity());
+            case 1:
+                return new PlayingMidFragment();
+            case 2:
+                return new PlayingMidFragment();
+        }
         return new PlayingMidFragment();
     }
 
     @Override
     public boolean isFragmentReusable(Fragment f, int position) {
-        return true;
+
+        return false;
     }
 
     @Override

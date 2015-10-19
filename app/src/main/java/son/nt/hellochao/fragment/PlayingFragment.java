@@ -32,7 +32,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import son.nt.hellochao.R;
 import son.nt.hellochao.ResourceManager;
 import son.nt.hellochao.adapter.AdapterPlaying;
@@ -92,7 +91,6 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_playing, container, false);
-        ButterKnife.bind(view);
         getAActivity().bindService(ServiceMedia.getIntentService(getContext()), serviceConnection, Service.BIND_AUTO_CREATE);
         return view;
     }
@@ -101,15 +99,14 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
     public void onDestroy() {
         super.onDestroy();
         getAActivity().unbindService(serviceConnection);
-        ButterKnife.unbind(this);
     }
 
     @Override
     protected void initData() {
         list = new ArrayList<>();
-        list.add(new HotEntity());
-        list.add(new HotEntity());
-        list.add(new HotEntity());
+        list.add(new HotEntity(homeEntity));
+        list.add(new HotEntity(homeEntity));
+        list.add(new HotEntity(homeEntity));
 
     }
 
@@ -130,11 +127,6 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
         viewPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                new DownLoadA().execute();
-                String link = homeEntity.getHomeMp3().trim();
-                Logger.debug(TAG, ">>>" + "mp3:" + link);
-
-                serviceMedia.play(link);
             }
         });
         pager = (ViewPager) view.findViewById(R.id.playing_pager);
@@ -184,9 +176,7 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
 
     @Override
     protected void updateLayout() {
-//        setupMedia();
-
-
+        pager.setCurrentItem(1);
     }
 
     private void anotherPlayer() {

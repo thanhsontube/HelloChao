@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by Sonnt on 9/14/15.
  */
@@ -17,8 +19,11 @@ public abstract class AFragment extends Fragment {
 
     protected abstract void updateLayout();
 
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        ButterKnife.bind(view);
         super.onViewCreated(view, savedInstanceState);
         initData();
         initLayout(view);
@@ -26,8 +31,10 @@ public abstract class AFragment extends Fragment {
         updateLayout();
     }
 
+
     @Override
     public void onDestroy() {
+        ButterKnife.unbind(this);
         super.onDestroy();
     }
 

@@ -25,7 +25,7 @@ public abstract class HomeLoader extends BaseLoader<HomeObject> {
     }
 
     @Override
-    protected HomeObject handleTagNode(TagNode tagNode) {
+    protected HomeObject handleTagNode(TagNode tagNode, String link) {
         HomeObject homeObject = new HomeObject();
         try {
             String xPath = "//tr[@valign='Top']/td[@width='185'][@bgcolor='#FFFFCC']";

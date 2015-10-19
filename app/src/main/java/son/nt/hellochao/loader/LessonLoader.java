@@ -1,6 +1,7 @@
 package son.nt.hellochao.loader;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import org.htmlcleaner.TagNode;
 
@@ -25,20 +26,21 @@ public abstract class LessonLoader extends BaseLoader<LessonEntity> {
     }
 
     @Override
-    protected LessonEntity handleTagNode(TagNode tagNode) {
+    protected LessonEntity handleTagNode(TagNode tagNode, String link) {
         LessonEntity lessonEntity = new LessonEntity();
         try {
-            TagNode tagDescription = tagNode.findElementByAttValue("name", "description", true, true);
-            Logger.debug(TAG, ">>>" + "tagDescription:" + tagDescription.getAttributeByName("content"));
+            lessonEntity.setHrefLink(link);
+
+
+
+//            TagNode tagDescription = tagNode.findElementByAttValue("name", "description", true, true);
+//            lessonEntity.setDescription(cleanString(tagDescription.getAttributeByName("content")));
 
 //            getIdioms(tagNode);
-//            getAudioLink(tagNode);
 //            getHelpTip(tagNode);
 //            lessonEntity.setImage(getImage(tagNode));
 
-//            getLessonDescription(tagNode);
-
-            lessonEntity.setMp3Link(getMp3Link(tagNode));
+//            lessonEntity.setMp3Link(getMp3Link(tagNode));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,22 +49,49 @@ public abstract class LessonLoader extends BaseLoader<LessonEntity> {
         return lessonEntity;
     }
 
-    public String cleanString (String in) {
-        return in.trim().replace("\n","").replace("\r","");
+    private String getTitle(TagNode tagNode) {
+        String title = null;
+        try {
+            String xPath = "//head/title";
+            Object[] data = tagNode.evaluateXPath(xPath);
+//            Logger.debug(TAG, ">>>" + "data:" + data.length);
+            if (data.length == 1) {
+                TagNode tagA = (TagNode) data[0];
+                title = cleanString(tagA.getText().toString());
+            }
+
+            if (TextUtils.isEmpty(title)) {
+                xPath = "//head/meta[@name='title']";
+                data = tagNode.evaluateXPath(xPath);
+                if (data.length == 1) {
+                    TagNode tagA = (TagNode) data[0];
+                    title = cleanString(tagA.getText().toString());
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return title;
+    }
+
+    public String cleanString(String in) {
+        return in.trim().replace("\n", "").replace("\r", "");
     }
 
 
-
-    private String getHelpTip (TagNode tagNode) {
+    private String getHelpTip(TagNode tagNode) {
         Logger.debug(TAG, ">>>" + "-----getHelpTip");
         try {
             String xPath = "//font[@size='2']";
-            Object []data = tagNode.evaluateXPath(xPath);
-            for (int i = 0; i < data.length; i ++) {
-                String text = ((TagNode) data[i]).getText().toString().trim().replace("\n","").replace("\r","");
+            Object[] data = tagNode.evaluateXPath(xPath);
+            for (int i = 0; i < data.length; i++) {
+                String text = ((TagNode) data[i]).getText().toString().trim().replace("\n", "").replace("\r", "");
                 if (text.contains("HELPFUL TIP")) {
 
-                    Logger.debug(TAG, ">>>" + "data:"+ i +":" +text);
+                    Logger.debug(TAG, ">>>" + "data:" + i + ":" + text);
                     return text;
                 }
             }
@@ -73,14 +102,23 @@ public abstract class LessonLoader extends BaseLoader<LessonEntity> {
         return null;
     }
 
-    private String getImage (TagNode tagNode) {
-        Logger.debug(TAG, ">>>" + "-----getImage");
+    private String getImage(TagNode tagNode) {
         try {
-            TagNode tagA = tagNode.findElementByAttValue("height", "126", true, true);
-            String image = tagA.getAttributeByName("src").toString();
-            String alt = tagA.getAttributeByName("alt");
-            Logger.debug(TAG, ">>>" + "Img:" + image + "    ;alt:" + alt);
-            return image;
+            String image = null;
+
+//                String xpath = "//img[@src][@width= '230'][@height='128']";
+            String xpath = "//img[@src][@width][@height][@alt]";
+            Object[] object = tagNode.evaluateXPath(xpath);
+            for (int i = 0; i < object.length; i ++) {
+                TagNode tagB = (TagNode) object[i];
+                if (tagB.hasAttribute("src")) {
+                    image = tagB.getAttributeByName("src").toString();
+                    if (image!= null && !image.contains("pinkar.gif") && !image.contains("arrowag1.gif")) {
+                        return image;
+                    }
+                }
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,7 +127,7 @@ public abstract class LessonLoader extends BaseLoader<LessonEntity> {
 
 
     //not work
-    private String getLessonDescription (TagNode tagNode) {
+    private String getLessonDescription(TagNode tagNode) {
         Logger.debug(TAG, ">>>" + "-----getLessonDescription");
         try {
             String path = "//div[@class='addthis_toolbox addthis_default_style addthis_16x16_style']/p";
@@ -99,7 +137,7 @@ public abstract class LessonLoader extends BaseLoader<LessonEntity> {
 
             StringBuilder stringBuilder = new StringBuilder();
 
-            for (int i = 0 ; i < object.length ; i ++) {
+            for (int i = 0; i < object.length; i++) {
                 TagNode node = (TagNode) object[i];
                 String text = cleanString(node.getText().toString());
                 stringBuilder.append(text);
@@ -118,24 +156,24 @@ public abstract class LessonLoader extends BaseLoader<LessonEntity> {
     }
 
 
-    public String getMp3Link (TagNode tagNode) {
-        Logger.debug(TAG, ">>>" + "-----getMp3Link");
+    public String getMp3Link(TagNode tagNode) {
+//        Logger.debug(TAG, ">>>" + "-----getMp3Link");
         try {
             String path = "//table[@width='480']/tbody/tr/td/script[@type = 'text/javascript']";
             Object[] object = tagNode.evaluateXPath(path);
-            Logger.debug(TAG, ">>>" + "object:" + object.length);
+//            Logger.debug(TAG, ">>>" + "object:" + object.length);
             if (object == null || object.length == 0) {
                 return null;
             }
 
             TagNode tagA = (TagNode) object[0];
             String text = cleanString(tagA.getText().toString());
-            Logger.debug(TAG, ">>>" + "TagA:" + text);
-            String []arr = text.split(",");
+//            Logger.debug(TAG, ">>>" + "TagA:" + text);
+            String[] arr = text.split(",");
             for (String s : arr) {
                 if (s.contains("/audio/mp3/")) {
-                    String link = s.replace("\"","").replace("..","http://www.esl-lab.com").replace("file: ","");
-                    Logger.debug(TAG, ">>>" + "Mp3:" + link);
+                    String link = s.replace("\"", "").replace("..", "http://www.esl-lab.com").replace("file: ", "");
+//                    Logger.debug(TAG, ">>>" + "Mp3:" + link);
                     return cleanString(link);
                 }
             }
@@ -147,8 +185,8 @@ public abstract class LessonLoader extends BaseLoader<LessonEntity> {
         return null;
     }
 
-    private void getIdioms (TagNode tagNode) {
-        List <IdiomEntity> list = new ArrayList<>();
+    private void getIdioms(TagNode tagNode) {
+        List<IdiomEntity> list = new ArrayList<>();
         IdiomEntity idiomEntity;
         String key = null;
         String value = null;
@@ -176,19 +214,19 @@ public abstract class LessonLoader extends BaseLoader<LessonEntity> {
             Logger.debug(TAG, ">>>" + "KEY:" + key + "\r\n;VALUE:" + value);
 
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void getAudioLink (TagNode tagNode) {
+    private void getAudioLink(TagNode tagNode) {
         Logger.debug(TAG, ">>>" + "-----getAudioLink");
         try {
             String path = "//center/font[@size = '2']/a[@href]";
             Object[] object = tagNode.evaluateXPath(path);
             Logger.debug(TAG, ">>>" + "object:" + object.length);
 
-            for (int i = 0 ; i < object.length ; i ++) {
+            for (int i = 0; i < object.length; i++) {
                 TagNode node = (TagNode) object[i];
                 Logger.debug(TAG, ">>>" + "Node:" + i + ":" + node.getAttributeByName("href"));
             }

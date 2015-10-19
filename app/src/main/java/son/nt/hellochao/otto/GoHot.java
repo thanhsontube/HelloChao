@@ -12,4 +12,12 @@ public class GoHot extends AObject {
     public GoHot(HotEntity hotEntity) {
         this.hotEntity = hotEntity;
     }
+
+    public HotEntity getHotEntity() {
+        return hotEntity;
+    }
+
+    public void setHotEntity(HotEntity hotEntity) {
+        this.hotEntity = hotEntity;
+    }
 }
