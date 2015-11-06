@@ -1,7 +1,6 @@
 package son.nt.hellochao.fragment;
 
 
-import android.app.Fragment;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
@@ -10,6 +9,7 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -23,37 +23,33 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.squareup.otto.Subscribe;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import son.nt.hellochao.R;
 import son.nt.hellochao.ResourceManager;
 import son.nt.hellochao.adapter.AdapterPlaying;
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.HomeEntity;
-import son.nt.hellochao.dto.HotEntity;
+import son.nt.hellochao.otto.GoESL;
 import son.nt.hellochao.service.Playback;
 import son.nt.hellochao.service.PlaybackState;
 import son.nt.hellochao.service.ServiceMedia;
 import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.Logger;
+import son.nt.hellochao.utils.OttoBus;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class PlayingFragment extends AFragment implements Playback.Callback {
 
     public final String TAG = getClass().getSimpleName();
 
     ViewPager pager;
     AdapterPlaying adapter;
-    List<HotEntity> list = new ArrayList<>();
     ServiceMedia serviceMedia;
     HomeEntity homeEntity;
     View viewPrev;
@@ -82,9 +78,12 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        OttoBus.register(this);
         homeEntity = (HomeEntity) getArguments().getSerializable("data");
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,15 +98,11 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
     public void onDestroy() {
         super.onDestroy();
         getAActivity().unbindService(serviceConnection);
+        OttoBus.unRegister(this);
     }
 
     @Override
     protected void initData() {
-        list = new ArrayList<>();
-        list.add(new HotEntity(homeEntity));
-        list.add(new HotEntity(homeEntity));
-        list.add(new HotEntity(homeEntity));
-
     }
 
     @Override
@@ -130,7 +125,7 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
             }
         });
         pager = (ViewPager) view.findViewById(R.id.playing_pager);
-        adapter = new AdapterPlaying(getFragmentManager(), list);
+        adapter = new AdapterPlaying(getFragmentManager(), homeEntity);
         pager.setHorizontalScrollBarEnabled(true);
         pager.setAdapter(adapter);
 
@@ -221,13 +216,6 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
 
         }
     };
-
-    private void play() {
-        if (serviceMedia != null) {
-//            serviceMedia.playStream("http://www.esl-lab.com/ramfiles/firstdate.wax");
-            serviceMedia.playStream("https://www.hellochao.vn/play_sound.php?sid=c4ca1238a0b923821dcc209a6f7584Ms&type=11#1444811193331599845");
-        }
-    }
 
     private class DownLoadA extends AsyncTask<Void, Void, Void> {
         @Override
@@ -329,6 +317,28 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
     }
 
     long duration;
+
+    @Subscribe
+    public void getFromAdapterEslList (GoESL goESL) {
+        Logger.debug(TAG, ">>>" + "getFromAdapterEslList");
+        this.homeEntity = goESL.homeEntity;
+        serviceMedia.stop(true);
+        adapter.updateData(goESL.homeEntity);
+
+        Fragment f;
+
+        for (int i = 0 ; i < 3; i ++) {
+            f = adapter.getFragment(pager, i);
+            if (f instanceof PlayingMidFragment) {
+                ((PlayingMidFragment)f).setData(goESL.homeEntity);
+            } else if (f instanceof FullTextFragment) {
+                Logger.debug(TAG, ">>>" + "FullTextFragment");
+                ((FullTextFragment) f).updateData(goESL.homeEntity);
+            }
+
+
+        }
+    }
 
 
 }

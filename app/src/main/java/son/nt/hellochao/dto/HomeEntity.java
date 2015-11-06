@@ -1,5 +1,7 @@
 package son.nt.hellochao.dto;
 
+import java.util.List;
+
 import son.nt.hellochao.base.AObject;
 
 /**
@@ -14,7 +16,7 @@ public class HomeEntity extends AObject {
     private String homeMp3;
     private String homeDescription;
     private String homeImage;
-    private String homeFullText;
+    private List<String> listChats;
 
     public HomeEntity() {
     }
@@ -83,11 +85,11 @@ public class HomeEntity extends AObject {
         this.homeDescription = homeDescription;
     }
 
-    public String getHomeFullText() {
-        return homeFullText;
+    public List<String> getListChats() {
+        return listChats;
     }
 
-    public void setHomeFullText(String homeFullText) {
-        this.homeFullText = homeFullText;
+    public void setListChats(List<String> listChats) {
+        this.listChats = listChats;
     }
 }

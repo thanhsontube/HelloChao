@@ -3,7 +3,6 @@ package son.nt.hellochao.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +10,21 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import son.nt.hellochao.R;
-import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.HomeEntity;
+import son.nt.hellochao.utils.Logger;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FullTextFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FullTextFragment extends AFragment {
+public class FullTextFragment extends AbsMainFragment<HomeEntity> {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "FullTextFragment";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -109,9 +110,21 @@ public class FullTextFragment extends AFragment {
 
     @Override
     protected void updateLayout() {
-        if (homeEntity != null && !TextUtils.isEmpty(homeEntity.getHomeFullText())) {
-            txtFullText.setText(homeEntity.getHomeFullText());
-        }
+        StringBuilder stringBuilder = new StringBuilder();
+        if (homeEntity != null && homeEntity.getListChats().size() > 0) {
+            for (String s : homeEntity.getListChats()) {
 
+                stringBuilder.append(s.trim()).append("\n\r\n\r");
+            }
+        }
+        txtFullText.setText(stringBuilder);
+
+    }
+
+    @Override
+    void updateData(HomeEntity data) {
+        Logger.debug(TAG, ">>>" + "updateData");
+        this.homeEntity = data;
+        updateLayout();
     }
 }

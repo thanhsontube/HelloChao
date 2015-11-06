@@ -23,7 +23,6 @@ public abstract class AFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
-        ButterKnife.bind(view);
         super.onViewCreated(view, savedInstanceState);
         initData();
         initLayout(view);

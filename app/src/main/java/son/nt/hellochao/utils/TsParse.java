@@ -43,8 +43,8 @@ public  class TsParse implements IParse{
                     p.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
-                            if (e!= null) {
-                                Logger.error(TAG, ">>>" + "Error upload:" + d.getHomeTitle() +">>>" + e.toString());
+                            if (e != null) {
+                                Logger.error(TAG, ">>>" + "Error upload:" + d.getHomeTitle() + ">>>" + e.toString());
                             } else {
 
                                 Logger.debug(TAG, ">>>" + "Update complete:" + d.getHomeTitle());
@@ -85,7 +85,8 @@ public  class TsParse implements IParse{
                         d.setHomeMp3(mp3);
                         d.setHomeImage(p.getString("homeImage"));
                         d.setHomeDescription(p.getString("homeDescription"));
-                        d.setHomeFullText(p.getString("homeFullText"));
+                        List<String> listChats = p.getList("homeChats");
+                        d.setListChats(listChats);
                         listData.add(d);
                     }
                     Logger.debug(TAG, ">>>" + "listData:" + listData.size());
@@ -204,17 +205,17 @@ public  class TsParse implements IParse{
                             Logger.error(TAG, ">>>" + "Error objectID:" + d.getHomeTitle() + ">>>>" + e.toString());
                             return;
                         }
-                        String homeFullText = parseObject.getString("homeFullText");
+                        String homeFullText = parseObject.getString("homeChats");
                         if (TextUtils.isEmpty(homeFullText)) {
-                            parseObject.put("homeFullText", d.getHomeFullText());
+                            parseObject.put("homeChats", d.getListChats());
                             parseObject.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
-                                    Logger.debug(TAG, ">>>" + "update homeFullText success for :" + d.getHomeTitle());
+                                    Logger.debug(TAG, ">>>" + "update homeChats success for :" + d.getHomeTitle());
                                 }
                             });
                         } else {
-                            Logger.debug(TAG, ">>>" + "EXIST homeFullText:" + d.getHomeTitle());
+                            Logger.debug(TAG, ">>>" + "EXIST homeChats:" + d.getHomeTitle());
                         }
 
 

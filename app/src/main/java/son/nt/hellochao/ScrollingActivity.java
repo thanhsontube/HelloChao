@@ -141,11 +141,10 @@ public class ScrollingActivity extends AActivity {
                     }
 
                 } else if (id == R.id.nav_share) {
-                    new UpdateLesson().execute();
+//                    new UpdateLesson().execute();
 
                 } else if (id == R.id.nav_send) {
                     new UpdateFulltext().execute();
-
                 }
 
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -193,10 +192,10 @@ public class ScrollingActivity extends AActivity {
 //                d.setHomeQuizLink("http://www.esl-lab.com/bank/banksc1.htm");
 //                d.setHomeQuizLink("http://www.esl-lab.com/intro2/intrsc2.htm");
 //                d.setHomeQuizLink("http://www.esl-lab.com/bath1/bathsc1.htm");
-                d.setHomeQuizLink("http://www.esl-lab.com/rent/rentsc1.htm");
+//                d.setHomeQuizLink("http://www.esl-lab.com/dating/datingsc1.htm");
                 Logger.debug(TAG, ">>>" + "------------------------");
 
-//                if (d.getHomeGroup().startsWith("M") || d.getHomeGroup().startsWith("D")   ) {
+//                if (d.getHomeGroup().startsWith("M")  ) {
 
                 if (d.getHomeGroup().startsWith("E") || d.getHomeGroup().startsWith("M")
                         || d.getHomeGroup().startsWith("D")) {
@@ -221,11 +220,31 @@ public class ScrollingActivity extends AActivity {
 
                 }
 
-                break;
+//                break;
 
             }
             return null;
         }
+    }
+    private void updateFullText(QuizEntity entity) {
+        Logger.debug(TAG, ">>>" + "updateFullText:" + entity.getFullText() + ";link:" + entity.getQuizLink());
+        if (entity == null || entity.getFullText().size() == 0) {
+            Logger.error(TAG, ">>>" + "updateFullText ERROR:" + entity.getQuizLink());
+            return;
+        }
+        HomeEntity d = DataManager.getInstance().getDataByQuiz(entity.getQuizLink());
+        if (d == null) {
+            Logger.error(TAG, ">>>" + "ERROR Mp3 HomeEntity NULL:" + entity.getQuizLink());
+            return;
+        }
+
+        for (String s : entity.getFullText()) {
+            Logger.debug(TAG, ">>>" + "s:" + s);
+        }
+        d.setListChats(entity.getFullText());
+        tsParse.upFullText(d);
+
+
     }
 
     private class UpdateLesson extends AsyncTask<Void, Void, Void> {
@@ -274,22 +293,7 @@ public class ScrollingActivity extends AActivity {
         }
     }
 
-    private void updateFullText(QuizEntity entity) {
-        Logger.debug(TAG, ">>>" + "updateFullText:" + entity.getFullText() + ";link:" + entity.getQuizLink());
-        if (entity == null || TextUtils.isEmpty(entity.getFullText())) {
-            Logger.error(TAG, ">>>" + "updateFullText ERROR:" + entity.getQuizLink());
-            return;
-        }
-        HomeEntity d = DataManager.getInstance().getDataByQuiz(entity.getQuizLink());
-        if (d == null) {
-            Logger.error(TAG, ">>>" + "ERROR Mp3 HomeEntity NULL:" + entity.getQuizLink());
-            return;
-        }
-        d.setHomeFullText(entity.getFullText());
-        tsParse.upFullText(d);
 
-
-    }
 
     private void updateMp3(LessonEntity entity) {
         Logger.debug(TAG, ">>>" + "TITLE:" + entity.getTitle() + ";AND-LINK: " + entity.getMp3Link());

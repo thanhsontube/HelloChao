@@ -38,7 +38,7 @@ public abstract class QuizLoader extends BaseLoader<QuizEntity> {
         return quizEntity;
     }
 
-    private String getCompleteText (TagNode tagNode) {
+    private List<String> getCompleteText (TagNode tagNode) {
 //        Logger.debug(TAG, ">>>" + "getCompleteText");
         List <String> list = new ArrayList<>();
         try {
@@ -53,7 +53,9 @@ public abstract class QuizLoader extends BaseLoader<QuizEntity> {
             String fullText = cleanString(tagA.getText().toString());
 //            Logger.debug(TAG, ">>>" + "Tag A text:" + fullText +";size:" + tagA.getChildTagList().size());
             if (tagA.getChildTagList().size() == 0) {
-                return fullText;
+                list.clear();
+                list.add(fullText);
+                return list;
             }
             String second = null;
             for (TagNode tag : tagA.getChildTagList()) {
@@ -64,26 +66,34 @@ public abstract class QuizLoader extends BaseLoader<QuizEntity> {
                     }
                     list.add(text);
 //                    Logger.debug(TAG, ">>>" + "tag:" + text);
-                } else if (!TextUtils.isEmpty(text)) {
-                    return fullText;
                 }
 
 
             }
+
+             if (TextUtils.isEmpty(second)) {
+                 list.clear();
+                list.add(fullText);
+                return list;
+            }
             //get 1st
             if (!TextUtils.isEmpty(second)) {
                 String first = fullText.substring(0, fullText.indexOf(second));
-//                Logger.debug(TAG, ">>>" + "FIRST:" + first);
+                Logger.debug(TAG, ">>>" + "FIRST:" + first);
+                if (!TextUtils.isEmpty(first)) {
 
-                list.add(0, first);
+                    list.add(0, first);
+                }
+
             }
 
 
-            StringBuilder sb = new StringBuilder();
-            for (String s : list) {
-                sb.append(s).append("\n\r");
-            }
-            return sb.toString();
+//            StringBuilder sb = new StringBuilder();
+//            for (String s : list) {
+//                sb.append(s).append("\n\r");
+//            }
+//            return sb.toString();
+            return list;
 
 
 

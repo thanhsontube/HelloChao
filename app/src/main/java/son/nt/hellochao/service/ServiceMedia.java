@@ -360,4 +360,11 @@ public class ServiceMedia extends Service implements Playback {
 
     }
 
+
+    private String link;
+    public void setResource (String link) {
+        this.link = link;
+
+    }
+
 }
