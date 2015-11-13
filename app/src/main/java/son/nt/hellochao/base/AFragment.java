@@ -24,6 +24,7 @@ public abstract class AFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
         initData();
         initLayout(view);
         initListener(view);

@@ -33,4 +33,8 @@ public class MyPath {
         return "dating/datingrd1.htm";
     }
 
+    public String getGunBoundLevel () {
+        return "http://gunbound.softnyx.net/GameInfo/GameGuide/Level.aspx";
+    }
+
 }

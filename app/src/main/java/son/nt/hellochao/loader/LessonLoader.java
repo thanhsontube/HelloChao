@@ -16,7 +16,7 @@ import son.nt.hellochao.utils.Logger;
 /**
  * Created by Sonnt on 10/12/15.
  */
-public abstract class LessonLoader extends BaseLoader<LessonEntity> {
+public abstract class LessonLoader extends HtmlCleanerBaseLoader<LessonEntity> {
     public final String TAG = LessonLoader.class.getSimpleName();
     public final String HOST = "http://www.esl-lab.com/";
     public static final int MAX = 3;

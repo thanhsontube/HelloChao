@@ -9,12 +9,12 @@ import org.htmlcleaner.TagNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import son.nt.hellochao.dto.DailySpeakDto;
+import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.Logger;
 
 /**
@@ -87,13 +87,11 @@ public class ESLApi {
                             Logger.debug(TAG, ">>>" + "link:" + link);
 
                             dto = new DailySpeakDto(link, sentenceEng, sentenceVi);
-                            Calendar calendar = Calendar.getInstance();
-                            int day = calendar.get(Calendar.DAY_OF_MONTH);
-                            int month = calendar.get(Calendar.MONTH);
-                            int year = calendar.get(Calendar.YEAR);
-                            dto.setDay(day);
-                            dto.setMonth(month);
-                            dto.setYear(year);
+
+                            int[]arr = DatetimeUtils.getCurrentTime();
+                            dto.setDay(arr[0]);
+                            dto.setMonth(arr[1]);
+                            dto.setYear(arr[2]);
                             list.add(dto);
                         }
                     }

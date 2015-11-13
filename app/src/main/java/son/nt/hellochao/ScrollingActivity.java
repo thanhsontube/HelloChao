@@ -1,5 +1,9 @@
 package son.nt.hellochao;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -12,18 +16,23 @@ import android.view.MenuItem;
 
 import com.squareup.otto.Subscribe;
 
+import java.util.Calendar;
+
+import son.nt.hellochao.activity.HtmlCleanerActivity;
+import son.nt.hellochao.activity.LoginActivity;
+import son.nt.hellochao.activity.OralActivity;
 import son.nt.hellochao.base.AActivity;
 import son.nt.hellochao.dto.HomeEntity;
-import son.nt.hellochao.dto.HomeObject;
 import son.nt.hellochao.dto.LessonEntity;
 import son.nt.hellochao.dto.QuizEntity;
 import son.nt.hellochao.fragment.PlayingFragment;
 import son.nt.hellochao.fragment.ScrollFragment;
-import son.nt.hellochao.loader.HomeLoader;
 import son.nt.hellochao.loader.LessonLoader;
 import son.nt.hellochao.loader.LoaderManager;
 import son.nt.hellochao.loader.QuizLoader;
+import son.nt.hellochao.otto.GoDaiLyTest;
 import son.nt.hellochao.otto.GoHot;
+import son.nt.hellochao.schedule.AutoGetDailyTestReceiver;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.OttoBus;
 import son.nt.hellochao.utils.TsParse;
@@ -61,62 +70,42 @@ public class ScrollingActivity extends AActivity {
 
                 if (id == R.id.nav_camara) {
                     // Handle the camera action
-                    manager.execute(new HomeLoader(getApplicationContext(), ResourceManager.getInstance().getMyPath().getESL()) {
-                        @Override
-                        public void onLoaderStart() {
-
-                        }
-
-                        @Override
-                        public void onLoaderSuccess(HomeObject entity) {
-                            Logger.debug(TAG, ">>>" + "onLoaderSuccess:" + entity.getListHomeEntity().size());
-                            d.setHomeEntities(entity.getListHomeEntity());
-
-                        }
-
-                        @Override
-                        public void onLoaderFail(Throwable e) {
-                            Logger.error(TAG, ">>>" + "onLoaderFail:" + e.toString());
-
-                        }
-                    });
-
-
-                } else if (id == R.id.nav_gallery) {
-
-                    HomeEntity d = DataManager.getInstance().getNULLTitle();
-                    if (d != null) {
-                        Logger.debug(TAG, ">>>" + "D NULL GROUP:" + d.getHomeGroup() + ";href:" + d.getHomeHref());
-                    }
-
-
-                    for (HomeEntity a : DataManager.getInstance().getNULLMp3()) {
-                        Logger.debug(TAG, ">>>" + "NULL mp3:" + a.getHomeTitle() + ";link:" + a.getHomeHref());
-                    }
-
-//                   final int ran=  new Random().nextInt(d.getHomeEntities().size());
-//                    String link = d.getHomeEntities().get(ran).getHomeHref();
-//                    Logger.debug(TAG, ">>>" + "link:" + link);
-//                    manager.execute(new LessonLoader(getApplicationContext(), link) {
+//                    manager.execute(new HomeLoader(getApplicationContext(), ResourceManager.getInstance().getMyPath().getESL()) {
 //                        @Override
 //                        public void onLoaderStart() {
 //
 //                        }
 //
 //                        @Override
-//                        public void onLoaderSuccess(LessonEntity entity) {
-//                            Logger.debug(TAG, ">>>" + "onLoaderSuccess:" + entity);
-//                            HomeEntity homeEntity = d.getHomeEntities().get(ran);
-//                            homeEntity.setHomeMp3(entity.getMp3Link());
-//                            showFragment(PlayingFragment.createInstance(homeEntity),true);
+//                        public void onLoaderSuccess(HomeObject entity) {
+//                            Logger.debug(TAG, ">>>" + "onLoaderSuccess:" + entity.getListHomeEntity().size());
+//                            d.setHomeEntities(entity.getListHomeEntity());
 //
 //                        }
 //
 //                        @Override
 //                        public void onLoaderFail(Throwable e) {
+//                            Logger.error(TAG, ">>>" + "onLoaderFail:" + e.toString());
 //
 //                        }
 //                    });
+
+                    startActivity(new Intent(getApplicationContext(), HtmlCleanerActivity.class));
+
+
+                } else if (id == R.id.nav_gallery) {
+
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+
+//                    HomeEntity d = DataManager.getInstance().getNULLTitle();
+//                    if (d != null) {
+//                        Logger.debug(TAG, ">>>" + "D NULL GROUP:" + d.getHomeGroup() + ";href:" + d.getHomeHref());
+//                    }
+//
+//
+//                    for (HomeEntity a : DataManager.getInstance().getNULLMp3()) {
+//                        Logger.debug(TAG, ">>>" + "NULL mp3:" + a.getHomeTitle() + ";link:" + a.getHomeHref());
+//                    }
 
 
                 } else if (id == R.id.nav_slideshow) {
@@ -154,6 +143,8 @@ public class ScrollingActivity extends AActivity {
             }
         });
 
+        setRecurringAlarm(this);
+
     }
 
     TsParse tsParse;
@@ -177,6 +168,12 @@ public class ScrollingActivity extends AActivity {
     @Subscribe
     public void onFromTopFragment(GoHot goHot) {
         showFragment(PlayingFragment.createInstance(goHot.getHotEntity().getHomeEntity()), true);
+    }
+
+    @Subscribe
+    public void onFromDaiLyFragment(GoDaiLyTest goDaiLyTest) {
+//        showFragment(OralFragment.newInstance("", true), true);
+        startActivity(new Intent(this, OralActivity.class));
     }
 
     private class UpdateFulltext extends AsyncTask<Void, Void, Void> {
@@ -226,6 +223,7 @@ public class ScrollingActivity extends AActivity {
             return null;
         }
     }
+
     private void updateFullText(QuizEntity entity) {
         Logger.debug(TAG, ">>>" + "updateFullText:" + entity.getFullText() + ";link:" + entity.getQuizLink());
         if (entity == null || entity.getFullText().size() == 0) {
@@ -275,8 +273,6 @@ public class ScrollingActivity extends AActivity {
 //                            updateImageAndDescription(entity);
 
 
-
-
                         }
 
                         @Override
@@ -292,7 +288,6 @@ public class ScrollingActivity extends AActivity {
             return null;
         }
     }
-
 
 
     private void updateMp3(LessonEntity entity) {
@@ -334,5 +329,25 @@ public class ScrollingActivity extends AActivity {
             tsParse.updateImageDescription(d);
 
         }
+    }
+
+    private void setRecurringAlarm(Context context) {
+        Logger.debug(TAG, ">>>" + "setRecurringAlarm");
+
+        // we know mobiletuts updates at right around 1130 GMT.
+        // let's grab new stuff at around 11:45 GMT, inexactly
+        Calendar updateTime = Calendar.getInstance();
+//        updateTime.setTimeZone(TimeZone.getTimeZone("GMT"));
+        updateTime.set(Calendar.HOUR_OF_DAY, 00);
+        updateTime.set(Calendar.MINUTE, 32);
+
+        Intent downloader = new Intent(context, AutoGetDailyTestReceiver.class);
+        PendingIntent recurringDownload = PendingIntent.getBroadcast(context,
+                0, downloader, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarms = (AlarmManager) getSystemService(
+                Context.ALARM_SERVICE);
+        alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                updateTime.getTimeInMillis(),
+                AlarmManager.INTERVAL_HALF_DAY, recurringDownload);
     }
 }

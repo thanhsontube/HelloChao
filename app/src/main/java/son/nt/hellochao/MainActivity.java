@@ -164,6 +164,8 @@ public class MainActivity extends AActivity implements MainActivityFragment.IInt
 
     }
 
+    @Override
+    public void onSignUp(String email, String password) {
 
-
+    }
 }

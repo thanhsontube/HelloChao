@@ -26,7 +26,6 @@ import com.squareup.otto.Subscribe;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import son.nt.hellochao.base.AFragment;
@@ -34,6 +33,7 @@ import son.nt.hellochao.dto.DailySpeakDto;
 import son.nt.hellochao.dto.TopDto;
 import son.nt.hellochao.otto.GoOnList;
 import son.nt.hellochao.service.DownloadIntentService;
+import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.OttoBus;
 
@@ -242,7 +242,7 @@ public class MainActivityFragment extends AFragment {
 //            @Override
 //            public void done(List<ParseObject> list, ParseException e) {
 //                if (e != null || list == null || list.size() != 10) {
-//                    HTTPParseUtils.getInstance().withHelloChao();
+//                    HTTPParseUtils.getInstance().withHelloChaoDailyTest();
 //                    return;
 //                }
 //
@@ -274,14 +274,12 @@ public class MainActivityFragment extends AFragment {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("TopScore");
             query.addDescendingOrder("score");
             query.addDescendingOrder("total");
-            Calendar calendar = Calendar.getInstance();
-            final int day = calendar.get(Calendar.DAY_OF_MONTH);
-            final int month = calendar.get(Calendar.MONTH);
-            final int year = calendar.get(Calendar.YEAR);
+
+            int[]arr = DatetimeUtils.getCurrentTime();
             //check first
-            query.whereEqualTo("day", day);
-            query.whereEqualTo("month", month);
-            query.whereEqualTo("year", year);
+            query.whereEqualTo("day", arr[0]);
+            query.whereEqualTo("month", arr[1]);
+            query.whereEqualTo("year", arr[2]);
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> l, ParseException e) {
@@ -417,7 +415,7 @@ public class MainActivityFragment extends AFragment {
         }
     }
 
-    private void downloadAllLink () {
+    private void downloadAllLink() {
         getAActivity().startService(DownloadIntentService.getIntent(getAActivity()));
     }
 
@@ -440,18 +438,18 @@ public class MainActivityFragment extends AFragment {
     }
 
     public boolean isNetworkOnline() {
-        boolean status=false;
-        try{
+        boolean status = false;
+        try {
             ConnectivityManager cm = (ConnectivityManager) getAActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo netInfo = cm.getNetworkInfo(0);
-            if (netInfo != null && netInfo.getState()==NetworkInfo.State.CONNECTED) {
-                status= true;
-            }else {
+            if (netInfo != null && netInfo.getState() == NetworkInfo.State.CONNECTED) {
+                status = true;
+            } else {
                 netInfo = cm.getNetworkInfo(1);
-                if(netInfo!=null && netInfo.getState()== NetworkInfo.State.CONNECTED)
-                    status= true;
+                if (netInfo != null && netInfo.getState() == NetworkInfo.State.CONNECTED)
+                    status = true;
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

@@ -17,7 +17,7 @@ import java.net.URL;
 /**
  * Created by Sonnt on 10/12/15.
  */
-public abstract class BaseLoader<T> {
+public abstract class HtmlCleanerBaseLoader<T> {
     private static final String TAG = "BaseLoader";
     public abstract void onLoaderStart ();
     public abstract void onLoaderSuccess(T entity);
@@ -28,17 +28,17 @@ public abstract class BaseLoader<T> {
     boolean isSaveToXml = false;
     String pathFolder = null;
 
-    public BaseLoader (Context context) {
+    public HtmlCleanerBaseLoader(Context context) {
         this (context, null, false);
 
     }
 
-    public BaseLoader (Context context, String link) {
+    public HtmlCleanerBaseLoader(Context context, String link) {
         this (context, link, false);
     }
 
 
-    private BaseLoader (Context context, String link, boolean isSaveToXml) {
+    private HtmlCleanerBaseLoader(Context context, String link, boolean isSaveToXml) {
         this.context = context;
         this.link = link;
         this.isSaveToXml = isSaveToXml;

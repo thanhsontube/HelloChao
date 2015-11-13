@@ -47,11 +47,11 @@
 
     <style name="txt_blue_18">
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/md_red_500</item>
+        <item name="android:textColor">@color/md_blue_500</item>
     </style>
 
     <style name="txt_blue_14">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/md_red_500</item>
+        <item name="android:textColor">@color/md_blue_500</item>
     </style>
 </resources>

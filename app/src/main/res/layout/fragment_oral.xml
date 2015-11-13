@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,191 +8,260 @@
     tools:context="son.nt.hellochao.fragment.OralFragment">
 
     <LinearLayout
-        android:padding="8dp"
-        android:background="@drawable/box_black_with_corner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/oral_chb_auto_next"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="@string/auto_next" />
-
-            <CheckBox
-                android:id="@+id/oral_chb_hide_voice"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="@string/your_voice" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/oral_chb_hide_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="@string/english_sentence" />
-
-
-            <CheckBox
-                android:id="@+id/oral_chb_translate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="@string/translation" />
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:gravity="center"
-        android:padding="8dp"
-        android:layout_marginTop="12dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/box_black_with_corner"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/oral_re_listen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:padding="16dp"
-            android:src="@drawable/ic_av_volume_up" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/oral_eng_sentence"
-                style="@style/txt_green_18"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Where Am I" />
+                android:background="@drawable/box_black_with_corner"
+                android:orientation="vertical"
+                android:padding="8dp">
 
-            <TextView
-                android:id="@+id/oral_vi_sentence"
-                style="@style/txt_black_14"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/oral_chb_auto_next"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/auto_next" />
+
+                    <CheckBox
+                        android:id="@+id/oral_chb_hide_voice"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/your_voice" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/oral_chb_hide_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/english_sentence" />
+
+
+                    <CheckBox
+                        android:id="@+id/oral_chb_translate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/translation" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/box_black_with_corner"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:background="@drawable/box_blue_with_corner">
+
+                    <ImageView
+                        android:id="@+id/oral_re_listen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?selectableItemBackground"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_av_volume_up" />
+                </FrameLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/oral_eng_sentence"
+                        style="@style/txt_green_18"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Where Am I" />
+
+                    <TextView
+                        android:id="@+id/oral_vi_sentence"
+                        style="@style/txt_black_14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        tools:text="Where Am I" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:padding="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/box_black_with_corner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/txt_green_14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="You said that:" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/oral_your_voice"
+                        style="@style/txt_black_18"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/box_blue_with_corner"
+                        android:padding="16dp"
+                        tools:text="Where Am I" />
+
+                    <ImageView
+                        android:id="@+id/oral_img_answer_result"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_right_answer" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <!--checking and try-again-->
+            <FrameLayout
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:id="@+id/oral_checking_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:background="@drawable/box_black_with_corner"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <android.support.v4.widget.ContentLoadingProgressBar
+                        style="?android:attr/progressBarStyleInverse"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/checking" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/checking" />
+                </LinearLayout>
+
+                <!--try again btn-->
+                <FrameLayout
+                    android:id="@+id/oral_ll_try_again"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:background="@drawable/box_blue_with_corner">
+
+                    <TextView
+                        android:id="@+id/oral_btn_try"
+                        style="@style/txt_black_14"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?selectableItemBackground"
+                        android:gravity="center"
+                        android:padding="14dp"
+                        android:text="@string/try_again"
+                        android:textStyle="bold" /> />
+
+                </FrameLayout>
+
+
+            </FrameLayout>
+
+
+
+
+            <LinearLayout
+                android:padding="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                tools:text="Where Am I" />
+                android:layout_marginTop="12dp"
+                android:background="@drawable/box_black_with_corner"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/oral_txt_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/txt_green_14"
+                    android:text="Score: 5"/>
+
+                <Chronometer
+                    android:id="@+id/timer"
+                    style="@style/txt_black_18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:format="%s"
+                    android:padding="8dp"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+
 
         </LinearLayout>
 
-    </LinearLayout>
-
-    <TextView
-        android:background="@drawable/box_blue_with_corner"
-        android:id="@+id/oral_your_voice"
-        style="@style/txt_black_18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:padding="16dp"
-        tools:text="Where Am I" />
-
-    <LinearLayout
-        android:padding="8dp"
-        android:background="@drawable/box_black_with_corner"
-        android:id="@+id/oral_checking_ll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <android.support.v4.widget.ContentLoadingProgressBar
-            style="?android:attr/progressBarStyleInverse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:contentDescription="@string/checking" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/checking" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_marginTop="12dp"
-        android:background="@drawable/box_black_with_corner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
-
-        <Chronometer
-            android:id="@+id/timer"
-            style="@style/txt_black_18"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:format="%s"
-            android:padding="8dp"
-            android:visibility="visible" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_marginTop="12dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp">
-
+        <!--next btn-->
         <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/box_black_with_corner">
-
-            <TextView
-                android:id="@+id/oral_btn_try"
-                style="@style/txt_black_14"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackground"
-                android:gravity="center"
-                android:padding="14dp"
-                android:text="@string/try_one_more"
-                android:textStyle="bold" />
-
-        </FrameLayout>
-
-        <FrameLayout
             android:layout_marginRight="12dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_weight="1"
             android:background="@drawable/box_blue_with_corner">
 
             <TextView
@@ -212,5 +281,7 @@
 
     </LinearLayout>
 
+    <include layout="@layout/help_test_layout" />
 
-</LinearLayout>
+
+</FrameLayout>

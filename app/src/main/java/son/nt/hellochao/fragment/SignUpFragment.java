@@ -5,19 +5,27 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import butterknife.Bind;
 import son.nt.hellochao.R;
 import son.nt.hellochao.base.AFragment;
+import son.nt.hellochao.utils.KeyBoardUtils;
+import son.nt.hellochao.utils.StringUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,43 +35,45 @@ import son.nt.hellochao.base.AFragment;
  * Use the {@link SignUpFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SignUpFragment extends AFragment {
+public class SignUpFragment extends AFragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String email;
+    private String password;
 
     private OnFragmentInteractionListener mListener;
 
-    AppCompatEditText txtUsername;
-    AppCompatEditText txtPassword;
+
+    @Bind(R.id.sign_up_email_next)
+    TextView txtNext;
+
+    @Bind(R.id.sign_up_email)
     AppCompatEditText txtEmail;
+
+    @Bind(R.id.sign_up_email_til)
+    TextInputLayout textInputLayout;
 
     @Override
     protected void initLayout(View view) {
-        getAActivity().getSupportActionBar().setTitle("Sign up");
-        txtUsername = (AppCompatEditText) view.findViewById(R.id.sign_up_username);
-        txtPassword = (AppCompatEditText) view.findViewById(R.id.sign_up_password);
-        txtEmail = (AppCompatEditText) view.findViewById(R.id.sign_up_email);
-
-        txtUsername.requestFocus();
-
+//        getAActivity().getSupportActionBar().setTitle("Sign up");
 
 
     }
 
     @Override
     protected void initListener(View view) {
+        txtNext.setOnClickListener(this);
+        txtEmail.addTextChangedListener(textWatcher);
         view.findViewById(R.id.sign_up_enter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ParseUser parseUser = new ParseUser();
-                parseUser.setUsername(txtUsername.getText().toString().trim());
-                parseUser.setPassword(txtPassword.getText().toString().trim());
+//                parseUser.setUsername(txtUsername.getText().toString().trim());
+//                parseUser.setPassword(txtPassword.getText().toString().trim());
                 parseUser.setEmail(txtEmail.getText().toString().trim());
 
                 parseUser.signUpInBackground(new SignUpCallback() {
@@ -75,7 +85,7 @@ public class SignUpFragment extends AFragment {
                             Toast.makeText(getActivity(), "Register successful!", Toast.LENGTH_SHORT).show();
                             View view = getActivity().getCurrentFocus();
                             if (view != null) {
-                                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                             }
                             mListener.onRegister();
@@ -114,8 +124,8 @@ public class SignUpFragment extends AFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            email = getArguments().getString(ARG_PARAM1);
+            password = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -161,6 +171,7 @@ public class SignUpFragment extends AFragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+
         void onRegister();
     }
 
@@ -170,9 +181,55 @@ public class SignUpFragment extends AFragment {
     }
 
 
-
     @Override
     protected void updateLayout() {
+        if (!TextUtils.isEmpty(email)) {
+            txtEmail.setText(email);
+            checkEmailValid(email);
+        }
 
     }
+
+    private void checkEmailValid (String email) {
+        if (!StringUtils.isValidEmail(email)) {
+            textInputLayout.setEnabled(true);
+            textInputLayout.setError("Email invalid");
+            txtNext.setEnabled(false);
+            return;
+        }
+        textInputLayout.setEnabled(false);
+        textInputLayout.setError("");
+        txtNext.setEnabled(true);
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        KeyBoardUtils.close(getAActivity());
+        switch (view.getId()) {
+            case R.id.sign_up_email_next:
+                break;
+        }
+    }
+
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            email = editable.toString();
+            checkEmailValid(email);
+
+        }
+    };
+
+
 }

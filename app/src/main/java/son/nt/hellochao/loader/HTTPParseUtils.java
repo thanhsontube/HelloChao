@@ -15,6 +15,7 @@ import son.nt.hellochao.ResourceManager;
 import son.nt.hellochao.dto.DailySpeakDto;
 import son.nt.hellochao.dto.ESLDetailsDto;
 import son.nt.hellochao.dto.ESLMenuDto;
+import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.loader.dailyTalk.DailyTalkLoader;
 import son.nt.hellochao.otto.GoOnList;
 import son.nt.hellochao.utils.Logger;
@@ -45,18 +46,22 @@ public class HTTPParseUtils {
         return INSTANCE;
     }
 
-    public void withHelloChao () {
-        HttpGet httpGet = new HttpGet(ResourceManager.getInstance().getMyPath().getHelloChao());
+    public void withHelloChaoDailyTest() {
+        String path = ResourceManager.getInstance().getMyPath().getHelloChao();
+        Logger.debug(TAG, ">>>" + "withHelloChaoDailyTest path:" + path);
+        HttpGet httpGet = new HttpGet(path);
         ResourceManager.getInstance().getContentManager().load(new DailyTalkLoader(httpGet, false) {
             @Override
             public void onContentLoaderStart() {
-                Logger.debug(TAG, ">>>" + "onContentLoaderStart");
+                Logger.debug(TAG, ">>>" + "withHelloChaoDailyTest onContentLoaderStart");
 
             }
 
             @Override
             public void onContentLoaderSucceed(List<DailySpeakDto> entity) {
-                Logger.debug(TAG, ">>>" + "onContentLoaderSucceed:" + entity.size());
+                Logger.debug(TAG, ">>>" + "withHelloChaoDailyTest onContentLoaderSucceed:" + entity.size());
+                //push to server
+                AppAPI.getInstance().pushDailyQuestionsFromWebToParse(entity);
                 OttoBus.post(new GoOnList(entity));
 
 
@@ -64,7 +69,7 @@ public class HTTPParseUtils {
 
             @Override
             public void onContentLoaderFailed(Throwable e) {
-                Logger.error(TAG, ">>>" + "onContentLoaderFailed:" + e.toString());
+                Logger.error(TAG, ">>>" + " withHelloChaoDailyTest onContentLoaderFailed:" + e.toString());
 
             }
         });
@@ -267,6 +272,13 @@ public class HTTPParseUtils {
         }catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+
+    //get level by gunbound
+    public void withGunBoundLevel () {
+
 
     }
 

@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import son.nt.hellochao.DataManager;
 import son.nt.hellochao.R;
@@ -106,7 +105,7 @@ public class ScrollFragment extends AFragment implements IParse.Callback{
     @Override
     protected void initLayout(View view) {
         pagerHot = (ViewPager) view.findViewById(R.id.scroll_pager);
-        adapterHot = new AdapterHot(getFragmentManager(), listHot);
+        adapterHot = new AdapterHot(getFragmentManager(), getContext());
         pagerHot.setHorizontalScrollBarEnabled(true);
         pagerHot.setAdapter(adapterHot);
         pagerHot.setOnClickListener(new View.OnClickListener() {
@@ -129,44 +128,6 @@ public class ScrollFragment extends AFragment implements IParse.Callback{
         tsParse.getHomeEntities();
     }
 
-    private HomeEntity getRandom (List<HomeEntity> list, int type) {
-        List<HomeEntity> list1 = new ArrayList<>();
-        int pos;
-        switch (type) {
-
-            case 0:
-                list1.clear();
-                for (HomeEntity dto : list) {
-                    if (dto.getHomeGroup().equalsIgnoreCase("Easy")) {
-                        list1.add(dto);
-                    }
-                }
-                pos = new Random().nextInt(list1.size() -1);
-                return list1.get(pos);
-            case 1:
-                list1.clear();
-                for (HomeEntity dto : list) {
-                    if (dto.getHomeGroup().equalsIgnoreCase("Medium")) {
-                        list1.add(dto);
-                    }
-
-
-                }
-                pos = new Random().nextInt(list1.size() - 1);
-                return list1.get(pos);
-            case 2:
-                list1.clear();
-                for (HomeEntity dto : list) {
-                    if (dto.getHomeGroup().equalsIgnoreCase("Difficult")) {
-                        list1.add(dto);
-                    }
-                }
-                pos = new Random().nextInt(list1.size() - 1);
-                return list1.get(pos);
-        }
-        return null;
-    }
-
     @Override
     public void onDoneGetHomeEntities(List<HomeEntity> listData) {
         if (listData == null || listData.size() == 0) {
@@ -174,10 +135,6 @@ public class ScrollFragment extends AFragment implements IParse.Callback{
         }
         Logger.debug(TAG, ">>>" + "onDoneGetHomeEntities:" + listData.get(0).getHomeGroup() + ";href:" + listData.get(0).getHomeTitle());
         DataManager.getInstance().setHomeEntities(listData);
-        listHot.clear();
-        listHot.add(new HotEntity(getRandom(DataManager.getInstance().getHomeEntities(), 0)));
-        listHot.add(new HotEntity(getRandom(DataManager.getInstance().getHomeEntities(), 1)));
-        listHot.add(new HotEntity(getRandom(DataManager.getInstance().getHomeEntities(), 2)));
         adapterHot.notifyDataSetChanged();
     }
 }

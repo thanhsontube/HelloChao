@@ -95,6 +95,9 @@ public class HotFragment extends AFragment {
 
     @Override
     protected void updateLayout() {
+        if (hotEntity == null || hotEntity.getHomeEntity() == null) {
+            return;
+        }
         txtTitle.setText(hotEntity.getHomeEntity().getHomeTitle() + " (" + hotEntity.getHomeEntity().getHomeGroup() + ")");
         txtDes.setText(hotEntity.getHomeEntity().getHomeDescription());
         Glide.with(this).load(hotEntity.getHomeEntity().getHomeImage()).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(imgTopic);

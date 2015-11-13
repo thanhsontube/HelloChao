@@ -21,6 +21,7 @@ public class DatetimeUtils {
     //   z (time zone)
 
     private static final String MY_DATE_FORMAT = "yyyy-MM-dd (E) HH:mm:ss";
+    public static final String DATE_FORMAT = "dd-MM-yyyy (EEEE)";
 
     public static String getTimeFromLongTime(String format, long time) {
         String s = "";
@@ -102,6 +103,15 @@ public class DatetimeUtils {
 
         }
         return "00:00";
+    }
+
+    public static int [] getCurrentTime () {
+        int []arr = new int[3];
+        Calendar calendar = Calendar.getInstance();
+        arr[0] = calendar.get(Calendar.DAY_OF_MONTH);
+        arr[1] = calendar.get(Calendar.MONTH) + 1;
+        arr[2] = calendar.get(Calendar.YEAR);
+        return arr;
     }
 
 }

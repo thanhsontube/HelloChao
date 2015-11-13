@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_help_test"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_white_1000"
+    tools:visibility="gone"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="This is a help tip for u bla bla" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/large_text"
+                android:textSize="24dp" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="8dp"
+        android:background="@drawable/box_blue_with_corner">
+
+
+        <TextView
+            android:id="@+id/btn_start"
+            style="@style/txt_black_14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:gravity="center"
+            android:padding="14dp"
+            android:text="Start"
+            android:textAllCaps="true"
+            android:textColor="@color/md_blue_A200"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+
+</FrameLayout>

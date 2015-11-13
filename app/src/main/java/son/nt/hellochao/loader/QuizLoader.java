@@ -15,7 +15,7 @@ import son.nt.hellochao.utils.Logger;
 /**
  * Created by Sonnt on 10/12/15.
  */
-public abstract class QuizLoader extends BaseLoader<QuizEntity> {
+public abstract class QuizLoader extends HtmlCleanerBaseLoader<QuizEntity> {
     public final String TAG = QuizLoader.class.getSimpleName();
     public final String HOST = "http://www.esl-lab.com/";
     public static final int MAX = 3;

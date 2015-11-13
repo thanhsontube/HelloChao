@@ -7,6 +7,7 @@
         <item name="windowNoTitle">true</item>
         <item name="colorPrimaryDark">@color/md_blue_A200</item>
         <item name="colorPrimary">@color/md_blue_200</item>
+        <item name="colorAccent">?colorPrimary</item>
         <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:statusBarColor">@color/pink_transparent</item>

@@ -6,64 +6,51 @@
     android:padding="16dp"
     tools:context="son.nt.hellochao.fragment.LoginFragment">
 
-    <TextView
-        style="@style/txt_green_18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="12dp"
-        android:text="Login"
-        android:textAllCaps="true" />
-
-    <android.support.design.widget.TextInputLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/login_username"
-            android:layout_width="match_parent"
+        <TextView
+            style="@style/txt_black_18"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Username" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:text="@string/login"
+            android:textAllCaps="true"
+            android:textAppearance="?android:textAppearanceLarge" />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
-
-        <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/login_password"
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:src="@mipmap/ic_launcher" />
 
 
-    <Button
-        android:id="@+id/login_enter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="Login" />
+    </FrameLayout>
 
-    <Button
-        android:id="@+id/login_forget"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="Forgtt password" />
 
     <LinearLayout
-        android:id="@+id/login_reset_ll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="2"
         android:orientation="vertical">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/login_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="Email" />
+        </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -71,21 +58,167 @@
             android:layout_marginTop="8dp">
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/login_email"
+                android:id="@+id/login_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email for resetting"
-                android:inputType="textEmailAddress" />
+                android:hint="Password"
+                android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/login_reset"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:gravity="center"
+            android:orientation="horizontal">
+            <!--log in-->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/box_blue_with_corner">
+
+                <TextView
+                    android:id="@+id/login_enter"
+                    style="@style/txt_blue_14"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="?selectableItemBackground"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:padding="12dp"
+                    android:text="@string/login"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <!--Sign up-->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/box_blue_with_corner">
+
+                <TextView
+                    android:id="@+id/login_txt_sign_up"
+                    style="@style/txt_blue_14"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="?selectableItemBackground"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:padding="12dp"
+                    android:text="@string/register"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/login_forgot_password"
+            style="@style/txt_black_18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:background="?selectableItemBackground"
             android:padding="8dp"
-            android:text="Reset password" />
+            android:text="@string/forgot_password" />
+
+        <!--social login-->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/box_facebook">
+
+            <TextView
+                android:id="@+id/login_by_facebook"
+                style="@style/txt_white_18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="?selectableItemBackground"
+                android:drawableLeft="@drawable/com_facebook_button_icon"
+                android:drawableStart="@drawable/com_facebook_button_icon"
+                android:gravity="center"
+                android:maxLines="1"
+                android:padding="12dp"
+                android:text="@string/log_in_with_facebook"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/box_google">
+
+            <TextView
+                android:id="@+id/login_by_google"
+                style="@style/txt_white_18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="?selectableItemBackground"
+                android:drawableLeft="@drawable/ic_google"
+                android:drawableStart="@drawable/com_facebook_button_icon"
+                android:gravity="center"
+                android:maxLines="1"
+                android:padding="12dp"
+                android:text="@string/log_in_with_google"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/login_forget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Forgtt password" />
+
+            <LinearLayout
+                android:id="@+id/login_reset_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
+
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@+id/login_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Email for resetting"
+                        android:inputType="textEmailAddress" />
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/login_reset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="Reset password" />
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
+
 
 </LinearLayout>

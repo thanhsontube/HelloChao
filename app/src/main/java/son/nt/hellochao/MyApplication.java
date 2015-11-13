@@ -3,8 +3,10 @@ package son.nt.hellochao;
 import android.app.Application;
 
 import com.parse.Parse;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 
+import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.loader.HTTPParseUtils;
 import son.nt.hellochao.utils.Logger;
 
@@ -23,5 +25,8 @@ public class MyApplication extends Application {
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "iGLwcZLU6J6t5IAbpB70RvpwxmM5zgBGh9iSlmyo", "9c9qi1jbDWMkwT8WFwzo2uURHAD8OaOoDsUwMSEu");
         ParseInstallation.getCurrentInstallation().saveInBackground();
+        ParseFacebookUtils.initialize(getApplicationContext());
+
+        AppAPI.createInstance(getApplicationContext());
     }
 }

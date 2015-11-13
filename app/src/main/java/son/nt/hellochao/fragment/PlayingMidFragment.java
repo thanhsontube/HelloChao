@@ -154,7 +154,7 @@ public class PlayingMidFragment extends AFragment implements View.OnTouchListene
 
     }
 
-    public void setData (HomeEntity data) {
+    public void setData(HomeEntity data) {
         this.homeEntity = data;
         updateLayout();
     }

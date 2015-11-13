@@ -3,6 +3,7 @@ package son.nt.hellochao.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
@@ -17,8 +19,10 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
 
+import butterknife.Bind;
 import son.nt.hellochao.R;
 import son.nt.hellochao.base.AFragment;
+import son.nt.hellochao.utils.KeyBoardUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,7 +32,7 @@ import son.nt.hellochao.base.AFragment;
  * Use the {@link LoginFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends AFragment {
+public class LoginFragment extends AFragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -40,31 +44,47 @@ public class LoginFragment extends AFragment {
 
     private OnFragmentInteractionListener mListener;
 
-    AppCompatEditText txtUsername;
-    AppCompatEditText txtPassword;
+    @Bind(R.id.login_forgot_password)
+    TextView txtForgotPassword;
+
+    @Bind(R.id.login_txt_sign_up)
+    TextView txtSignUp;
+    @Bind(R.id.login_by_facebook)
+    TextView loginWithFacebook;
+    @Bind(R.id.login_by_google)
+    TextView loginWithGoogle;
+
+    @Bind(R.id.login_username)
     AppCompatEditText txtEmail;
+
+    @Bind(R.id.login_password)
+    AppCompatEditText txtPassword;
     View viewReset;
+
     @Override
     protected void initLayout(View view) {
 
-        getAActivity().getSupportActionBar().setTitle("Login");
-        txtUsername = (AppCompatEditText) view.findViewById(R.id.login_username);
-        txtPassword = (AppCompatEditText) view.findViewById(R.id.login_password);
-        txtEmail = (AppCompatEditText) view.findViewById(R.id.login_email);
-
-        txtUsername.requestFocus();
+//        getAActivity().getSupportActionBar().setTitle("Login");
 
         viewReset = view.findViewById(R.id.login_reset_ll);
         viewReset.setVisibility(View.GONE);
+
+        txtForgotPassword.setPaintFlags(txtForgotPassword.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
     }
 
     @Override
     protected void initListener(View view) {
+        txtForgotPassword.setOnClickListener(this);
+        txtSignUp.setOnClickListener(this);
+        loginWithFacebook.setOnClickListener(this);
+        loginWithGoogle.setOnClickListener(this);
+
+
         view.findViewById(R.id.login_enter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ParseUser.logInInBackground(txtUsername.getText().toString(), txtPassword.getText().toString(), new LogInCallback() {
+                ParseUser.logInInBackground(txtEmail.getText().toString(), txtPassword.getText().toString(), new LogInCallback() {
                     @Override
                     public void done(ParseUser parseUser, ParseException e) {
                         if (e != null) {
@@ -72,7 +92,7 @@ public class LoginFragment extends AFragment {
                         } else {
                             View view = getActivity().getCurrentFocus();
                             if (view != null) {
-                                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                             }
                             Toast.makeText(getActivity(), "Hello:" + parseUser.getUsername(), Toast.LENGTH_SHORT).show();
@@ -107,7 +127,7 @@ public class LoginFragment extends AFragment {
                             // An email was successfully sent with reset instructions.
                             View view = getActivity().getCurrentFocus();
                             if (view != null) {
-                                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                             }
                             Toast.makeText(getActivity(), "An email was successfully sent with reset instructions.", Toast.LENGTH_SHORT).show();
@@ -193,9 +213,11 @@ public class LoginFragment extends AFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+
         void onLoginSuccess();
+
+        void onSignUp(String email, String password);
     }
 
     @Override
@@ -204,9 +226,23 @@ public class LoginFragment extends AFragment {
     }
 
 
-
     @Override
     protected void updateLayout() {
 
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        KeyBoardUtils.close(getAActivity());
+        switch (view.getId()) {
+            case R.id.login_forgot_password:
+                break;
+            case R.id.login_txt_sign_up:
+                if (mListener != null) {
+                    mListener.onSignUp(txtEmail.getText().toString(), txtPassword.getText().toString());
+                }
+                break;
+        }
     }
 }

@@ -152,7 +152,7 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 if (b) {
-                    serviceMedia.seekTo((int)(i * duration /100));
+                    serviceMedia.seekTo((int) (i * duration / 100));
                 }
             }
 
@@ -303,7 +303,7 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
         if (duration <= 0L) {
             return;
         }
-        seekBar.setProgress((int)(currentTime * 100 / this.duration));
+        seekBar.setProgress((int) (currentTime * 100 / this.duration));
 
 
     }
@@ -319,7 +319,7 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
     long duration;
 
     @Subscribe
-    public void getFromAdapterEslList (GoESL goESL) {
+    public void getFromAdapterEslList(GoESL goESL) {
         Logger.debug(TAG, ">>>" + "getFromAdapterEslList");
         this.homeEntity = goESL.homeEntity;
         serviceMedia.stop(true);
@@ -327,16 +327,14 @@ public class PlayingFragment extends AFragment implements Playback.Callback {
 
         Fragment f;
 
-        for (int i = 0 ; i < 3; i ++) {
+        for (int i = 0; i < 3; i++) {
             f = adapter.getFragment(pager, i);
             if (f instanceof PlayingMidFragment) {
-                ((PlayingMidFragment)f).setData(goESL.homeEntity);
+                ((PlayingMidFragment) f).setData(goESL.homeEntity);
             } else if (f instanceof FullTextFragment) {
                 Logger.debug(TAG, ">>>" + "FullTextFragment");
                 ((FullTextFragment) f).updateData(goESL.homeEntity);
             }
-
-
         }
     }
 

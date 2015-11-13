@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.speech.RecognizerIntent;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,16 +34,21 @@ import com.squareup.otto.Subscribe;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.Bind;
 import son.nt.hellochao.MsConst;
 import son.nt.hellochao.R;
 import son.nt.hellochao.ResourceManager;
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.DailySpeakDto;
+import son.nt.hellochao.dto.TopDto;
+import son.nt.hellochao.interface_app.AppAPI;
+import son.nt.hellochao.interface_app.IHelloChao;
 import son.nt.hellochao.otto.GoDownload;
+import son.nt.hellochao.otto.GoOnList;
+import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.OttoBus;
 import son.nt.hellochao.utils.PreferenceUtil;
@@ -52,9 +58,7 @@ import son.nt.hellochao.utils.PreferenceUtil;
  * Use the {@link OralFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OralFragment extends AFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class OralFragment extends AFragment implements View.OnClickListener, IHelloChao.HelloChaoCallback {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "OralFragment";
@@ -89,21 +93,38 @@ public class OralFragment extends AFragment {
 
     Chronometer chronometer;
 
+    @Bind(R.id.btn_start)
+    TextView btnStart;
+
+    @Bind(R.id.view_help_test)
+    View viewHelp;
+
+    @Bind(R.id.oral_ll_try_again)
+    View viewTryAgain;
+
+    @Bind(R.id.oral_img_answer_result)
+    ImageView imgResult;
+
+    @Bind(R.id.oral_txt_score)
+    TextView txtScore;
+
+    boolean isEnd = false;
+
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param isTest Parameter 2.
      * @return A new instance of fragment OralFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static OralFragment newInstance(String param1, boolean param2) {
+    public static OralFragment newInstance(String param1, boolean isTest) {
         OralFragment fragment = new OralFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putBoolean(ARG_PARAM2, param2);
+        args.putBoolean(ARG_PARAM2, isTest);
         fragment.setArguments(args);
         return fragment;
     }
@@ -134,6 +155,7 @@ public class OralFragment extends AFragment {
         list.clear();
         list.addAll(ResourceManager.getInstance().getDailySpeakDtoList());
         initPlayer();
+        AppAPI.getInstance().setHelloCHaoCallback(this);
     }
 
     @Override
@@ -172,6 +194,8 @@ public class OralFragment extends AFragment {
 
     @Override
     protected void initListener(View view) {
+
+        btnStart.setOnClickListener(this);
         chbVoice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -205,9 +229,11 @@ public class OralFragment extends AFragment {
 
                 currentPoint++;
 
-                if (currentPoint >= 10) {
+                if (currentPoint >= list.size()) {
+
                     currentPoint = 0;
                     if (isTest) {
+                        isEnd = true;
                         showTop();
                     } else {
                         updateSentence();
@@ -248,11 +274,13 @@ public class OralFragment extends AFragment {
                 }
 
                 if (chbVoice.isChecked()) {
-                    startVoiceRecognitionActivity();
+                    if (!isEnd) {
+                        startVoiceRecognitionActivity();
+                    }
                 } else {
                     if (isAutoNext) {
                         currentPoint++;
-                        if (currentPoint >= 10) {
+                        if (currentPoint >= list.size()) {
                             currentPoint = 0;
                         }
                         updateSentence();
@@ -277,33 +305,21 @@ public class OralFragment extends AFragment {
 
     @Override
     protected void updateLayout() {
-        getAActivity().getSupportActionBar().setTitle(isTest ? "Oral Test" : "Practice");
-        if (isTest) {
-            chronometer.setVisibility(View.VISIBLE);
-            chbVoice.setChecked(true);
-            timeBase = SystemClock.elapsedRealtime();
-            chronometer.setBase(timeBase);
-            chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-                @Override
-                public void onChronometerTick(Chronometer chronometer) {
-
-                }
-            });
-            chronometer.start();
-        } else {
-            chronometer.setVisibility(View.GONE);
-        }
-
+        viewTryAgain.setVisibility(View.GONE);
+        txtScore.setText("Score:0");
+        btnStart.setText("Loading...");
+        btnStart.setEnabled(false);
+        AppAPI.getInstance().helloChaoGetDailyQuestions();
         chbVoice.setEnabled(!isTest);
 
 
         updateSentence();
-        playSentence();
+//        playSentence();
     }
 
 
-
     private void playSentence() {
+        resetLayoutWhenOpenNewSentence();
         try {
             player.reset();
             player.setDataSource(list.get(currentPoint).getLinkMp3());
@@ -331,7 +347,17 @@ public class OralFragment extends AFragment {
 
     }
 
+    //this is the case download questions from hellochap
+
+
     private void updateSentence() {
+        Logger.debug(TAG, ">>>" + "updateSentence");
+
+        if (list == null || list.isEmpty()) {
+            Logger.error(TAG, ">>>" + "updateSentence list NULL OR ENPTY");
+            return;
+        }
+        Logger.debug(TAG, ">>>" + "List size:" + list.size());
         txtEngSentence.setText(currentPoint + 1 + "." + list.get(currentPoint).getSentenceEng());
         txtViSentence.setText(list.get(currentPoint).getSentenceVi());
         txtEngSentence.setVisibility(chbText.isChecked() ? View.VISIBLE : View.INVISIBLE);
@@ -342,7 +368,6 @@ public class OralFragment extends AFragment {
 
 
     }
-
 
 
     @Override
@@ -370,6 +395,7 @@ public class OralFragment extends AFragment {
             final String yourVoice = matches.get(0);
             txtYourVoice.setText(matches.get(0));
             viewChecking.setVisibility(View.VISIBLE);
+            viewTryAgain.setVisibility(View.GONE);
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -378,11 +404,14 @@ public class OralFragment extends AFragment {
 
                     String fromOther = list.get(currentPoint).getSentenceEng().toLowerCase().trim();
 
-                    fromOther = fromOther.replace(" - ", " ").replace(". ", " ").replace(", "," ").replace("? "," ");
+                    fromOther = fromOther.replace(" - ", " ").replace(". ", " ").replace(", ", " ").replace("? ", " ");
                     int spaceCorrect = fromOther.split(" ").length;
                     if (fromOther.contains(yourVoice.toLowerCase()) && spaceCorrect == spaceYours) {
-                        txtYourVoice.setBackgroundColor(getResources().getColor(R.color.md_green_500));
+//                        txtYourVoice.setBackgroundColor(getResources().getColor(R.color.md_green_500));
+                        imgResult.setVisibility(View.VISIBLE);
+                        imgResult.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_right_answer));
                         score++;
+                        txtScore.setText("Score:" + score);
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -392,7 +421,7 @@ public class OralFragment extends AFragment {
                                 if (isAutoNext) {
                                     currentPoint++;
 
-                                    if (currentPoint >= 10) {
+                                    if (currentPoint >= list.size()) {
                                         currentPoint = 0;
                                         if (isTest) {
                                             showTop();
@@ -415,23 +444,28 @@ public class OralFragment extends AFragment {
 
                     } else {
 
-                        txtYourVoice.setBackgroundColor(getResources().getColor(R.color.md_red_500));
+//                        txtYourVoice.setBackgroundColor(getResources().getColor(R.color.md_red_500));
+                        imgResult.setVisibility(View.VISIBLE);
+                        imgResult.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_wrong_answer));
+                        viewTryAgain.setVisibility(View.VISIBLE);
                     }
 
                 }
             }, 1000);
 
 
+        } else {
+            viewTryAgain.setVisibility(View.VISIBLE);
         }
     }
 
 
-
     long timeBase;
-    private void showTop () {
+
+    private void showTop() {
 
 
-        totalTimes = (int)((SystemClock.elapsedRealtime() - timeBase) / 1000);
+        totalTimes = (int) ((SystemClock.elapsedRealtime() - timeBase) / 1000);
 
 
         Logger.debug(TAG, ">>>" + "showTop currentPoint:" + currentPoint + ";timeTest:" + totalTimes);
@@ -448,17 +482,16 @@ public class OralFragment extends AFragment {
             upResult();
         }
     }
-    private void upResult () {
+
+    private void upResult() {
         final String userName = ParseUser.getCurrentUser().getUsername();
-        Calendar calendar = Calendar.getInstance();
-        final int day = calendar.get(Calendar.DAY_OF_MONTH);
-        final int month = calendar.get(Calendar.MONTH);
-        final int year = calendar.get(Calendar.YEAR);
+
+        final int[] arr = DatetimeUtils.getCurrentTime();
         //check first
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("TopScore");
-        query.whereEqualTo("day", day);
-        query.whereEqualTo("month", month);
-        query.whereEqualTo("year", year);
+        query.whereEqualTo("day", arr[0]);
+        query.whereEqualTo("month", arr[1]);
+        query.whereEqualTo("year", arr[2]);
         query.whereEqualTo("username", userName);
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
@@ -504,9 +537,9 @@ public class OralFragment extends AFragment {
                     ParseObject p = new ParseObject("TopScore");
                     p.put("score", score);
                     p.put("username", ParseUser.getCurrentUser().getUsername());
-                    p.put("day", day);
-                    p.put("month", month);
-                    p.put("year", year);
+                    p.put("day", arr[0]);
+                    p.put("month", arr[1]);
+                    p.put("year", arr[2]);
                     p.put("total", totalTimes);
                     p.put("submitTime", System.currentTimeMillis());
                     p.saveInBackground(new SaveCallback() {
@@ -552,17 +585,86 @@ public class OralFragment extends AFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     OnFragmentInteractionListener mListener;
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+
         void onTop();
     }
 
-    private void initRecorder () {
+    private void initRecorder() {
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         mediaRecorder.setOutputFile(ResourceManager.getInstance().folderBlur + File.separator + "t1.mp3");
+    }
+
+    //TODO onclick
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+
+            case R.id.btn_start:
+                if (player == null) {
+                    return;
+                }
+                viewHelp.setVisibility(View.GONE);
+
+                if (isTest) {
+                    chronometer.setVisibility(View.VISIBLE);
+                    chbVoice.setChecked(true);
+                    timeBase = SystemClock.elapsedRealtime();
+                    chronometer.setBase(timeBase);
+                    chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                        @Override
+                        public void onChronometerTick(Chronometer chronometer) {
+
+                        }
+                    });
+                    chronometer.start();
+                } else {
+                    chronometer.setVisibility(View.GONE);
+                }
+                playSentence();
+                break;
+        }
+    }
+
+    @Override
+    public void helloChaoGetListUserTop(ArrayList<TopDto> listTop) {
+
+    }
+
+    //this this the case getting successful data from parse
+    @Override
+    public void helloChaoGetDailyQuestions(ArrayList<DailySpeakDto> listDaiLy) {
+        list.clear();
+        list.addAll(listDaiLy);
+        updateSentence();
+        btnStart.setText("Start");
+        btnStart.setEnabled(true);
+    }
+
+    @Override
+    public void helloChaoGetAllQuestions(ArrayList<DailySpeakDto> listDaiLy) {
+
+    }
+
+    @Subscribe
+    public void onGettingDailyQuestions(GoOnList goDaiLyTest) {
+        list.clear();
+        list.addAll(goDaiLyTest.list);
+        updateSentence();
+        btnStart.setText("Start");
+        btnStart.setEnabled(true);
+    }
+
+    private void resetLayoutWhenOpenNewSentence() {
+        viewTryAgain.setVisibility(View.GONE);
+        viewChecking.setVisibility(View.GONE);
+        imgResult.setVisibility(View.GONE);
+
     }
 }

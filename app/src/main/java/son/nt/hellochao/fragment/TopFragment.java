@@ -16,13 +16,13 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import son.nt.hellochao.R;
 import son.nt.hellochao.adapter.AdapterRoles;
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.TopDto;
+import son.nt.hellochao.utils.DatetimeUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -152,14 +152,12 @@ public class TopFragment extends AFragment {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("TopScore");
         query.addDescendingOrder("score");
         query.addDescendingOrder("total");
-        Calendar calendar = Calendar.getInstance();
-        final int day = calendar.get(Calendar.DAY_OF_MONTH);
-        final int month = calendar.get(Calendar.MONTH);
-        final int year = calendar.get(Calendar.YEAR);
+
+        int []arr = DatetimeUtils.getCurrentTime();
         //check first
-        query.whereEqualTo("day", day);
-        query.whereEqualTo("month", month);
-        query.whereEqualTo("year", year);
+        query.whereEqualTo("day", arr[0]);
+        query.whereEqualTo("month", arr[1]);
+        query.whereEqualTo("year", arr[2]);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> l, ParseException e) {
