@@ -7,7 +7,9 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.SignUpCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ import son.nt.hellochao.dto.DailySpeakDto;
 import son.nt.hellochao.dto.HelloChaoSubmitDto;
 import son.nt.hellochao.dto.RankDto;
 import son.nt.hellochao.dto.TopDto;
+import son.nt.hellochao.dto.UserDto;
 import son.nt.hellochao.loader.HTTPParseUtils;
 import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.Logger;
@@ -23,10 +26,11 @@ import son.nt.hellochao.utils.Logger;
 /**
  * Created by Sonnt on 11/9/15.
  */
-public class AppAPI implements IHelloChao {
+public class AppAPI implements IHelloChao, IUserParse {
     public static final String TAG = "AppAPI";
 
     IHelloChao.HelloChaoCallback helloChaoCallback = null;
+    IUserParse.Callback parseUserCallback = null;
     ArrayList<TopDto> list = new ArrayList<>();
     static AppAPI INSTANCE = null;
 
@@ -45,7 +49,7 @@ public class AppAPI implements IHelloChao {
 
     @Override
     public void helloChaoGetDailyQuestions() {
-        int []arr = DatetimeUtils.getCurrentTime();
+        int[] arr = DatetimeUtils.getCurrentTime();
 
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(DailySpeakDto.class.getSimpleName());
         query.whereEqualTo("day", arr[0]);
@@ -90,7 +94,7 @@ public class AppAPI implements IHelloChao {
         query.addDescendingOrder("score");
         query.addDescendingOrder("total");
 
-        int[]arr = DatetimeUtils.getCurrentTime();
+        int[] arr = DatetimeUtils.getCurrentTime();
         //check first
         query.whereEqualTo("day", arr[0]);
         query.whereEqualTo("month", arr[1]);
@@ -211,8 +215,56 @@ public class AppAPI implements IHelloChao {
         this.helloChaoCallback = callback;
     }
 
-    public boolean isExistEmailAddress (String email) {
 
-        return true;
+    @Override
+    public void isUserExist(final String email) {
+        Logger.debug(TAG, ">>>" + "isUserExist:" + email);
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("username", email);
+        query.getFirstInBackground(new GetCallback<ParseUser>() {
+            @Override
+            public void done(ParseUser parseUser, ParseException e) {
+                Logger.debug(TAG, ">>>" + "parseUser:" + parseUser + ";e:" + e);
+                if (parseUser != null) {
+                    if (parseUserCallback != null) {
+                        parseUserCallback.onCheckingUserExit(email, true);
+                        return;
+                    }
+                }
+                if (parseUserCallback != null) {
+                    parseUserCallback.onCheckingUserExit(email, false);
+                    return;
+                }
+
+            }
+        });
+
+    }
+
+    @Override
+    public void setIUserParseCallback(Callback callback) {
+        this.parseUserCallback = callback;
+
+    }
+
+    @Override
+    public void createAccount(final UserDto userDto) {
+        Logger.debug(TAG, ">>>" + "createAccount:" + userDto.getEmail());
+        ParseUser parseUser = new ParseUser();
+        parseUser.setUsername(userDto.getEmail());
+        parseUser.setEmail(userDto.getEmail());
+        parseUser.setPassword(userDto.getPassword());
+
+        parseUser.put("gender", userDto.getGender());
+        parseUser.put("name", userDto.getName());
+        parseUser.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(ParseException e) {
+                Logger.debug(TAG, ">>>" + "Done e:" + e);
+                if (parseUserCallback != null) {
+                    parseUserCallback.onUserCreate(userDto, e);
+                }
+            }
+        });
     }
 }

@@ -2,10 +2,12 @@ package son.nt.hellochao.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -13,17 +15,21 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.SignUpCallback;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.Bind;
 import son.nt.hellochao.R;
 import son.nt.hellochao.base.AFragment;
+import son.nt.hellochao.dto.UserDto;
+import son.nt.hellochao.interface_app.AppAPI;
+import son.nt.hellochao.interface_app.IUserParse;
 import son.nt.hellochao.utils.KeyBoardUtils;
 import son.nt.hellochao.utils.StringUtils;
 
@@ -36,6 +42,7 @@ import son.nt.hellochao.utils.StringUtils;
  * create an instance of this fragment.
  */
 public class SignUpFragment extends AFragment implements View.OnClickListener {
+    public static final int WHAT_SEARCH = 10;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -43,9 +50,24 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
 
     // TODO: Rename and change types of parameters
     private String email;
+    private String yourName;
     private String password;
+    private String passwordConfirm;
+    private String gender;
 
     private OnFragmentInteractionListener mListener;
+
+    enum SIGN_UP {
+        ENTER_EMAIL,
+        YOUR_NAME,
+        GENDER,
+        PASSWORD,
+        RE_PASSWORD,
+        CREATING,
+        FINISH,
+    }
+
+    SIGN_UP status = SIGN_UP.ENTER_EMAIL;
 
 
     @Bind(R.id.sign_up_email_next)
@@ -54,47 +76,75 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
     @Bind(R.id.sign_up_email)
     AppCompatEditText txtEmail;
 
+    @Bind(R.id.sign_up_your_name)
+    EditText txtYourName;
+
+    @Bind(R.id.sign_up_password)
+    AppCompatEditText txtPassword1St;
+
+    @Bind(R.id.sign_up_password_confirm)
+    AppCompatEditText txtPasswordConfirm;
+
     @Bind(R.id.sign_up_email_til)
     TextInputLayout textInputLayout;
+
+    @Bind(R.id.sign_up_password1st_til)
+    TextInputLayout textPassword1St;
+
+
+    @Bind(R.id.sign_up_password1st_til_confirm)
+    TextInputLayout textPasswordConfirm;
+
+    @Bind(R.id.sign_up_txt_enter_password)TextView txtHiEnterPassword;
+
+    @Bind(R.id.sign_up_email_Clp)
+    ContentLoadingProgressBar contentLoadingProgressBar;
+
+    @Bind(R.id.sign_up_ll_email)
+    View viewEmail;
+    @Bind(R.id.sign_up_ll_name)
+    View viewYourName;
+    @Bind(R.id.sign_up_ll_password) View viewPassword;
+    @Bind(R.id.sign_up_ll_password_confirm) View viewPasswordConfirm;
+    @Bind(R.id.sign_up_ll_gender) View viewGender;
+    @Bind(R.id.sign_up_view_male) View viewMale;
+    @Bind(R.id.sign_up_view_female) View vieFemale;
+
+    @Bind(R.id.sign_up_check_male)
+    RadioButton radioButtonMale;
+
+    @Bind(R.id.sign_up_check_female)
+    RadioButton radioButtonFemale;
+
+
+    HandlerCheckEmailValid handle;
 
     @Override
     protected void initLayout(View view) {
 //        getAActivity().getSupportActionBar().setTitle("Sign up");
-
-
+        viewEmail.setVisibility(View.VISIBLE);
+        viewYourName.setVisibility(View.GONE);
+        viewGender.setVisibility(View.GONE);
+        viewPassword.setVisibility(View.GONE);
+        viewPasswordConfirm.setVisibility(View.GONE);
     }
 
     @Override
     protected void initListener(View view) {
         txtNext.setOnClickListener(this);
+        viewMale.setOnClickListener(this);
+        vieFemale.setOnClickListener(this);
         txtEmail.addTextChangedListener(textWatcher);
-        view.findViewById(R.id.sign_up_enter).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ParseUser parseUser = new ParseUser();
-//                parseUser.setUsername(txtUsername.getText().toString().trim());
-//                parseUser.setPassword(txtPassword.getText().toString().trim());
-                parseUser.setEmail(txtEmail.getText().toString().trim());
+        txtYourName.addTextChangedListener(textWatcherYourName);
+        txtPassword1St.addTextChangedListener(textWatcherPassword1St);
+        txtPasswordConfirm.addTextChangedListener(textWatcherPasswordConfirm);
 
-                parseUser.signUpInBackground(new SignUpCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null) {
-                            Toast.makeText(getActivity(), "Error Register:" + e.toString(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "Register successful!", Toast.LENGTH_SHORT).show();
-                            View view = getActivity().getCurrentFocus();
-                            if (view != null) {
-                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                            }
-                            mListener.onRegister();
-                        }
-                    }
-                });
-            }
-        });
 
+
+
+    }
+
+    private void doSignUp() {
 
     }
 
@@ -127,6 +177,7 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
             email = getArguments().getString(ARG_PARAM1);
             password = getArguments().getString(ARG_PARAM2);
         }
+        handle = new HandlerCheckEmailValid(this);
     }
 
     @Override
@@ -177,37 +228,92 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
 
     @Override
     protected void initData() {
-
+        AppAPI.getInstance().setIUserParseCallback(iUserParseCallback);
     }
 
 
     @Override
     protected void updateLayout() {
+        txtNext.setEnabled(false);
         if (!TextUtils.isEmpty(email)) {
             txtEmail.setText(email);
-            checkEmailValid(email);
+            doCheckEmail();
+//            checkEmailValid(email);
         }
 
     }
 
-    private void checkEmailValid (String email) {
+    private void checkEmailValid(String email) {
         if (!StringUtils.isValidEmail(email)) {
+            contentLoadingProgressBar.setVisibility(View.GONE);
             textInputLayout.setEnabled(true);
             textInputLayout.setError("Email invalid");
             txtNext.setEnabled(false);
             return;
         }
-        textInputLayout.setEnabled(false);
-        textInputLayout.setError("");
-        txtNext.setEnabled(true);
+
+        AppAPI.getInstance().isUserExist(email);
+
 
     }
+
 
     @Override
     public void onClick(View view) {
         KeyBoardUtils.close(getAActivity());
         switch (view.getId()) {
             case R.id.sign_up_email_next:
+                doNext();
+                break;
+
+            case R.id.sign_up_view_male:
+                radioButtonMale.setChecked(true);
+                radioButtonFemale.setChecked(false);
+                gender = "male";
+                txtNext.setEnabled(true);
+                break;
+            case R.id.sign_up_view_female:
+                radioButtonMale.setChecked(false);
+                radioButtonFemale.setChecked(true);
+                gender = "female";
+                txtNext.setEnabled(true);
+                break;
+        }
+    }
+
+    private void doNext() {
+        txtNext.setEnabled(false);
+        switch (status) {
+            case ENTER_EMAIL:
+                viewEmail.setVisibility(View.GONE);
+                viewYourName.setVisibility(View.VISIBLE);
+                txtYourName.requestFocus();
+                status = SIGN_UP.YOUR_NAME;
+                break;
+            case YOUR_NAME:
+                viewYourName.setVisibility(View.GONE);
+                viewGender.setVisibility(View.VISIBLE);
+                status= SIGN_UP.GENDER;
+
+                break;
+            case GENDER:
+
+                viewGender.setVisibility(View.GONE);
+                viewPassword.setVisibility(View.VISIBLE);
+                status= SIGN_UP.PASSWORD;
+                txtPassword1St.requestFocus();
+                txtHiEnterPassword.setText(String.format(getString(R.string.explain_password), yourName));
+                break;
+            case PASSWORD:
+                txtPasswordConfirm.requestFocus();
+                viewPassword.setVisibility(View.GONE);
+                viewPasswordConfirm.setVisibility(View.VISIBLE);
+                status = SIGN_UP.RE_PASSWORD;
+                break;
+            case RE_PASSWORD:
+                txtPasswordConfirm.clearFocus();
+                showProgressDialog(getString(R.string.creating_account), false);
+                AppAPI.getInstance().createAccount(new UserDto(email, password, yourName, gender));
                 break;
         }
     }
@@ -226,8 +332,156 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
         @Override
         public void afterTextChanged(Editable editable) {
             email = editable.toString();
-            checkEmailValid(email);
+            txtNext.setEnabled(false);
+            doCheckEmail();
 
+        }
+    };
+
+    TextWatcher textWatcherYourName = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            yourName = editable.toString();
+            txtNext.setEnabled(false);
+            doCheckYourName();
+
+        }
+    };TextWatcher textWatcherPassword1St = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            password = editable.toString();
+            txtNext.setEnabled(false);
+            doCheckPassword1St();
+
+        }
+    };
+
+    TextWatcher textWatcherPasswordConfirm = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            passwordConfirm = editable.toString();
+            txtNext.setEnabled(false);
+            doCheckPasswordConfirm();
+
+        }
+    };
+
+    private void doCheckYourName() {
+        txtNext.setEnabled(TextUtils.isEmpty(yourName.trim()) ? false : true);
+    }private void doCheckPassword1St() {
+
+        if (TextUtils.isEmpty(password.trim()) || password.length() < 6 ) {
+            txtNext.setEnabled(false);
+            textPassword1St.setEnabled(true);
+            textPassword1St.setError(getString(R.string.error_less_than_6_letters));
+        } else {
+            txtNext.setEnabled(true);
+            textPassword1St.setEnabled(false);
+            textPassword1St.setError(null);
+        }
+    }
+
+    private void doCheckPasswordConfirm() {
+
+        if (password.equals(passwordConfirm)) {
+            txtNext.setEnabled(true);
+            textPasswordConfirm.setEnabled(false);
+            textPasswordConfirm.setError(null);
+            txtNext.setText(getString(R.string.create_account));
+        } else {
+            txtNext.setEnabled(false);
+            textPasswordConfirm.setEnabled(true);
+            textPasswordConfirm.setError(getString(R.string.password_not_match));
+        }
+    }
+
+    private void doCheckEmail() {
+        if (handle == null) {
+            handle = new HandlerCheckEmailValid(SignUpFragment.this);
+        }
+        handle.removeMessages(WHAT_SEARCH);
+        handle.sendEmptyMessageDelayed(WHAT_SEARCH, 1000);
+    }
+
+    private class HandlerCheckEmailValid extends Handler {
+        private WeakReference<SignUpFragment> weakReference = new WeakReference<SignUpFragment>(null);
+
+        public HandlerCheckEmailValid(SignUpFragment signUpFragment) {
+            weakReference = new WeakReference<SignUpFragment>(signUpFragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case WHAT_SEARCH:
+                    if (weakReference.get() == null) {
+                        return;
+                    }
+                    weakReference.get().contentLoadingProgressBar.setVisibility(View.VISIBLE);
+
+                    weakReference.get().checkEmailValid(weakReference.get().email);
+                    break;
+            }
+//            super.handleMessage(msg);
+        }
+    }
+
+    IUserParse.Callback iUserParseCallback = new IUserParse.Callback() {
+        @Override
+        public void onCheckingUserExit(String email, boolean isExist) {
+            contentLoadingProgressBar.setVisibility(View.GONE);
+            if (isExist) {
+                textInputLayout.setEnabled(true);
+                textInputLayout.setError("Sorry! " + email + " is registered!");
+                txtNext.setEnabled(false);
+            } else {
+                textInputLayout.setEnabled(false);
+                textInputLayout.setError("");
+                txtNext.setEnabled(true);
+                KeyBoardUtils.close(getAActivity());
+            }
+        }
+
+        @Override
+        public void onUserCreate(UserDto userDto, ParseException error) {
+            hideProgressDialog();
+            if (error == null) {
+                Toast.makeText(getActivity(), "Create Account Successful", Toast.LENGTH_SHORT).show();
+
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.error_create_account) +">>>"+ error.toString(), Toast.LENGTH_SHORT).show();
+                txtNext.setVisibility(View.VISIBLE);
+            }
         }
     };
 

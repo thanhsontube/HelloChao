@@ -13,6 +13,69 @@
         android:layout_weight="3">
         <!--Email-->
         <LinearLayout
+            android:id="@+id/sign_up_ll_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            tools:visibility="gone">
+
+            <TextView
+                style="@style/AppTextViewStyle.Header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/enter_email_address" />
+
+            <TextView
+                style="@style/AppTextViewStyle.Normal.Grey_600"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:background="?selectableItemBackground"
+                android:gravity="center_horizontal"
+                android:text="@string/explain_email_address" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/sign_up_email_til"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@+id/sign_up_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="Email Address"
+                        android:inputType="textEmailAddress"
+                        android:padding="8dp"
+                        android:singleLine="true" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.v4.widget.ContentLoadingProgressBar
+                    android:id="@+id/sign_up_email_Clp"
+                    style="?android:attr/progressBarStyleSmallInverse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center_vertical"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+        <!--What is your name-->
+
+        <LinearLayout
+            android:id="@+id/sign_up_ll_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -24,7 +87,7 @@
                 style="@style/AppTextViewStyle.Header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Enter Your Email Address" />
+                android:text="@string/whats_your_name" />
 
             <TextView
                 style="@style/AppTextViewStyle.Normal.Grey_600"
@@ -34,25 +97,138 @@
                 android:layout_marginTop="16dp"
                 android:background="?selectableItemBackground"
                 android:gravity="center_horizontal"
-                android:text="You will use this email when you log in and if you ever need to reset your password." />
+                android:text="@string/explain_name" />
+
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/sign_up_email_til"
-                android:layout_marginTop="16dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <android.support.v7.widget.AppCompatEditText
-                    android:inputType="textEmailAddress"
-                    android:id="@+id/sign_up_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <EditText
+                    android:id="@+id/sign_up_your_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="Email Address"
-                    android:padding="8dp" />
+                    android:hint="@string/whats_your_name"
+                    android:inputType="textCapWords"
+                    android:padding="8dp"
+                    android:singleLine="true">
+
+                    <requestFocus />
+                </EditText>
             </android.support.design.widget.TextInputLayout>
 
+
         </LinearLayout>
+
+        <!--gender-->
+        <include layout="@layout/sign_up_gender"></include>
+
+
+
+        <!--Password-->
+
+        <LinearLayout
+            android:id="@+id/sign_up_ll_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                style="@style/AppTextViewStyle.Header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_a_password" />
+
+            <TextView
+                android:id="@+id/sign_up_txt_enter_password"
+                style="@style/AppTextViewStyle.Normal.Grey_600"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:background="?selectableItemBackground"
+                android:gravity="center_horizontal"
+                android:text="@string/explain_password" />
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/sign_up_password1st_til"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/sign_up_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="@string/password"
+                    android:padding="8dp"
+                    android:singleLine="true">
+
+                    <requestFocus />
+                </android.support.v7.widget.AppCompatEditText>
+            </android.support.design.widget.TextInputLayout>
+
+
+        </LinearLayout>
+
+        <!--Confirm Password-->
+
+        <LinearLayout
+            android:id="@+id/sign_up_ll_password_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                style="@style/AppTextViewStyle.Header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/confirm_password" />
+
+            <TextView
+                style="@style/AppTextViewStyle.Normal.Grey_600"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:background="?selectableItemBackground"
+                android:gravity="center_horizontal"
+                android:text="@string/confirm_password" />
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/sign_up_password1st_til_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/sign_up_password_confirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="@string/password"
+                    android:padding="8dp"
+                    android:singleLine="true">
+
+                    <requestFocus />
+                </android.support.v7.widget.AppCompatEditText>
+            </android.support.design.widget.TextInputLayout>
+
+
+        </LinearLayout>
+
 
     </FrameLayout>
 
@@ -71,61 +247,6 @@
             android:layout_marginTop="16dp"
             android:padding="16dp"
             android:text="@string/next" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/sign_up_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Username" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/sign_up_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Password"
-                android:inputType="textPassword" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Email (important for reset password)"
-                android:inputType="textEmailAddress" />
-        </android.support.design.widget.TextInputLayout>
-
-        <Button
-            android:id="@+id/sign_up_enter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="Register" />
-
     </LinearLayout>
 
 

@@ -33,7 +33,7 @@ public interface Playback {
 
     /**
      * Stop the playback. All resources can be de-allocated by implementations here.
-     * @param notifyListeners if true and a callback has been set by setCallback,
+     * @param notifyListeners if true and a callback has been set by setIUserParseCallback,
      *                        callback.onPlaybackStatusChanged will be called after changing
      *                        the state.
      */

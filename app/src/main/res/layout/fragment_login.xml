@@ -45,6 +45,7 @@
             android:layout_marginTop="12dp">
 
             <android.support.v7.widget.AppCompatEditText
+                android:text="vipboy286@gmail.com"
                 android:id="@+id/login_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

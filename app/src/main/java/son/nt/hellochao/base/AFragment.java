@@ -1,5 +1,6 @@
 package son.nt.hellochao.base;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,9 @@ public abstract class AFragment extends Fragment {
 
     protected abstract void updateLayout();
 
+    protected ProgressDialog mProgressDialog;
+
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -35,6 +39,7 @@ public abstract class AFragment extends Fragment {
     @Override
     public void onDestroy() {
         ButterKnife.unbind(this);
+        hideProgressDialog();
         super.onDestroy();
     }
 
@@ -51,5 +56,42 @@ public abstract class AFragment extends Fragment {
         }
 
         return true;
+    }
+
+    public void showProgressDialog(final String message, boolean isCancelable)
+    {
+        if (!this.isSafe())
+        {
+            return;
+
+        }
+
+        if (this.mProgressDialog == null)
+        {
+            this.mProgressDialog = new ProgressDialog(getAActivity());
+            this.mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        }
+
+        this.mProgressDialog.setMessage(message);
+        this.mProgressDialog.setCancelable(isCancelable);
+
+        if (this.mProgressDialog.isShowing())
+        {
+            return;
+        }
+
+        this.mProgressDialog.show();
+
+    }
+
+    public void hideProgressDialog()
+    {
+        if (this.mProgressDialog == null)
+        {
+            return;
+        }
+
+        this.mProgressDialog.dismiss();
+        this.mProgressDialog = null;
     }
 }
