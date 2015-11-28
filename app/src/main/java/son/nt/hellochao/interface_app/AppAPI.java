@@ -1,6 +1,8 @@
 package son.nt.hellochao.interface_app;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -18,6 +20,7 @@ import son.nt.hellochao.dto.DailySpeakDto;
 import son.nt.hellochao.dto.HelloChaoSubmitDto;
 import son.nt.hellochao.dto.RankDto;
 import son.nt.hellochao.dto.TopDto;
+import son.nt.hellochao.dto.UpdateUserInfoDto;
 import son.nt.hellochao.dto.UserDto;
 import son.nt.hellochao.loader.HTTPParseUtils;
 import son.nt.hellochao.utils.DatetimeUtils;
@@ -28,6 +31,7 @@ import son.nt.hellochao.utils.Logger;
  */
 public class AppAPI implements IHelloChao, IUserParse {
     public static final String TAG = "AppAPI";
+    private Context context;
 
     IHelloChao.HelloChaoCallback helloChaoCallback = null;
     IUserParse.Callback parseUserCallback = null;
@@ -35,11 +39,12 @@ public class AppAPI implements IHelloChao, IUserParse {
     static AppAPI INSTANCE = null;
 
     public static void createInstance(Context context) {
-        INSTANCE = new AppAPI();
+        INSTANCE = new AppAPI(context);
 
     }
 
-    public AppAPI() {
+    public AppAPI(Context context) {
+        this.context = context;
 
     }
 
@@ -248,6 +253,37 @@ public class AppAPI implements IHelloChao, IUserParse {
     }
 
     @Override
+    public void updateUserInfo(UpdateUserInfoDto d) {
+        ParseUser parseUser = ParseUser.getCurrentUser();
+        if (parseUser == null) {
+            Toast.makeText(context, "ERROR : updateUserInfo parseUser is NULL" , Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!TextUtils.isEmpty(d.fbID)) {
+            parseUser.put("fbId", d.fbID);
+        }
+
+        if (!TextUtils.isEmpty(d.name)) {
+            parseUser.put("name", d.name);
+        }
+        if (!TextUtils.isEmpty(d.avatar)) {
+            parseUser.put("avatar", d.avatar);
+        }
+
+        if (!TextUtils.isEmpty(d.fbLink)) {
+            parseUser.put("fbLink", d.fbLink);
+        }
+
+        parseUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                Logger.debug(TAG, ">>>" + "updateUserInfo DONE with e:" + e);
+            }
+        });
+    }
+
+    @Override
     public void createAccount(final UserDto userDto) {
         Logger.debug(TAG, ">>>" + "createAccount:" + userDto.getEmail());
         ParseUser parseUser = new ParseUser();
@@ -262,7 +298,7 @@ public class AppAPI implements IHelloChao, IUserParse {
             public void done(ParseException e) {
                 Logger.debug(TAG, ">>>" + "Done e:" + e);
                 if (parseUserCallback != null) {
-                    parseUserCallback.onUserCreate(userDto, e);
+                    parseUserCallback.onUserCreated(userDto, e);
                 }
             }
         });

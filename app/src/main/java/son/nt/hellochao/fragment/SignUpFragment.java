@@ -473,7 +473,7 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
         }
 
         @Override
-        public void onUserCreate(UserDto userDto, ParseException error) {
+        public void onUserCreated(UserDto userDto, ParseException error) {
             hideProgressDialog();
             if (error == null) {
                 Toast.makeText(getActivity(), "Create Account Successful", Toast.LENGTH_SHORT).show();

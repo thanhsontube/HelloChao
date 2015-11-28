@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--facebook ID - vipboy286 account -  hellochao-->
-    <string name="facebook_app_id">720770991362101</string>
+    <!--real app : 720770991362101-->
+    <!--test app : 726000824172451-->
+    <string name="facebook_app_id">726000824172451</string>
 </resources>

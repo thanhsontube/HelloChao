@@ -3,6 +3,7 @@ package son.nt.hellochao.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,15 +15,28 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.Profile;
 import com.parse.LogInCallback;
+import com.parse.LogOutCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
+import com.parse.SaveCallback;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 import butterknife.Bind;
 import son.nt.hellochao.R;
+import son.nt.hellochao.activity.ProfileActivity;
 import son.nt.hellochao.base.AFragment;
+import son.nt.hellochao.dto.UpdateUserInfoDto;
+import son.nt.hellochao.interface_app.AppAPI;
+import son.nt.hellochao.utils.FacebookUtils;
 import son.nt.hellochao.utils.KeyBoardUtils;
+import son.nt.hellochao.utils.Logger;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +47,7 @@ import son.nt.hellochao.utils.KeyBoardUtils;
  * create an instance of this fragment.
  */
 public class LoginFragment extends AFragment implements View.OnClickListener {
+    public static final String TAG = "LoginFragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -61,8 +76,12 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
     AppCompatEditText txtPassword;
     View viewReset;
 
+    private Collection<String> permissions = new ArrayList<>();
+
     @Override
     protected void initLayout(View view) {
+        Logger.debug(TAG, ">>>" + "initLayout");
+        FacebookUtils.getHashKey(getAActivity());
 
 //        getAActivity().getSupportActionBar().setTitle("Login");
 
@@ -70,6 +89,16 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
         viewReset.setVisibility(View.GONE);
 
         txtForgotPassword.setPaintFlags(txtForgotPassword.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+        ParseUser parseUser = ParseUser.getCurrentUser();
+        if (parseUser != null) {
+            parseUser.logOutInBackground(new LogOutCallback() {
+                @Override
+                public void done(ParseException e) {
+                    Logger.debug(TAG, ">>>" + "ParseUser logout !!!");
+                }
+            });
+        }
 
     }
 
@@ -176,16 +205,9 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -233,6 +255,79 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void loginByFacebook () {
+        permissions.clear();
+        permissions.add("email");
+        Logger.debug(TAG, ">>>" + "loginByFacebook");
+        ParseFacebookUtils.logInWithReadPermissionsInBackground(this, permissions, new LogInCallback() {
+            @Override
+            public void done(final ParseUser user, ParseException e) {
+                Logger.debug(TAG, ">>>" + "loginByFacebook:" + e);
+                if (e != null) {
+                    Toast.makeText(getActivity(), "Login Error:" + e.toString(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (user == null) {
+                    Logger.debug("MyApp", ">>>Uh oh. The user cancelled the Facebook login.");
+                } else if (user.isNew()) {
+                    Logger.debug("MyApp", ">>>User signed up and logged in through Facebook!");
+                } else {
+                    Logger.debug("MyApp", ">>>User logged in through Facebook!");
+                    Logger.debug(TAG, ">>>" + "Email:" + user.getEmail() + ";name:" + user.getUsername());
+                }
+
+                if (user != null) {
+                    if (!ParseFacebookUtils.isLinked(user)) {
+                        ParseFacebookUtils.linkInBackground(user, AccessToken.getCurrentAccessToken(), new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                Logger.debug(TAG, ">>>" + "linkInBackground:" + e);
+                                if (e != null) {
+                                    return;
+                                }
+
+                                if (ParseFacebookUtils.isLinked(user)) {
+                                    Logger.debug("MyApp", ">>> Woohoo, user logged in with Facebook!");
+                                    Logger.debug(TAG, ">>>" + "Email:" + user.getEmail() + ";name:" + user.getUsername());
+                                    getUserInfo();
+                                }
+                            }
+                        });
+                    } else {
+                        Logger.debug(TAG, ">>>" + "LINKED");
+                        getUserInfo();
+                    }
+                }
+
+            }
+        });
+    }
+
+    private void getUserInfo () {
+        Logger.debug(TAG, ">>>" + "getUserInfo");
+        Profile profile = Profile.getCurrentProfile();
+        if (profile == null) {
+            return;
+        }
+        String name = profile.getName();
+        String fbId = profile.getId();
+        Uri image = profile.getProfilePictureUri(120,120);
+        Logger.debug(TAG, ">>>" + "image:" + image.toString() + " ;name:" + name +";fbId:" + profile.getId() + ";info:" + profile.describeContents());
+        Logger.debug(TAG, ">>>" + "parse user:" + ParseUser.getCurrentUser().getUsername() + ";email:" + ParseUser.getCurrentUser().getEmail());
+
+        AppAPI.getInstance().updateUserInfo(new UpdateUserInfoDto(name, fbId, image.toString(), profile.getLinkUri().toString()));
+
+        getAActivity().startActivity(new Intent(getContext(), ProfileActivity.class));
+
+    }
+
+    @Override
     public void onClick(View view) {
         KeyBoardUtils.close(getAActivity());
         switch (view.getId()) {
@@ -243,6 +338,11 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
                     mListener.onSignUp(txtEmail.getText().toString(), txtPassword.getText().toString());
                 }
                 break;
+            case R.id.login_by_facebook:
+                loginByFacebook();
+
+                break;
         }
     }
+
 }

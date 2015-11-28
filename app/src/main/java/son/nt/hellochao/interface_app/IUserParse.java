@@ -2,6 +2,7 @@ package son.nt.hellochao.interface_app;
 
 import com.parse.ParseException;
 
+import son.nt.hellochao.dto.UpdateUserInfoDto;
 import son.nt.hellochao.dto.UserDto;
 
 /**
@@ -14,10 +15,12 @@ public interface IUserParse {
 
     void setIUserParseCallback(Callback callback);
 
+    void updateUserInfo (UpdateUserInfoDto updateUserInfoDto);
+
     interface Callback {
         void onCheckingUserExit(String email, boolean isExist);
 
-        void onUserCreate(UserDto userDto, ParseException error);
+        void onUserCreated(UserDto userDto, ParseException error);
     }
 
 }

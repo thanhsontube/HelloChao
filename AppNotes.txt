@@ -1,0 +1,9 @@
+
+This is app note
+1. facebook permissions list:
+https://developers.facebook.com/docs/facebook-login/permissions/v2.5#reference
+
+
+Facebook account test: sonntuit@gmail.com   0977104488 is the phone.
+
+// round image view : compile 'com.makeramen:roundedimageview:2.2.0'
