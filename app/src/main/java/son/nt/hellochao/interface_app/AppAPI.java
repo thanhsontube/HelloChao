@@ -14,6 +14,7 @@ import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import son.nt.hellochao.dto.DailySpeakDto;
@@ -23,6 +24,7 @@ import son.nt.hellochao.dto.TopDto;
 import son.nt.hellochao.dto.UpdateUserInfoDto;
 import son.nt.hellochao.dto.UserDto;
 import son.nt.hellochao.loader.HTTPParseUtils;
+import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.Logger;
 
@@ -129,6 +131,36 @@ public class AppAPI implements IHelloChao, IUserParse {
                 }
             }
         });
+
+    }
+
+    @Override
+    public void hcDaiLy() {
+        Logger.debug(TAG, ">>>" + "hcDaiLy");
+        int[] arr = DatetimeUtils.getCurrentTime();
+
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(HelloChaoDaily.class.getSimpleName());
+        query.whereContainedIn("day", Arrays.asList(arr[0]));
+        query.whereContainedIn("month", Arrays.asList(arr[1]));
+        query.whereContainedIn("year", Arrays.asList(arr[2]));
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if (e != null) {
+                    Logger.error(TAG, ">>>" + "ERROR:" + e);
+                    return;
+                }
+                Logger.debug(TAG, ">>>" + "hcDaiLy done:" + e  + ";list:" + list.size());
+
+                // now get data from HelloChao
+
+                HTTPParseUtils.getInstance().withHelloChaoDailyTest();
+
+            }
+        });
+
+
 
     }
 

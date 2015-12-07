@@ -14,13 +14,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
+import com.parse.ParseUser;
 import com.squareup.otto.Subscribe;
 
 import java.util.Calendar;
 
-import son.nt.hellochao.activity.HtmlCleanerActivity;
 import son.nt.hellochao.activity.LoginActivity;
 import son.nt.hellochao.activity.OralActivity;
+import son.nt.hellochao.activity.ProfileActivity;
 import son.nt.hellochao.base.AActivity;
 import son.nt.hellochao.dto.HomeEntity;
 import son.nt.hellochao.dto.LessonEntity;
@@ -90,7 +91,7 @@ public class ScrollingActivity extends AActivity {
 //                        }
 //                    });
 
-                    startActivity(new Intent(getApplicationContext(), HtmlCleanerActivity.class));
+                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
 
 
                 } else if (id == R.id.nav_gallery) {
@@ -109,13 +110,15 @@ public class ScrollingActivity extends AActivity {
 
 
                 } else if (id == R.id.nav_slideshow) {
-                    for (HomeEntity d : DataManager.getInstance().getHomeEntities()) {
-                        if (d.getHomeGroup().startsWith("D")) {
-                            TsParse.upData(d);
-                        }
 
-
-                    }
+                    ParseUser.getCurrentUser().logOut();
+//                    for (HomeEntity d : DataManager.getInstance().getHomeEntities()) {
+//                        if (d.getHomeGroup().startsWith("D")) {
+//                            TsParse.upData(d);
+//                        }
+//
+//
+//                    }
 
                 } else if (id == R.id.nav_manage) {
 

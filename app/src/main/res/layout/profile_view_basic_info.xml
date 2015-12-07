@@ -52,12 +52,74 @@
             android:text="Score: 100" />
 
         <TextView
+            android:id="@+id/profile_follows"
             style="@style/AppTextViewStyle.Normal.Light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:text="150 follows" />
+
+        <LinearLayout
+            android:id="@+id/profile_link_fb"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:gravity="center"
+                style="@style/AppTextViewStyle.Normal.Light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="Link with your facebook to update your avatar and your name" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/box_facebook">
+
+                <TextView
+                    android:id="@+id/link_with_facebook"
+                    style="@style/txt_white_18"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="?selectableItemBackground"
+                    android:drawableLeft="@drawable/com_facebook_button_icon"
+                    android:drawableStart="@drawable/com_facebook_button_icon"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:padding="12dp"
+                    android:text="@string/link_with_facebook"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+        <!--log out-->
+        <FrameLayout
+            android:id="@+id/logout_ll"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/box_blue_with_corner">
+
+            <TextView
+                android:id="@+id/log_out"
+                style="@style/txt_blue_14"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="?selectableItemBackground"
+                android:gravity="center"
+                android:maxLines="1"
+                android:padding="12dp"
+                android:text="@string/logout"
+                android:textStyle="bold" />
+        </FrameLayout>
 
 
     </LinearLayout>

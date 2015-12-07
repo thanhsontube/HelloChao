@@ -2,6 +2,7 @@ package son.nt.hellochao;
 
 import android.app.Application;
 
+import com.apptimize.Apptimize;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
@@ -28,5 +29,9 @@ public class MyApplication extends Application {
         ParseFacebookUtils.initialize(getApplicationContext());
 
         AppAPI.createInstance(getApplicationContext());
+
+        /*apptimize*/
+        Apptimize.setup(this, "D6uPHsHdkicGWh3ceWzAbaeuW2vK48d");
+
     }
 }

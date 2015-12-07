@@ -14,6 +14,8 @@ public interface IHelloChao {
 
     void helloChaoGetDailyQuestions();
 
+    void hcDaiLy();
+
     void helloChaoGetUserTop();
 
     void helloChaoSubmitTest(HelloChaoSubmitDto helloChaoSubmitDto);

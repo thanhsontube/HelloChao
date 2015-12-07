@@ -127,6 +127,7 @@
     <string name="title_activity_oral">Oral Test</string>
     <string name="title_activity_html_cleaner">HtmlCleanerActivity</string>
     <string name="log_in_with_facebook">Log in with Facebook</string>
+    <string name="link_with_facebook">Link with Facebook</string>
     <string name="log_in_with_google">Log in with Google</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="whats_your_name">What\'s Your Name?</string>
@@ -146,4 +147,5 @@
     <string name="create_account">Create Account</string>
     <string name="error_create_account">Error creating account</string>
     <string name="title_activity_profile">ProfileActivity</string>
+    <string name="see_more">See more</string>
 </resources>

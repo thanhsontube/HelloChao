@@ -324,6 +324,7 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
         AppAPI.getInstance().updateUserInfo(new UpdateUserInfoDto(name, fbId, image.toString(), profile.getLinkUri().toString()));
 
         getAActivity().startActivity(new Intent(getContext(), ProfileActivity.class));
+        getActivity().finish();
 
     }
 

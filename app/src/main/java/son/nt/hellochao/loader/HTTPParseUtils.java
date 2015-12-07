@@ -17,7 +17,9 @@ import son.nt.hellochao.dto.ESLDetailsDto;
 import son.nt.hellochao.dto.ESLMenuDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.loader.dailyTalk.DailyTalkLoader;
+import son.nt.hellochao.loader.dailyTalk.HcDailyLoader;
 import son.nt.hellochao.otto.GoOnList;
+import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.OttoBus;
 
@@ -70,6 +72,34 @@ public class HTTPParseUtils {
             @Override
             public void onContentLoaderFailed(Throwable e) {
                 Logger.error(TAG, ">>>" + " withHelloChaoDailyTest onContentLoaderFailed:" + e.toString());
+
+            }
+        });
+
+    }
+
+    public void withHcDaily() {
+        String path = ResourceManager.getInstance().getMyPath().getHelloChao();
+        Logger.debug(TAG, ">>>" + "withHcDaily path:" + path);
+        HttpGet httpGet = new HttpGet(path);
+        ResourceManager.getInstance().getContentManager().load(new HcDailyLoader(httpGet, false) {
+            @Override
+            public void onContentLoaderStart() {
+                Logger.debug(TAG, ">>>" + "withHcDaily onContentLoaderStart");
+
+            }
+
+            @Override
+            public void onContentLoaderSucceed(List<HelloChaoDaily> entity) {
+                Logger.debug(TAG, ">>>" + "withHcDaily onContentLoaderSucceed:" + entity.size());
+                //push to server
+
+
+            }
+
+            @Override
+            public void onContentLoaderFailed(Throwable e) {
+                Logger.error(TAG, ">>>" + " withHcDaily onContentLoaderFailed:" + e.toString());
 
             }
         });
