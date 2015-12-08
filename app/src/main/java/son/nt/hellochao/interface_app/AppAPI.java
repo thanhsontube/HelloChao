@@ -24,9 +24,11 @@ import son.nt.hellochao.dto.TopDto;
 import son.nt.hellochao.dto.UpdateUserInfoDto;
 import son.nt.hellochao.dto.UserDto;
 import son.nt.hellochao.loader.HTTPParseUtils;
+import son.nt.hellochao.otto.GoDaiLyTest;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.Logger;
+import son.nt.hellochao.utils.OttoBus;
 
 /**
  * Created by Sonnt on 11/9/15.
@@ -35,7 +37,7 @@ public class AppAPI implements IHelloChao, IUserParse {
     public static final String TAG = "AppAPI";
     private Context context;
 
-    IHelloChao.HelloChaoCallback helloChaoCallback = null;
+    HcCallback hcCallback = null;
     IUserParse.Callback parseUserCallback = null;
     ArrayList<TopDto> list = new ArrayList<>();
     static AppAPI INSTANCE = null;
@@ -67,7 +69,7 @@ public class AppAPI implements IHelloChao, IUserParse {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
                 if (e != null || list == null || list.size() != 10) {
-                    HTTPParseUtils.getInstance().withHelloChaoDailyTest();
+//                    HTTPParseUtils.getInstance().withHcDaily();
                     return;
                 }
 
@@ -85,9 +87,9 @@ public class AppAPI implements IHelloChao, IUserParse {
                     dailyList.add(d);
                 }
 //                ResourceManager.getInstance().setDailySpeakDtoList(dailyList);
-                if (helloChaoCallback != null) {
-                    helloChaoCallback.helloChaoGetDailyQuestions(dailyList);
-                }
+//                if (hcCallback != null) {
+//                    hcCallback.throwDailySentences(dailyList);
+//                }
 
             }
         });
@@ -95,8 +97,8 @@ public class AppAPI implements IHelloChao, IUserParse {
     }
 
     @Override
-    public void helloChaoGetUserTop() {
-        Logger.debug(TAG, ">>>" + "helloChaoGetUserTop");
+    public void getHcUserTop() {
+        Logger.debug(TAG, ">>>" + "getHcUserTop");
         ParseQuery<ParseObject> query = ParseQuery.getQuery("TopScore");
         query.addDescendingOrder("score");
         query.addDescendingOrder("total");
@@ -126,8 +128,8 @@ public class AppAPI implements IHelloChao, IUserParse {
                     list.add(dto);
                 }
 
-                if (helloChaoCallback != null) {
-                    helloChaoCallback.helloChaoGetListUserTop(list);
+                if (hcCallback != null) {
+                    hcCallback.throwUserTop(list);
                 }
             }
         });
@@ -135,27 +137,35 @@ public class AppAPI implements IHelloChao, IUserParse {
     }
 
     @Override
-    public void hcDaiLy() {
-        Logger.debug(TAG, ">>>" + "hcDaiLy");
-        int[] arr = DatetimeUtils.getCurrentTime();
+    public void getHcDaily() {
+        Logger.debug(TAG, ">>>" + "getHcDaily");
 
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(HelloChaoDaily.class.getSimpleName());
-        query.whereContainedIn("day", Arrays.asList(arr[0]));
-        query.whereContainedIn("month", Arrays.asList(arr[1]));
-        query.whereContainedIn("year", Arrays.asList(arr[2]));
-
+        query.whereContainedIn("dates", Arrays.asList(getDates()));
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
-                if (e != null) {
-                    Logger.error(TAG, ">>>" + "ERROR:" + e);
+                if (e != null || list == null || list.size() == 0 || list.size() != 10) {
+                    Logger.error(TAG, ">>>" + "getHcDaily ERROR:" + e);
+                    HTTPParseUtils.getInstance().withHcDaily();
                     return;
                 }
-                Logger.debug(TAG, ">>>" + "hcDaiLy done:" + e  + ";list:" + list.size());
-
-                // now get data from HelloChao
-
-                HTTPParseUtils.getInstance().withHelloChaoDailyTest();
+                Logger.debug(TAG, ">>>" + "getHcDaily done:" + e + ";list:" + list.size());
+                ArrayList<HelloChaoDaily> dailyList = new ArrayList<HelloChaoDaily>();
+                for (ParseObject p : list) {
+                    String audio = p.getString("audio");
+                    String text = p.getString("text");
+                    String translate = p.getString("translate");
+                    int level = p.getInt("level");
+                    int value = p.getInt("value");
+                    HelloChaoDaily h = new HelloChaoDaily(audio, text, translate, level, value);
+                    dailyList.add(h);
+                }
+                OttoBus.post(new GoDaiLyTest(dailyList));
+                if (hcCallback != null) {
+                    Logger.debug(TAG, ">>>" + "AAAAAAA hcCallback.throwDailySentences(dailyList)");
+                    hcCallback.throwDailySentences(dailyList);
+                }
 
             }
         });
@@ -164,43 +174,64 @@ public class AppAPI implements IHelloChao, IUserParse {
 
     }
 
+    private String getDates () {
+        int[] arr = DatetimeUtils.getCurrentTime();
+        int day = arr[0];
+        int month = arr[1];
+        int year = arr[2];
+        StringBuilder dates = new StringBuilder();
+        dates.append(day < 10 ? "0" + day : String.valueOf(day));
+        dates.append("_");
+        dates.append(month < 10 ? "0" + month : String.valueOf(month));
+        dates.append("_");
+        dates.append(String.valueOf(year));
+
+        return dates.toString();
+    }
+
     @Override
-    public void helloChaoSubmitTest(HelloChaoSubmitDto helloChaoSubmitDto) {
+    public void hcSubmitTestResult(HelloChaoSubmitDto helloChaoSubmitDto) {
 
     }
 
     @Override
-    public void pushDailyQuestionsFromWebToParse(List<DailySpeakDto> list) {
+    public void pushDailyQuestionsFromWebToParse(List<HelloChaoDaily> list) {
         if (list == null || list.isEmpty()) {
             return;
         }
 
-        for (DailySpeakDto d : list) {
+        for (HelloChaoDaily d : list) {
             push(d);
         }
 
 
     }
 
-    public void push(final DailySpeakDto d) {
-        Logger.debug(TAG, ">>>" + "---push :" + d.getSentenceEng());
-        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(DailySpeakDto.class.getSimpleName());
-        query.whereEqualTo("sentenceEng", d.getSentenceEng());
-        query.whereEqualTo("day", d.getDay());
-        query.whereEqualTo("month", d.getMonth());
-        query.whereEqualTo("year", d.getYear());
+    public void push(final HelloChaoDaily d) {
+        Logger.debug(TAG, ">>>" + "---push :" + d.getText());
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(HelloChaoDaily.class.getSimpleName());
+
+        //check the sentence is available
+        query.whereEqualTo("text", d.getText());
+
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
-                if (e != null || parseObject == null) {
+//                if (e != null) {
+//                    Logger.error(TAG, ">>>" + "ERROR:" + e);
+//                    return;
+//                }
+                if (parseObject == null) {
+                    //push
                     Logger.debug(TAG, ">>>" + "begin push");
-                    ParseObject p = new ParseObject(DailySpeakDto.class.getSimpleName());
-                    p.put("day", d.getDay());
-                    p.put("month", d.getMonth());
-                    p.put("year", d.getYear());
-                    p.put("sentenceEng", d.getSentenceEng());
-                    p.put("sentenceVi", d.getSentenceVi());
-                    p.put("linkMp3", d.getLinkMp3());
+                    ParseObject p = new ParseObject(HelloChaoDaily.class.getSimpleName());
+                    p.put("text", d.getText());
+                    p.put("audio", d.getAudio());
+                    p.put("translate", d.getTranslate());
+                    p.put("level", d.getLevel());
+                    p.put("value", d.getValue());
+                    p.put("tags", d.getTags());
+                    p.put("dates", d.getDates());
                     p.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
@@ -208,7 +239,22 @@ public class AppAPI implements IHelloChao, IUserParse {
                         }
                     });
                 } else {
-                    Logger.debug(TAG, ">>>" + "EXIST:" + d.getSentenceEng());
+                    List<String> listDates = parseObject.getList("dates");
+                    if (listDates.contains(d.getDates().get(0))) {
+                        Logger.debug(TAG, ">>>" + "EXIST DATES:" + d.getDates());
+                        return;
+                    }
+                    Logger.debug(TAG, ">>>" + "update new Dates:");
+
+                    listDates.addAll(d.getDates());
+                    parseObject.put("dates", listDates);
+                    parseObject.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            Logger.debug(TAG, ">>>" + "Update Dates DONE e:" + e);
+                        }
+                    });
+
                 }
             }
         });
@@ -248,8 +294,9 @@ public class AppAPI implements IHelloChao, IUserParse {
     }
 
     @Override
-    public void setHelloCHaoCallback(HelloChaoCallback callback) {
-        this.helloChaoCallback = callback;
+    public void setHcCallback(HcCallback callback) {
+        this.hcCallback = null;
+        this.hcCallback = callback;
     }
 
 

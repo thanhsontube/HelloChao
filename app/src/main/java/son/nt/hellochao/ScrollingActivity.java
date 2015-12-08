@@ -20,7 +20,6 @@ import com.squareup.otto.Subscribe;
 import java.util.Calendar;
 
 import son.nt.hellochao.activity.LoginActivity;
-import son.nt.hellochao.activity.OralActivity;
 import son.nt.hellochao.activity.ProfileActivity;
 import son.nt.hellochao.base.AActivity;
 import son.nt.hellochao.dto.HomeEntity;
@@ -31,11 +30,9 @@ import son.nt.hellochao.fragment.ScrollFragment;
 import son.nt.hellochao.loader.LessonLoader;
 import son.nt.hellochao.loader.LoaderManager;
 import son.nt.hellochao.loader.QuizLoader;
-import son.nt.hellochao.otto.GoDaiLyTest;
 import son.nt.hellochao.otto.GoHot;
 import son.nt.hellochao.schedule.AutoGetDailyTestReceiver;
 import son.nt.hellochao.utils.Logger;
-import son.nt.hellochao.utils.OttoBus;
 import son.nt.hellochao.utils.TsParse;
 
 public class ScrollingActivity extends AActivity {
@@ -50,7 +47,7 @@ public class ScrollingActivity extends AActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
-        OttoBus.register(this);
+//        OttoBus.register(this);
         tsParse = new TsParse();
         manager = new LoaderManager();
         d = DataManager.getInstance();
@@ -155,7 +152,7 @@ public class ScrollingActivity extends AActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        OttoBus.unRegister(this);
+//        OttoBus.unRegister(this);
     }
 
     @Override
@@ -173,11 +170,11 @@ public class ScrollingActivity extends AActivity {
         showFragment(PlayingFragment.createInstance(goHot.getHotEntity().getHomeEntity()), true);
     }
 
-    @Subscribe
-    public void onFromDaiLyFragment(GoDaiLyTest goDaiLyTest) {
+//    @Subscribe
+//    public void onFromDaiLyFragment(GoDaiLyTest goDaiLyTest) {
 //        showFragment(OralFragment.newInstance("", true), true);
-        startActivity(new Intent(this, OralActivity.class));
-    }
+//        startActivity(new Intent(this, OralActivity.class));
+//    }
 
     private class UpdateFulltext extends AsyncTask<Void, Void, Void> {
         @Override

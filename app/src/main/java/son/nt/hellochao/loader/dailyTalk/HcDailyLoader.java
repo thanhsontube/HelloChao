@@ -8,25 +8,23 @@ import org.htmlcleaner.TagNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import son.nt.hellochao.loader.ContentLoader;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.utils.DatetimeUtils;
-import son.nt.hellochao.utils.Logger;
 
 /**
  * Created by Sonnt on 9/14/15.
  */
-public abstract class HcDailyLoader extends ContentLoader<List<HelloChaoDaily>> {
-    public static final String TAG = "DailyTalkLoader";
+public abstract class HcDailyLoader extends ContentLoader<ArrayList<HelloChaoDaily>> {
+    public static final String TAG = "HcDailyLoader";
 
     public HcDailyLoader(HttpUriRequest request, boolean useCache) {
         super(request, useCache);
     }
 
     @Override
-    protected List<HelloChaoDaily> handleStream(InputStream in) throws IOException {
+    protected ArrayList<HelloChaoDaily> handleStream(InputStream in) throws IOException {
         try {
             HtmlCleaner cleaner = new HtmlCleaner();
             CleanerProperties props = cleaner.getProperties();
@@ -40,13 +38,10 @@ public abstract class HcDailyLoader extends ContentLoader<List<HelloChaoDaily>> 
             String xpath = "//ul[@class='raw-menu']";
             data = tagNode.evaluateXPath(xpath);
 
-            List<HelloChaoDaily> list = new ArrayList<>();
+            ArrayList<HelloChaoDaily> list = new ArrayList<>();
             HelloChaoDaily dto;
             if (data != null && data.length > 0) {
-                Logger.debug(TAG, ">>>" + "length:" + data
-                        .length);
                 TagNode nodeA = (TagNode) data[1];
-                Logger.debug(TAG, ">>>" + "nodeA:" + nodeA.getChildTagList());
                 for (TagNode tag : nodeA.getChildTagList()) {
                     TagNode tagLink = tag.getChildTagList().get(0);
                     String text = tagLink.getText().toString();
@@ -55,7 +50,7 @@ public abstract class HcDailyLoader extends ContentLoader<List<HelloChaoDaily>> 
                     translation = translation.substring(text.length(), translation.length());
 
                     String audio = tagLink.getChildTagList().get(0).getAttributeByName("href");
-                    int []arr = DatetimeUtils.getCurrentTime();
+                    int[] arr = DatetimeUtils.getCurrentTime();
                     dto = new HelloChaoDaily(audio, text, translation, arr[0], arr[1], arr[2]);
                     list.add(dto);
                 }

@@ -1,8 +1,11 @@
 package son.nt.hellochao.parse_object;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import son.nt.hellochao.base.AObject;
+import son.nt.hellochao.utils.DatetimeUtils;
 
 /**
  * Created by Sonnt on 12/6/15.
@@ -20,12 +23,14 @@ public class HelloChaoDaily extends AObject {
     private int month;
     private int year;
 
-    private List<String> tags;
+    private List<String> tags = new ArrayList<>();
     private String sID;
-    private int value;
-    private int level;
+    private int value = 5;
+    private int level = 1;
 
     public HelloChaoDaily() {
+        tags.add("hello chao");
+        tags.add("daily");
     }
 
     public HelloChaoDaily(String audio, String text, String translate, int day, int month, int year) {
@@ -35,7 +40,35 @@ public class HelloChaoDaily extends AObject {
         this.day = day;
         this.month = month;
         this.year = year;
+
+        tags.add("hello chao");
+        tags.add("daily");
     }
+
+    public HelloChaoDaily(String audio, String text, String translate, int level, int value) {
+        this.audio = audio;
+        this.text = text;
+        this.translate = translate;
+        this.level = level;
+        this.value = value;
+        int []arr = DatetimeUtils.getCurrentTime();
+        day = arr[0];
+        month = arr[1];
+        year = arr[2];
+    }
+
+    public List<String> getDates() {
+        StringBuilder dates = new StringBuilder();
+        dates.append(day < 10 ? "0" + day : String.valueOf(day));
+        dates.append("_");
+        dates.append(month < 10 ? "0" + month : String.valueOf(month));
+        dates.append("_");
+        dates.append(String.valueOf(year));
+
+        return Arrays.asList(dates.toString());
+    }
+
+
 
     public String getAudio() {
         return audio;
@@ -94,7 +127,15 @@ public class HelloChaoDaily extends AObject {
     }
 
     public String getsID() {
-        return sID;
+        StringBuilder id = new StringBuilder();
+        id.append("hcDaily_");
+        id.append(day < 10 ? "0" + day : String.valueOf(day));
+        id.append("_");
+        id.append(month < 10 ? "0" + month : String.valueOf(month));
+        id.append("_");
+        id.append(String.valueOf(year));
+
+        return id.toString();
     }
 
     public void setsID(String sID) {

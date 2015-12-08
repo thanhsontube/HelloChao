@@ -48,6 +48,7 @@ import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.interface_app.IHelloChao;
 import son.nt.hellochao.otto.GoDownload;
 import son.nt.hellochao.otto.GoOnList;
+import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.OttoBus;
@@ -58,7 +59,7 @@ import son.nt.hellochao.utils.PreferenceUtil;
  * Use the {@link OralFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OralFragment extends AFragment implements View.OnClickListener, IHelloChao.HelloChaoCallback {
+public class OralFragment extends AFragment implements View.OnClickListener, IHelloChao.HcCallback {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "OralFragment";
@@ -155,7 +156,7 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
         list.clear();
         list.addAll(ResourceManager.getInstance().getDailySpeakDtoList());
         initPlayer();
-        AppAPI.getInstance().setHelloCHaoCallback(this);
+        AppAPI.getInstance().setHcCallback(this);
     }
 
     @Override
@@ -633,22 +634,22 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
     }
 
     @Override
-    public void helloChaoGetListUserTop(ArrayList<TopDto> listTop) {
+    public void throwUserTop(ArrayList<TopDto> listTop) {
 
     }
 
     //this this the case getting successful data from parse
     @Override
-    public void helloChaoGetDailyQuestions(ArrayList<DailySpeakDto> listDaiLy) {
-        list.clear();
-        list.addAll(listDaiLy);
-        updateSentence();
-        btnStart.setText("Start");
-        btnStart.setEnabled(true);
+    public void throwDailySentences(ArrayList<HelloChaoDaily> listDaiLy) {
+//        list.clear();
+//        list.addAll(listDaiLy);
+//        updateSentence();
+//        btnStart.setText("Start");
+//        btnStart.setEnabled(true);
     }
 
     @Override
-    public void helloChaoGetAllQuestions(ArrayList<DailySpeakDto> listDaiLy) {
+    public void throwAllSentences(ArrayList<DailySpeakDto> listDaiLy) {
 
     }
 

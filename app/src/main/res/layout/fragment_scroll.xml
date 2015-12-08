@@ -39,6 +39,14 @@
                 app:title="Daily Top">
 
             </son.nt.hellochao.widget.MovieDetailCardLayout>
+
+            <son.nt.hellochao.widget.MovieDetailCardLayout
+                android:id="@+id/daily_practice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title="Daily Practice">
+
+            </son.nt.hellochao.widget.MovieDetailCardLayout>
             <son.nt.hellochao.widget.MovieDetailCardLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

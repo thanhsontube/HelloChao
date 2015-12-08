@@ -20,6 +20,7 @@ import son.nt.hellochao.dto.TopDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.interface_app.IHelloChao;
 import son.nt.hellochao.otto.GoDaiLyTest;
+import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.OttoBus;
 
@@ -31,7 +32,7 @@ import son.nt.hellochao.utils.OttoBus;
  * Use the {@link IntroTopDayFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class IntroTopDayFragment extends AFragment implements IHelloChao.HelloChaoCallback {
+public class IntroTopDayFragment extends AFragment implements IHelloChao.HcCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -93,7 +94,7 @@ public class IntroTopDayFragment extends AFragment implements IHelloChao.HelloCh
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OttoBus.post(new GoDaiLyTest());
+                OttoBus.post(new GoDaiLyTest(null));
             }
         });
         return view;
@@ -138,7 +139,7 @@ public class IntroTopDayFragment extends AFragment implements IHelloChao.HelloCh
 
     @Override
     protected void initData() {
-        AppAPI.getInstance().setHelloCHaoCallback(this);
+        AppAPI.getInstance().setHcCallback(this);
 
     }
 
@@ -157,12 +158,12 @@ public class IntroTopDayFragment extends AFragment implements IHelloChao.HelloCh
 
     @Override
     protected void updateLayout() {
-        AppAPI.getInstance().helloChaoGetUserTop();
+        AppAPI.getInstance().getHcUserTop();
 
     }
 
     @Override
-    public void helloChaoGetListUserTop(ArrayList<TopDto> listTop) {
+    public void throwUserTop(ArrayList<TopDto> listTop) {
         if (listTop == null || listTop.size() == 0) {
             return;
         }
@@ -179,12 +180,12 @@ public class IntroTopDayFragment extends AFragment implements IHelloChao.HelloCh
     }
 
     @Override
-    public void helloChaoGetDailyQuestions(ArrayList<DailySpeakDto> listDaiLy) {
+    public void throwDailySentences(ArrayList<HelloChaoDaily> listDaiLy) {
 
     }
 
     @Override
-    public void helloChaoGetAllQuestions(ArrayList<DailySpeakDto> listDaiLy) {
+    public void throwAllSentences(ArrayList<DailySpeakDto> listDaiLy) {
 
     }
 }

@@ -242,7 +242,7 @@ public class MainActivityFragment extends AFragment {
 //            @Override
 //            public void done(List<ParseObject> list, ParseException e) {
 //                if (e != null || list == null || list.size() != 10) {
-//                    HTTPParseUtils.getInstance().withHelloChaoDailyTest();
+//                    HTTPParseUtils.getInstance().withHcDaily();
 //                    return;
 //                }
 //
