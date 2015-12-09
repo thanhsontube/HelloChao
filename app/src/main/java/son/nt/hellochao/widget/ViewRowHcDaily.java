@@ -41,12 +41,25 @@ public class ViewRowHcDaily extends LinearLayout {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.row_ll:
+                    if (callback != null) {
+                        callback.onClick(helloChaoDaily);
+                    }
 
                     break;
             }
 
         }
     };
+
+    public interface OnViewRowHcDailyClick {
+        void onClick (HelloChaoDaily data);
+    }
+    OnViewRowHcDailyClick callback;
+
+    public void setOnViewRowHcDailyClickCallback (OnViewRowHcDailyClick cb) {
+        this.callback = cb;
+    }
+
 
     public void setData (HelloChaoDaily data) {
         if (data == null) {

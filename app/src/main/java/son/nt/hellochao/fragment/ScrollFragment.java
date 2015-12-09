@@ -2,29 +2,28 @@ package son.nt.hellochao.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.apptimize.Apptimize;
+import com.apptimize.ApptimizeTest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 import butterknife.Bind;
 import son.nt.hellochao.R;
@@ -40,7 +39,8 @@ import son.nt.hellochao.dto.TopDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.interface_app.IHelloChao;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
-import son.nt.hellochao.utils.IParse;
+import son.nt.hellochao.service.MusicService;
+import son.nt.hellochao.utils.CommonUtils;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.OttoBus;
 import son.nt.hellochao.widget.MovieDetailCardLayout;
@@ -52,7 +52,7 @@ import son.nt.hellochao.widget.ViewRowHcDaily;
  * {@link ScrollFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class ScrollFragment extends AFragment implements IParse.Callback, View.OnClickListener {
+public class ScrollFragment extends AFragment implements View.OnClickListener {
 
     private OnFragmentInteractionListener mListener;
     public final String TAG = getClass().getSimpleName();
@@ -71,14 +71,25 @@ public class ScrollFragment extends AFragment implements IParse.Callback, View.O
     MovieDetailCardLayout dailyPractice;
 
 
-
-    RecyclerView rcv;
-
     private List<HomeEntity> list = new ArrayList<>();
     private AdapterListEsl adapter;
 
-    TextView txtDaily;
     AppAPI appAPI;
+
+    MusicService musicService;
+
+    ServiceConnection musicServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            MusicService.LocalBinder localBinder = (MusicService.LocalBinder) iBinder;
+            musicService = localBinder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
+    };
 
 
     public ScrollFragment() {
@@ -94,6 +105,26 @@ public class ScrollFragment extends AFragment implements IParse.Callback, View.O
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Apptimize.runTest("Avatar click", new ApptimizeTest() {
+            @Override
+            public void baseline() {
+// Variant: original
+            }
+
+            @SuppressWarnings("unused")
+            public void variation1() {
+// Variant: new Arvatar
+            }
+        });
+
+        getAActivity().bindService(MusicService.getService(getContext()), musicServiceConnection, Context.BIND_AUTO_CREATE);
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getAActivity().unbindService(musicServiceConnection);
     }
 
     @Override
@@ -122,8 +153,6 @@ public class ScrollFragment extends AFragment implements IParse.Callback, View.O
         appAPI = new AppAPI(getContext());
         appAPI.setHcCallback(hcCallback);
         appAPI.getHcDaily();
-//        AppAPI.getInstance().setHcCallback(hcCallback);
-//        AppAPI.getInstance().getHcDaily();
         listHot.clear();
 
     }
@@ -134,26 +163,7 @@ public class ScrollFragment extends AFragment implements IParse.Callback, View.O
         adapterHot = new AdapterHot(getFragmentManager(), getContext());
         pagerHot.setHorizontalScrollBarEnabled(true);
         pagerHot.setAdapter(adapterHot);
-        pagerHot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(), "qwertyuio", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         adapter = new AdapterListEsl(getAActivity(), list);
-
-//        View pin1 = LayoutInflater.from(getContext()).inflate(R.layout.pin_1, null);
-//
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-//        rcv = (RecyclerView) pin1.findViewById(R.id.rcv_part_daily);
-//        txtDaily = (TextView) pin1.findViewById(R.id.txt_part_daily);
-//        rcv.setLayoutManager(linearLayoutManager);
-//        rcv.hasFixedSize();
-//        rcv.setAdapter(adapter);
-//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//        dailyTop.addView(pin1, 1, layoutParams);
-
     }
 
     @Override
@@ -168,6 +178,7 @@ public class ScrollFragment extends AFragment implements IParse.Callback, View.O
         super.onResume();
         OttoBus.register(this);
         updateLayout();
+
     }
 
     @Override
@@ -188,24 +199,6 @@ public class ScrollFragment extends AFragment implements IParse.Callback, View.O
         }
     }
 
-
-    @Override
-    public void onDoneGetHomeEntities(List<HomeEntity> listData) {
-        if (listData == null || listData.size() == 0) {
-            return;
-        }
-//        Logger.debug(TAG, ">>>" + "onDoneGetHomeEntities:" + listData.get(0).getHomeGroup() + ";href:" + listData.get(0).getHomeTitle());
-//        DataManager.getInstance().setHomeEntities(listData);
-//        adapterHot.notifyDataSetChanged();
-//
-//        list.clear();
-//        for (int i = 0; i < 3; i ++) {
-//            list.add(listData.get(i));
-//        }
-//        adapter.notifyDataSetChanged();
-//        Logger.debug(TAG, ">>>" + "list:" + list.size());
-    }
-
     View.OnClickListener moreDailyPractice = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -217,6 +210,21 @@ public class ScrollFragment extends AFragment implements IParse.Callback, View.O
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.home_pic:
+                Apptimize.runTest("Avatar click", new ApptimizeTest() {
+                    @Override
+                    public void baseline() {
+                        Logger.debug(TAG, ">>>" + "CLICK BASE");
+                        Apptimize.track("Avatar Click", 1.0);
+// Variant: original
+                    }
+
+                    @SuppressWarnings("unused")
+                    public void variation1() {
+                        Logger.debug(TAG, ">>>" + "CLICK VARIANT1");
+                        Apptimize.track("Avatar Click", 1.0);
+// Variant: new Arvatar
+                    }
+                });
                 ParseUser parseUser = ParseUser.getCurrentUser();
                 if (parseUser == null) {
                     startActivity(new Intent(getAActivity(), LoginActivity.class));
@@ -228,31 +236,29 @@ public class ScrollFragment extends AFragment implements IParse.Callback, View.O
     }
 
 
-
-    private void processData (ArrayList<HelloChaoDaily> listDaiLy) {
+    private void processData(ArrayList<HelloChaoDaily> listDaiLy) {
         Logger.debug(TAG, ">>>" + "processData:" + listDaiLy.size());
-        int []arr = getRandom(3, listDaiLy.size());
-        for (int i = 0; i < arr.length; i ++) {
-            ViewRowHcDaily viewRowHcDaily = new ViewRowHcDaily(getContext());
+        int[] arr = CommonUtils.getRandom(3, listDaiLy.size());
+        ViewRowHcDaily viewRowHcDaily;
+        for (int i = 0; i < arr.length; i++) {
+            viewRowHcDaily = new ViewRowHcDaily(getContext());
             viewRowHcDaily.setData(listDaiLy.get(arr[i]));
+            viewRowHcDaily.setOnViewRowHcDailyClickCallback(onViewRowHcDailyClick);
             dailyPractice.addView(viewRowHcDaily);
         }
 
     }
 
-    private int[] getRandom (int number, int max) {
-        final Random random = new Random();
-        final Set<Integer> intSet = new HashSet<>();
-        while (intSet.size() < number) {
-            intSet.add(random.nextInt(max));
+    ViewRowHcDaily.OnViewRowHcDailyClick onViewRowHcDailyClick = new ViewRowHcDaily.OnViewRowHcDailyClick() {
+        @Override
+        public void onClick(HelloChaoDaily data) {
+            if (musicService == null) {
+                return;
+            }
+            musicService.processAddRequest(data);
+
         }
-        final int[] ints = new int[intSet.size()];
-        final Iterator<Integer> iter = intSet.iterator();
-        for (int i = 0; iter.hasNext(); ++i) {
-            ints[i] = iter.next();
-        }
-        return ints;
-    }
+    };
 
     IHelloChao.HcCallback hcCallback = new IHelloChao.HcCallback() {
         @Override
@@ -273,4 +279,6 @@ public class ScrollFragment extends AFragment implements IParse.Callback, View.O
 
         }
     };
+
+
 }

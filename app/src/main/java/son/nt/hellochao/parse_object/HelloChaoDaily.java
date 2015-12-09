@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import son.nt.hellochao.base.AObject;
+import son.nt.hellochao.dto.MusicItem;
 import son.nt.hellochao.utils.DatetimeUtils;
 
 /**
  * Created by Sonnt on 12/6/15.
  */
-public class HelloChaoDaily extends AObject {
-    private String audio;
-    private String text;
+public class HelloChaoDaily extends MusicItem {
     private String translate;
 
 //    private List<Integer> day;
