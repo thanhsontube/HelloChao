@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import son.nt.hellochao.loader.ContentLoader;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
-import son.nt.hellochao.utils.DatetimeUtils;
 
 /**
  * Created by Sonnt on 9/14/15.
@@ -50,8 +49,7 @@ public abstract class HcDailyLoader extends ContentLoader<ArrayList<HelloChaoDai
                     translation = translation.substring(text.length(), translation.length());
 
                     String audio = tagLink.getChildTagList().get(0).getAttributeByName("href");
-                    int[] arr = DatetimeUtils.getCurrentTime();
-                    dto = new HelloChaoDaily(audio, text, translation, arr[0], arr[1], arr[2]);
+                    dto = new HelloChaoDaily(audio, text, translation, 5, 1);
                     list.add(dto);
                 }
             }

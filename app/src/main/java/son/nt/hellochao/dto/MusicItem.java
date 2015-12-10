@@ -7,6 +7,8 @@ import son.nt.hellochao.base.AObject;
  */
 public class MusicItem extends AObject{
     public String text;
-    public  String image;
     public String audio;
+    public  String image;
+
+
 }

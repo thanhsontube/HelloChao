@@ -11,6 +11,7 @@ import son.nt.hellochao.dto.DailySpeakDto;
 import son.nt.hellochao.dto.TopDto;
 import son.nt.hellochao.loader.ContentManager;
 import son.nt.hellochao.loader.MyPath;
+import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.retrofit.esl.ESLApi;
 import son.nt.hellochao.utils.FileUtil;
 
@@ -25,6 +26,8 @@ public class ResourceManager {
     private ContentManager contentManager;
     private List<DailySpeakDto> dailySpeakDtoList = new ArrayList<>();
     private List<TopDto> listTops = new ArrayList<>();
+
+    private ArrayList<HelloChaoDaily> listHelloChaoDaily = new ArrayList<>();
     public ESLApi eslApi;
 
     public List<DailySpeakDto> getDailySpeakDtoList() {
@@ -124,6 +127,14 @@ public class ResourceManager {
 
     public ContentManager getContentManager() {
         return contentManager;
+    }
+
+    public ArrayList<HelloChaoDaily> getListHelloChaoDaily() {
+        return listHelloChaoDaily;
+    }
+
+    public void setListHelloChaoDaily(ArrayList<HelloChaoDaily> listHelloChaoDaily) {
+        this.listHelloChaoDaily = listHelloChaoDaily;
     }
 
     public String getPathAudio (String link) {

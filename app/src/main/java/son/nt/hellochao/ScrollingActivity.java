@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -13,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.parse.ParseUser;
 import com.squareup.otto.Subscribe;
@@ -25,6 +27,7 @@ import son.nt.hellochao.base.AActivity;
 import son.nt.hellochao.dto.HomeEntity;
 import son.nt.hellochao.dto.LessonEntity;
 import son.nt.hellochao.dto.QuizEntity;
+import son.nt.hellochao.fragment.FullPracticeFragment;
 import son.nt.hellochao.fragment.PlayingFragment;
 import son.nt.hellochao.fragment.ScrollFragment;
 import son.nt.hellochao.loader.LessonLoader;
@@ -35,7 +38,7 @@ import son.nt.hellochao.schedule.AutoGetDailyTestReceiver;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.TsParse;
 
-public class ScrollingActivity extends AActivity {
+public class ScrollingActivity extends AActivity implements ScrollFragment.OnFragmentInteractionListener{
 
     public final String TAG = this.getClass().getSimpleName();
 
@@ -45,6 +48,8 @@ public class ScrollingActivity extends AActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        setProgressBarIndeterminateVisibility(true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
 //        OttoBus.register(this);
@@ -349,5 +354,16 @@ public class ScrollingActivity extends AActivity {
         alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP,
                 updateTime.getTimeInMillis(),
                 AlarmManager.INTERVAL_HALF_DAY, recurringDownload);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onPracticeFull() {
+        showFragment(FullPracticeFragment.newInstance("",""), true);
+
     }
 }

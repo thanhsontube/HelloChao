@@ -21,7 +21,7 @@
         <service android:name=".service.DownloadIntentService" />
         <service android:name=".service.ServiceMedia" />
 
-        <activity android:name=".ScrollingActivity">
+        <activity android:name=".ScrollingActivity" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

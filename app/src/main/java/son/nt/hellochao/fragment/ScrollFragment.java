@@ -26,7 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import son.nt.hellochao.R;
+import son.nt.hellochao.ResourceManager;
 import son.nt.hellochao.activity.LoginActivity;
 import son.nt.hellochao.activity.ProfileActivity;
 import son.nt.hellochao.adapter.AdapterHot;
@@ -35,10 +37,12 @@ import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.DailySpeakDto;
 import son.nt.hellochao.dto.HomeEntity;
 import son.nt.hellochao.dto.HotEntity;
+import son.nt.hellochao.dto.MusicItem;
 import son.nt.hellochao.dto.TopDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.interface_app.IHelloChao;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
+import son.nt.hellochao.service.MusicPlayback;
 import son.nt.hellochao.service.MusicService;
 import son.nt.hellochao.utils.CommonUtils;
 import son.nt.hellochao.utils.Logger;
@@ -70,6 +74,9 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
     @Bind(R.id.daily_practice)
     MovieDetailCardLayout dailyPractice;
 
+    @Bind(R.id.smooth_bar)
+    SmoothProgressBar smoothProgressBar;
+
 
     private List<HomeEntity> list = new ArrayList<>();
     private AdapterListEsl adapter;
@@ -83,6 +90,7 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.LocalBinder localBinder = (MusicService.LocalBinder) iBinder;
             musicService = localBinder.getService();
+            musicService.setMusicPlayBackCallback(musicPlayBackCallback);
         }
 
         @Override
@@ -145,6 +153,8 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
 
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
+
+        void onPracticeFull ();
     }
 
 
@@ -190,6 +200,8 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
     @Override
     protected void updateLayout() {
 
+        smoothProgressBar.setVisibility(View.GONE);
+
 
         ParseUser parseUser = ParseUser.getCurrentUser();
         if (parseUser != null && !TextUtils.isEmpty(parseUser.getString("avatar"))) {
@@ -203,6 +215,9 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             Logger.debug(TAG, ">>>" + "daily_practice click");
+            if (mListener != null) {
+                mListener.onPracticeFull();
+            }
         }
     };
 
@@ -271,11 +286,56 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
         public void throwDailySentences(ArrayList<HelloChaoDaily> listDaiLy) {
             Logger.debug(TAG, ">>>" + "throwDailySentences");
             processData(listDaiLy);
+            ResourceManager.getInstance().getListHelloChaoDaily().clear();
+            ResourceManager.getInstance().setListHelloChaoDaily(listDaiLy);
 
         }
 
         @Override
         public void throwAllSentences(ArrayList<DailySpeakDto> listDaiLy) {
+
+        }
+    };
+
+    MusicPlayback.Callback musicPlayBackCallback = new MusicPlayback.Callback() {
+        @Override
+        public void onPreparing(MusicItem musicItem) {
+            if (!isSafe() || smoothProgressBar == null) {
+                return;
+            }
+            smoothProgressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onPlaying(MusicItem musicItem) {
+            if (!isSafe() || smoothProgressBar == null) {
+                return;
+            }
+            smoothProgressBar.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onCompletion() {
+
+        }
+
+        @Override
+        public void onPlaybackStatusChanged(int state) {
+
+        }
+
+        @Override
+        public void onError(MusicItem musicItem, String error) {
+
+        }
+
+        @Override
+        public void onCurrentPosition(long currentTime) {
+
+        }
+
+        @Override
+        public void onDuration(long duration) {
 
         }
     };

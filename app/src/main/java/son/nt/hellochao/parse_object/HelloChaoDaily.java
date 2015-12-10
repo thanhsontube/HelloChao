@@ -26,22 +26,6 @@ public class HelloChaoDaily extends MusicItem {
     private int value = 5;
     private int level = 1;
 
-    public HelloChaoDaily() {
-        tags.add("hello chao");
-        tags.add("daily");
-    }
-
-    public HelloChaoDaily(String audio, String text, String translate, int day, int month, int year) {
-        this.audio = audio;
-        this.text = text;
-        this.translate = translate;
-        this.day = day;
-        this.month = month;
-        this.year = year;
-
-        tags.add("hello chao");
-        tags.add("daily");
-    }
 
     public HelloChaoDaily(String audio, String text, String translate, int level, int value) {
         this.audio = audio;
@@ -53,6 +37,9 @@ public class HelloChaoDaily extends MusicItem {
         day = arr[0];
         month = arr[1];
         year = arr[2];
+
+        tags.add("hello chao");
+        tags.add("daily");
     }
 
     public List<String> getDates() {

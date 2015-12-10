@@ -15,7 +15,9 @@ import java.util.List;
 
 import son.nt.hellochao.R;
 import son.nt.hellochao.dto.HomeEntity;
+import son.nt.hellochao.dto.MusicItem;
 import son.nt.hellochao.otto.GoESL;
+import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.OttoBus;
 
@@ -80,6 +82,8 @@ public class AdapterListEsl extends RecyclerView.Adapter<AdapterListEsl.Holder> 
     public int getItemCount() {
         return list.size();
     }
+
+
 
 
 }
