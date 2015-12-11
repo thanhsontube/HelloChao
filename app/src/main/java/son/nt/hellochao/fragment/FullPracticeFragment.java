@@ -165,6 +165,7 @@ public class FullPracticeFragment extends AFragment {
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+        void onMore (HelloChaoDaily helloChaoDaily);
     }
 
     @Override
@@ -203,11 +204,17 @@ public class FullPracticeFragment extends AFragment {
 
     @Subscribe
     public void GoFullItemClick(GoFullItemClick goFullItemClick) {
-        Logger.debug(TAG, ">>>" + "GoFullItemClick musicService:" + musicService);
-        statePlay = StatePlay.None;
-        if (musicService != null) {
-            musicService.processAddRequest(goFullItemClick.musicItem);
+        if (goFullItemClick.isMore) {
+            if (mListener != null) {
+                mListener.onMore((HelloChaoDaily) goFullItemClick.musicItem);
+            }
+        } else {
+            statePlay = StatePlay.None;
+            if (musicService != null) {
+                musicService.processAddRequest(goFullItemClick.musicItem);
+            }
         }
+
 
     }
 
@@ -223,15 +230,24 @@ public class FullPracticeFragment extends AFragment {
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView txtText;
             TextView txtTranslate;
+            TextView txtMore;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 txtText = (TextView) itemView.findViewById(R.id.txt_text);
                 txtTranslate = (TextView) itemView.findViewById(R.id.txt_translate);
+                txtMore = (TextView) itemView.findViewById(R.id.txt_more);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        OttoBus.post(new GoFullItemClick(list.get(getAdapterPosition())));
+                        OttoBus.post(new GoFullItemClick(list.get(getAdapterPosition()), false));
+                    }
+                });
+
+                txtMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        OttoBus.post(new GoFullItemClick(list.get(getAdapterPosition()), true));
                     }
                 });
             }
@@ -239,7 +255,7 @@ public class FullPracticeFragment extends AFragment {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.row_list_2lines, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.row_list_3lines, parent, false);
             return new ViewHolder(view);
         }
 

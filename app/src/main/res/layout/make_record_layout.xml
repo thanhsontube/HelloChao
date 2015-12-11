@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="220dp"
+    android:background="@color/md_white_1000"
+    android:orientation="vertical">
+
+    <Chronometer
+        android:id="@+id/record_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:format="%s"
+        android:text="10:00"
+        android:textColor="@color/md_grey_500" />
+
+    <FrameLayout
+        android:id="@+id/record_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/record_action"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:background="?selectableItemBackground"
+            android:src="@color/md_red_500"
+            app:riv_corner_radius="48dp"
+            app:riv_oval="true" />
+
+
+        <TextView
+            style="@style/AppTextViewStyle.Normal.Light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Record"
+            android:textColor="@color/md_white_1000" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/record_ll_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
+            android:background="@drawable/box_black_with_corner">
+
+            <TextView
+                android:id="@+id/record_cancel"
+                style="@style/AppTextViewStyle.Normal.Grey_600"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="?selectableItemBackground"
+                android:gravity="center"
+                android:maxLines="1"
+                android:padding="16dp"
+                android:text="Cancel"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="24dp"
+            android:layout_weight="1"
+            android:background="@drawable/box_blue_with_corner">
+
+            <TextView
+                android:id="@+id/record_done"
+                style="@style/AppTextViewStyle.Normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="?selectableItemBackground"
+                android:gravity="center"
+                android:maxLines="1"
+                android:padding="16dp"
+                android:text="Done"
+                android:textColor="@color/md_blue_500"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+
+    </LinearLayout>
+
+
+</FrameLayout>

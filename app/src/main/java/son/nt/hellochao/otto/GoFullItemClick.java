@@ -8,8 +8,11 @@ import son.nt.hellochao.dto.MusicItem;
  */
 public class GoFullItemClick extends AObject {
     public MusicItem musicItem;
+    public boolean isMore = false;
 
-    public GoFullItemClick(MusicItem musicItem) {
+    public GoFullItemClick(MusicItem musicItem, boolean isMore) {
         this.musicItem = musicItem;
+        this.isMore = isMore;
     }
+
 }

@@ -30,15 +30,18 @@ import son.nt.hellochao.dto.QuizEntity;
 import son.nt.hellochao.fragment.FullPracticeFragment;
 import son.nt.hellochao.fragment.PlayingFragment;
 import son.nt.hellochao.fragment.ScrollFragment;
+import son.nt.hellochao.fragment.SentencePracticeFragment;
 import son.nt.hellochao.loader.LessonLoader;
 import son.nt.hellochao.loader.LoaderManager;
 import son.nt.hellochao.loader.QuizLoader;
 import son.nt.hellochao.otto.GoHot;
+import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.schedule.AutoGetDailyTestReceiver;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.TsParse;
 
-public class ScrollingActivity extends AActivity implements ScrollFragment.OnFragmentInteractionListener{
+public class ScrollingActivity extends AActivity implements ScrollFragment.OnFragmentInteractionListener,
+FullPracticeFragment.OnFragmentInteractionListener{
 
     public final String TAG = this.getClass().getSimpleName();
 
@@ -365,5 +368,10 @@ public class ScrollingActivity extends AActivity implements ScrollFragment.OnFra
     public void onPracticeFull() {
         showFragment(FullPracticeFragment.newInstance("",""), true);
 
+    }
+
+    @Override
+    public void onMore(HelloChaoDaily helloChaoDaily) {
+        showFragment(SentencePracticeFragment.newInstance("", helloChaoDaily), true);
     }
 }
