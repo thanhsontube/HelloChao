@@ -12,7 +12,6 @@ import java.util.List;
 
 import son.nt.hellochao.R;
 import son.nt.hellochao.dto.TopDto;
-import son.nt.hellochao.utils.DatetimeUtils;
 
 /**
  * Created by Sonnt on 7/14/15.
@@ -39,7 +38,7 @@ public class AdapterRoles extends RecyclerView.Adapter<AdapterRoles.Holder> {
         holder.txtName.setText(dto.getName());
         holder.txtScore.setText("" + dto.getScore() + "/10");
         holder.txtTotal.setText("" + dto.getTotalTime() + "s");
-        holder.txtSubmitTime.setText(DatetimeUtils.getTimeAgo(dto.getSubmitTime(), context));
+//        holder.txtSubmitTime.setText(DatetimeUtils.getTimeAgo(dto.getSubmitTime(), context));
 //        Glide.with(holder.img.getContext()).load(dto.getLinkAvatar()).diskCacheStrategy(DiskCacheStrategy.ALL)
 //        .fitCenter().into(holder.img);
 

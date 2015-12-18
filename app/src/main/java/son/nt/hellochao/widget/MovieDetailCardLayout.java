@@ -18,6 +18,7 @@ package son.nt.hellochao.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -60,6 +61,9 @@ public class MovieDetailCardLayout extends FrameLayout {
         if (!TextUtils.isEmpty(title)) {
             mTitleTextView.setText(title);
         }
+
+        final boolean isSeeMore = a.getBoolean(R.styleable.MovieDetailCardLayout_seeMore, true);
+        mSeeMoreTextView.setVisibility(isSeeMore ? VISIBLE:GONE);
         a.recycle();
     }
 
@@ -86,5 +90,9 @@ public class MovieDetailCardLayout extends FrameLayout {
         } else {
             super.addView(child, index, params);
         }
+    }
+
+    public void setBG (int color) {
+        mCardContent.setBackgroundColor(ContextCompat.getColor(getContext(), color));
     }
 }

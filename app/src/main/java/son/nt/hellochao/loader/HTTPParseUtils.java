@@ -16,10 +16,8 @@ import son.nt.hellochao.dto.ESLDetailsDto;
 import son.nt.hellochao.dto.ESLMenuDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.loader.dailyTalk.HcDailyLoader;
-import son.nt.hellochao.otto.GoDaiLyTest;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.utils.Logger;
-import son.nt.hellochao.utils.OttoBus;
 
 
 /**
@@ -62,7 +60,7 @@ public class HTTPParseUtils {
                 Logger.debug(TAG, ">>>" + "withHcDaily onContentLoaderSucceed:" + entity.size());
                 //push to server
                 AppAPI.getInstance().pushDailyQuestionsFromWebToParse(entity);
-                OttoBus.post(new GoDaiLyTest(entity));
+//                OttoBus.post(new GoDaiLyTest(entity));
 
             }
 

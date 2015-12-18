@@ -30,8 +30,7 @@
         </activity>
         <activity
             android:name=".activity.OralActivity"
-            android:label="@string/title_activity_oral"
-            android:theme="@style/AppTheme" />
+             />
 
         <receiver android:name=".schedule.AutoGetDailyTestReceiver"></receiver>
 

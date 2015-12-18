@@ -148,4 +148,9 @@
     <string name="error_create_account">Error creating account</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="see_more">See more</string>
+    <string name="explain_wrong">Result:GREEN is correct, RED is wrong</string>
+    <string name="explain_wrong_2">This is the result. GREEN is correct, RED is wrong. OK</string>
+    <string name="explain_start_record">Click Start Button and read the sentence.</string>
+    <string name="exam">Exam</string>
+    <string name="record">Record</string>
 </resources>

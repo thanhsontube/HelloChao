@@ -1,9 +1,12 @@
 package son.nt.hellochao.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,8 +20,10 @@ public class ViewRowHcDaily extends LinearLayout {
     TextView txtText, txtTranslate;
     View rowLL;
     HelloChaoDaily helloChaoDaily;
+    ImageView icon;
+
     public ViewRowHcDaily(Context context) {
-        this (context, null);
+        this(context, null);
     }
 
     public ViewRowHcDaily(Context context, AttributeSet attrs) {
@@ -31,7 +36,16 @@ public class ViewRowHcDaily extends LinearLayout {
         rowLL = findViewById(R.id.row_ll);
         txtText = (TextView) findViewById(R.id.txt_text);
         txtTranslate = (TextView) findViewById(R.id.txt_translate);
+        icon = (ImageView) findViewById(R.id.img_src);
         rowLL.setOnClickListener(onClickListener);
+
+
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ViewRowHcDaily);
+        final Drawable src = typedArray.getDrawable(R.styleable.ViewRowHcDaily_src);
+        if (src != null) {
+//            icon.setImageDrawable(ContextCompat.getDrawable(context, src));
+            icon.setImageDrawable(src);
+        }
 
 
     }
@@ -52,16 +66,17 @@ public class ViewRowHcDaily extends LinearLayout {
     };
 
     public interface OnViewRowHcDailyClick {
-        void onClick (HelloChaoDaily data);
+        void onClick(HelloChaoDaily data);
     }
+
     OnViewRowHcDailyClick callback;
 
-    public void setOnViewRowHcDailyClickCallback (OnViewRowHcDailyClick cb) {
+    public void setOnViewRowHcDailyClickCallback(OnViewRowHcDailyClick cb) {
         this.callback = cb;
     }
 
 
-    public void setData (HelloChaoDaily data) {
+    public void setData(HelloChaoDaily data) {
         if (data == null) {
             return;
         }
@@ -70,7 +85,6 @@ public class ViewRowHcDaily extends LinearLayout {
         txtTranslate.setText(data.getTranslate());
 
     }
-
 
 
 }

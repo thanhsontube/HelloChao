@@ -11,6 +11,9 @@ import son.nt.hellochao.utils.DatetimeUtils;
  * Created by Sonnt on 12/6/15.
  */
 public class HelloChaoDaily extends MusicItem {
+    public static final int TYPE_NEW = 0;
+    public static final int TYPE_CORRECT = 1;
+    public static final int TYPE_WRONG = 2;
     private String translate;
 
 //    private List<Integer> day;
@@ -25,6 +28,7 @@ public class HelloChaoDaily extends MusicItem {
     private String sID;
     private int value = 5;
     private int level = 1;
+    public int typeCheck = TYPE_NEW;
 
 
     public HelloChaoDaily(String audio, String text, String translate, int level, int value) {
@@ -142,4 +146,5 @@ public class HelloChaoDaily extends MusicItem {
     public void setLevel(int level) {
         this.level = level;
     }
+
 }

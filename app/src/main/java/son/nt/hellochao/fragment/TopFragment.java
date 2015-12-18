@@ -173,7 +173,7 @@ public class TopFragment extends AFragment {
                     dto.setName(p.getString("username"));
                     dto.setScore(p.getInt("score"));
                     dto.setTotalTime(p.getInt("total"));
-                    dto.setSubmitTime(p.getLong("submitTime"));
+//                    dto.setSubmitTime(p.getLong("submitTime"));
                     i++;
                     list.add(dto);
                 }

@@ -1,287 +1,287 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/md_grey_100"
-    android:orientation="vertical"
-    android:padding="8dp"
-    tools:context="son.nt.hellochao.fragment.OralFragment">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout
+
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/oral_appbar"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
+            <android.support.design.widget.CollapsingToolbarLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/box_black_with_corner"
+                android:layout_height="80dp"
+                app:contentScrim="@color/blue_transparent"
+                app:expandedTitleMarginEnd="64dp"
+                app:expandedTitleMarginStart="48dp"
+                app:layout_scrollFlags="scroll"
+                app:title="Oral">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/side_nav_bar" />
+            </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/md_grey_100"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="8dp"
+                tools:context="son.nt.hellochao.fragment.OralFragment">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/oral_chb_auto_next"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:checked="true"
-                        android:text="@string/auto_next" />
-
-                    <CheckBox
-                        android:id="@+id/oral_chb_hide_voice"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:checked="true"
-                        android:text="@string/your_voice" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/oral_chb_hide_text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:checked="true"
-                        android:text="@string/english_sentence" />
-
-
-                    <CheckBox
-                        android:id="@+id/oral_chb_translate"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:checked="true"
-                        android:text="@string/translation" />
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/box_black_with_corner"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="12dp"
-                    android:background="@drawable/box_blue_with_corner">
-
-                    <ImageView
-                        android:id="@+id/oral_re_listen"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?selectableItemBackground"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_av_volume_up" />
-                </FrameLayout>
-
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/oral_eng_sentence"
-                        style="@style/txt_green_18"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="Where Am I" />
-
-                    <TextView
-                        android:id="@+id/oral_vi_sentence"
-                        style="@style/txt_black_14"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        tools:text="Where Am I" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:padding="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/box_black_with_corner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/txt_green_14"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="You said that:" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/oral_your_voice"
-                        style="@style/txt_black_18"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/box_blue_with_corner"
-                        android:padding="16dp"
-                        tools:text="Where Am I" />
-
-                    <ImageView
-                        android:id="@+id/oral_img_answer_result"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:src="@drawable/ic_right_answer" />
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <!--checking and try-again-->
-            <FrameLayout
-                android:layout_marginTop="16dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:id="@+id/oral_checking_ll"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:background="@drawable/box_black_with_corner"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp">
-
-                    <android.support.v4.widget.ContentLoadingProgressBar
-                        style="?android:attr/progressBarStyleInverse"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:contentDescription="@string/checking" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/checking" />
-                </LinearLayout>
-
-                <!--try again btn-->
-                <FrameLayout
-                    android:id="@+id/oral_ll_try_again"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="12dp"
-                    android:background="@drawable/box_blue_with_corner">
-
-                    <TextView
-                        android:id="@+id/oral_btn_try"
-                        style="@style/txt_black_14"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?selectableItemBackground"
-                        android:gravity="center"
-                        android:padding="14dp"
-                        android:text="@string/try_again"
-                        android:textStyle="bold" /> />
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                </FrameLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/box_black_with_corner"
+                            android:orientation="vertical"
+                            android:padding="8dp"
+                            android:visibility="gone">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <CheckBox
+                                    android:id="@+id/oral_chb_auto_next"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="true"
+                                    android:text="@string/auto_next" />
+
+                                <CheckBox
+                                    android:id="@+id/oral_chb_hide_voice"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="true"
+                                    android:text="@string/your_voice" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:orientation="horizontal">
+
+                                <CheckBox
+                                    android:id="@+id/oral_chb_hide_text"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="true"
+                                    android:text="@string/english_sentence" />
+
+
+                                <CheckBox
+                                    android:id="@+id/oral_chb_translate"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="true"
+                                    android:text="@string/translation" />
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+                        <!--Exam-->
+
+                        <son.nt.hellochao.widget.MovieDetailCardLayout
+                            android:id="@+id/view_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:layout_marginTop="8dp"
+                            app:seeMore="false"
+                            app:title="@string/exam">
+
+                            <son.nt.hellochao.widget.ViewRowHcDaily
+                                android:id="@+id/oral_exam"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:src="@drawable/ic_av_volume_up" />
+
+                        </son.nt.hellochao.widget.MovieDetailCardLayout>
+                        <!--Record-->
+
+                        <son.nt.hellochao.widget.MovieDetailCardLayout
+                            android:id="@+id/oral_view_record"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:seeMore="false"
+                            app:title="@string/record">
+
+                            <TextView
+                                style="@style/AppTextViewStyle.Normal.Grey_600"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="8dp"
+                                android:text="@string/explain_start_record" />
+
+                            <FrameLayout
+                                android:id="@+id/oral_google_test"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center">
+
+                                <com.makeramen.roundedimageview.RoundedImageView
+                                    android:id="@+id/oral_google_test_1"
+                                    android:layout_width="70dp"
+                                    android:layout_height="70dp"
+                                    android:layout_gravity="center"
+                                    android:background="?selectableItemBackground"
+                                    android:clickable="false"
+                                    android:src="@color/md_red_500"
+                                    app:riv_corner_radius="48dp"
+                                    app:riv_oval="true" />
+
+
+                                <TextView
+                                    android:id="@+id/oral_google_test_2"
+                                    style="@style/ButtonTextStyle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Start"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/md_white_1000" />
+
+                            </FrameLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="8dp">
+
+                                <TextView
+                                    style="@style/AppTextViewStyle.Normal.Grey_600"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:text="@string/explain_wrong" />
+
+                                <TextView
+                                    android:id="@+id/oral_txt_result"
+                                    style="@style/txt_white_14"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginTop="8dp"
+                                    android:background="@drawable/box_bg_green_with_corner_white"
+                                    android:clickable="false"
+                                    android:gravity="center"
+                                    android:padding="8dp"
+                                    android:text="@string/explain_wrong_2" />
+                            </LinearLayout>
+
+
+                        </son.nt.hellochao.widget.MovieDetailCardLayout>
+                        <android.support.v7.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <include layout="@layout/score_view" />
+
+                                <FrameLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="20dp"
+                                    android:background="?colorPrimaryDark">
+
+                                    <TextView
+                                        android:onClick="true"
+                                        android:id="@+id/oral_submit"
+                                        style="@style/txt_black_14"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:background="?selectableItemBackground"
+                                        android:gravity="center"
+                                        android:padding="14dp"
+                                        android:text="I finished it!"
+                                        android:textAllCaps="true"
+                                        android:textColor="@color/md_white_1000"
+                                        android:textStyle="bold" />
+
+                                </FrameLayout>
+                            </LinearLayout>
+
+                        </android.support.v7.widget.CardView>
+
+                    </LinearLayout>
+                </LinearLayout>
 
 
             </FrameLayout>
 
+        </android.support.v4.widget.NestedScrollView>
 
-
-
-            <LinearLayout
-                android:padding="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/box_black_with_corner"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/oral_txt_score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/txt_green_14"
-                    android:text="Score: 5"/>
-
-                <Chronometer
-                    android:id="@+id/timer"
-                    style="@style/txt_black_18"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:format="%s"
-                    android:padding="8dp"
-                    android:visibility="visible" />
-            </LinearLayout>
-
-
-
-        </LinearLayout>
-
-        <!--next btn-->
-        <FrameLayout
-            android:layout_width="match_parent"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/oral_volume"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:background="@drawable/box_blue_with_corner">
+            android:layout_margin="16dp"
+            android:src="@mipmap/ic_control_volume"
+            app:layout_anchor="@id/oral_appbar"
+            app:layout_anchorGravity="end|right|bottom" />
 
-            <TextView
-                android:id="@+id/oral_btn_next"
-                style="@style/txt_black_14"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackground"
-                android:gravity="center"
-                android:padding="14dp"
-                android:text="@string/next"
-                android:textColor="@color/md_blue_A200"
-                android:textStyle="bold" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/oral_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@mipmap/ic_next"
+            app:layout_anchor="@id/oral_view_record"
+            app:layout_anchorGravity="end|right|center_vertical" />
 
-        </FrameLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/oral_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@mipmap/ic_previous"
+            app:backgroundTint="@color/md_amber_200"
+            app:layout_anchor="@id/oral_view_record"
+            app:layout_anchorGravity="start|left|center_vertical" />
 
-
-    </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
     <include layout="@layout/help_test_layout" />
 
 
 </FrameLayout>
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<son.nt.hellochao.widget.MovieDetailCardLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:title="Adjust Volume"
+    app:seeMore="false">
+
+    <LinearLayout
+        style="@style/ThemeOverlay.AppCompat.Light"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            style="@style/txt_white_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Volume" />
+
+        <android.support.v7.widget.AppCompatSeekBar
+            android:id="@+id/setting_volume"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/setting_txt_volume"
+            style="@style/AppTextViewStyle.Normal.Grey_600"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="0" />
+
+        <Button
+            android:layout_marginTop="8dp"
+            android:background="@drawable/box_blue_with_corner"
+            android:id="@+id/setting_btn_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="Done" />
+
+    </LinearLayout>
+</son.nt.hellochao.widget.MovieDetailCardLayout>

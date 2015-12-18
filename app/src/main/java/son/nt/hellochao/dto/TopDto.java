@@ -1,17 +1,28 @@
 package son.nt.hellochao.dto;
 
+import java.util.Date;
+
 import son.nt.hellochao.base.AObject;
 
 /**
  * Created by Sonnt on 9/16/15.
  */
-public class TopDto extends AObject{
+public class TopDto extends AObject {
+    private String userName;
     private String name;
     private String linkAvatar;
     private int score;
     private int totalTime;
-    private long submitTime;
+    private Date submitTime;
     private int no;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public TopDto() {
     }
@@ -48,11 +59,11 @@ public class TopDto extends AObject{
         this.totalTime = totalTime;
     }
 
-    public long getSubmitTime() {
+    public Date getSubmitTime() {
         return submitTime;
     }
 
-    public void setSubmitTime(long submitTime) {
+    public void setSubmitTime(Date submitTime) {
         this.submitTime = submitTime;
     }
 

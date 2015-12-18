@@ -6,7 +6,9 @@ import com.apptimize.Apptimize;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
+import com.parse.ParseObject;
 
+import son.nt.hellochao.dto.DailyTopDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.loader.HTTPParseUtils;
 import son.nt.hellochao.utils.Logger;
@@ -28,10 +30,16 @@ public class MyApplication extends Application {
         ParseInstallation.getCurrentInstallation().saveInBackground();
         ParseFacebookUtils.initialize(getApplicationContext());
 
+        parseRegisterSubClass();
+
         AppAPI.createInstance(getApplicationContext());
 
         /*apptimize*/
         Apptimize.setup(this, "D6uPHsHdkicGWh3ceWzAbaeuW2vK48d");
 
+    }
+
+    private void parseRegisterSubClass () {
+        ParseObject.registerSubclass(DailyTopDto.class);
     }
 }

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.hellochao.dto.DailySpeakDto;
-import son.nt.hellochao.dto.HelloChaoSubmitDto;
-import son.nt.hellochao.dto.TopDto;
+import son.nt.hellochao.dto.DailyTopDto;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
 
 /**
@@ -17,9 +16,9 @@ public interface IHelloChao {
 
     void getHcDaily();
 
-    void getHcUserTop();
+    void getHcUserDailyTop();
 
-    void hcSubmitTestResult(HelloChaoSubmitDto helloChaoSubmitDto);
+    void hcSubmitTestResult(DailyTopDto helloChaoSubmitDto);
 
     void setHcCallback(HcCallback callback);
 
@@ -27,8 +26,9 @@ public interface IHelloChao {
 
 
     interface HcCallback {
-        void throwUserTop(ArrayList<TopDto> listTop);
+        void throwUserTop(ArrayList<DailyTopDto> listTop);
         void throwDailySentences(ArrayList<HelloChaoDaily> listDaiLy);
         void throwAllSentences(ArrayList<DailySpeakDto> listDaiLy);
+        void throwSubmitDaily (boolean isUpdate, String error);
     }
 }

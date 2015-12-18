@@ -292,11 +292,11 @@ public class MainActivityFragment extends AFragment {
                         dto.setName(p.getString("username"));
                         dto.setScore(p.getInt("score"));
                         dto.setTotalTime(p.getInt("total"));
-                        dto.setSubmitTime(p.getLong("submitTime"));
+//                        dto.setSubmitTime(p.getLong("submitTime"));
                         i++;
                         listTops.add(dto);
                     }
-                    ResourceManager.getInstance().setListTops(listTops);
+//                    ResourceManager.getInstance().setListTops(listTops);
                     updateStatus(false);
                 }
             });

@@ -35,10 +35,10 @@ import son.nt.hellochao.adapter.AdapterHot;
 import son.nt.hellochao.adapter.AdapterListEsl;
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.DailySpeakDto;
+import son.nt.hellochao.dto.DailyTopDto;
 import son.nt.hellochao.dto.HomeEntity;
 import son.nt.hellochao.dto.HotEntity;
 import son.nt.hellochao.dto.MusicItem;
-import son.nt.hellochao.dto.TopDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.interface_app.IHelloChao;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
@@ -49,6 +49,7 @@ import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.OttoBus;
 import son.nt.hellochao.widget.MovieDetailCardLayout;
 import son.nt.hellochao.widget.ViewRowHcDaily;
+import son.nt.hellochao.widget.ViewRowTopDaily;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -163,6 +164,7 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
         appAPI = new AppAPI(getContext());
         appAPI.setHcCallback(hcCallback);
         appAPI.getHcDaily();
+        appAPI.getHcUserDailyTop();
         listHot.clear();
 
     }
@@ -179,7 +181,7 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
     @Override
     protected void initListener(View view) {
         homePic.setOnClickListener(this);
-        dailyTop.setSeeMoreOnClickListener(this);
+        dailyTop.setSeeMoreOnClickListener(null);
         dailyPractice.setSeeMoreOnClickListener(moreDailyPractice);
     }
 
@@ -264,6 +266,21 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
 
     }
 
+    private void processTopData(ArrayList<DailyTopDto> list) {
+        if (list.isEmpty()) {
+            return;
+        }
+        Logger.debug(TAG, ">>>" + "processTopData:" + list.size());
+        ViewRowTopDaily view;
+        int max = list.size() >= 3 ? 3 : list.size();
+        for (int i = 0; i < max; i++) {
+            view = new ViewRowTopDaily(getContext());
+            view.setData(list.get(i));
+            dailyTop.addView(view);
+        }
+
+    }
+
     ViewRowHcDaily.OnViewRowHcDailyClick onViewRowHcDailyClick = new ViewRowHcDaily.OnViewRowHcDailyClick() {
         @Override
         public void onClick(HelloChaoDaily data) {
@@ -277,22 +294,32 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
 
     IHelloChao.HcCallback hcCallback = new IHelloChao.HcCallback() {
         @Override
-        public void throwUserTop(ArrayList<TopDto> listTop) {
-            Logger.debug(TAG, ">>>" + "throwUserTop");
+        public void throwUserTop(ArrayList<DailyTopDto> listTop) {
+            Logger.debug(TAG, ">>>" + "throwUserTop:" + listTop.size());
+            if(!listTop.isEmpty()) {
+                ResourceManager.getInstance().setListTops(listTop);
+            }
+            processTopData (listTop);
 
         }
 
         @Override
         public void throwDailySentences(ArrayList<HelloChaoDaily> listDaiLy) {
-            Logger.debug(TAG, ">>>" + "throwDailySentences");
+            if (!listDaiLy.isEmpty()) {
+                ResourceManager.getInstance().setListHelloChaoDaily(listDaiLy);
+            }
             processData(listDaiLy);
-            ResourceManager.getInstance().getListHelloChaoDaily().clear();
-            ResourceManager.getInstance().setListHelloChaoDaily(listDaiLy);
+
 
         }
 
         @Override
         public void throwAllSentences(ArrayList<DailySpeakDto> listDaiLy) {
+
+        }
+
+        @Override
+        public void throwSubmitDaily(boolean isUpdate, String error) {
 
         }
     };

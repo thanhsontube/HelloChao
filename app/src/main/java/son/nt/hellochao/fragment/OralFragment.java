@@ -5,21 +5,17 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.speech.RecognizerIntent;
-import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,11 +25,9 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.squareup.otto.Subscribe;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,56 +35,46 @@ import butterknife.Bind;
 import son.nt.hellochao.MsConst;
 import son.nt.hellochao.R;
 import son.nt.hellochao.ResourceManager;
-import son.nt.hellochao.base.AFragment;
+import son.nt.hellochao.base.AMusicServiceFragment;
 import son.nt.hellochao.dto.DailySpeakDto;
-import son.nt.hellochao.dto.TopDto;
+import son.nt.hellochao.dto.DailyTopDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.interface_app.IHelloChao;
-import son.nt.hellochao.otto.GoDownload;
-import son.nt.hellochao.otto.GoOnList;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
+import son.nt.hellochao.service.MusicPlayback;
 import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.OttoBus;
 import son.nt.hellochao.utils.PreferenceUtil;
+import son.nt.hellochao.widget.MovieDetailCardLayout;
+import son.nt.hellochao.widget.ViewRowHcDaily;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link OralFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OralFragment extends AFragment implements View.OnClickListener, IHelloChao.HcCallback {
+public class OralFragment extends AMusicServiceFragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "OralFragment";
     private static final int REQUEST_CODE = 12;
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private boolean isTest;
 
-    List<DailySpeakDto> list = new ArrayList<>();
-
-    TextView txtEngSentence;
-    TextView txtYourVoice;
-    TextView txtViSentence;
-    View btnNext;
+    List<HelloChaoDaily> list = new ArrayList<>();
 
     int currentPoint = 0;
 
-    MediaPlayer player;
     boolean isAutoNext = false;
     CheckBox chbAutoNext;
     CheckBox chbTranslation;
     CheckBox chbVoice;
     CheckBox chbText;
-    ImageView reListen;
-    View viewChecking;
-    Handler handler = new Handler();
     int score = 0;
     int totalTimes = 0;
     ProgressDialog progressDialog;
-    MediaRecorder mediaRecorder;
 
     Chronometer chronometer;
 
@@ -100,27 +84,39 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
     @Bind(R.id.view_help_test)
     View viewHelp;
 
-    @Bind(R.id.oral_ll_try_again)
-    View viewTryAgain;
-
-    @Bind(R.id.oral_img_answer_result)
-    ImageView imgResult;
 
     @Bind(R.id.oral_txt_score)
     TextView txtScore;
 
+    @Bind(R.id.oral_txt_total)
+    TextView txtTotal;
+
+
+    @Bind(R.id.oral_exam)
+    ViewRowHcDaily viewExam;
+
+    @Bind(R.id.oral_next)
+    View viewNext;
+    @Bind(R.id.oral_previous)
+    View viewPrev;
+    @Bind(R.id.oral_google_test_1)
+    View googleTest1;
+    @Bind(R.id.oral_google_test_2)
+    View googleTest2;
+    @Bind(R.id.oral_txt_result)
+    TextView txtResult;
+    @Bind(R.id.oral_submit)
+    TextView submit;
+
+    @Bind(R.id.oral_volume) View viewVolume;
+
+    @Bind(R.id.view_status)
+    MovieDetailCardLayout viewStatus;
+
     boolean isEnd = false;
 
+    AppAPI appAPI;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param isTest Parameter 2.
-     * @return A new instance of fragment OralFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static OralFragment newInstance(String param1, boolean isTest) {
         OralFragment fragment = new OralFragment();
         Bundle args = new Bundle();
@@ -131,7 +127,6 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
     }
 
     public OralFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -142,6 +137,8 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
             mParam1 = getArguments().getString(ARG_PARAM1);
             isTest = getArguments().getBoolean(ARG_PARAM2);
         }
+        appAPI = new AppAPI(getContext());
+        appAPI.setHcCallback(hcCallback);
     }
 
 
@@ -154,31 +151,18 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
     @Override
     protected void initData() {
         list.clear();
-        list.addAll(ResourceManager.getInstance().getDailySpeakDtoList());
-        initPlayer();
-        AppAPI.getInstance().setHcCallback(this);
+        if (!ResourceManager.getInstance().getListHelloChaoDaily().isEmpty()) {
+            list.addAll(ResourceManager.getInstance().getListHelloChaoDaily());
+        }
     }
 
     @Override
     protected void initLayout(View view) {
-        btnNext = view.findViewById(R.id.oral_btn_next);
-        txtEngSentence = (TextView) view.findViewById(R.id.oral_eng_sentence);
-        txtYourVoice = (TextView) view.findViewById(R.id.oral_your_voice);
-        txtEngSentence.setText(getString(R.string.waiting));
 
         chbAutoNext = (CheckBox) view.findViewById(R.id.oral_chb_auto_next);
-
         chbText = (CheckBox) view.findViewById(R.id.oral_chb_hide_text);
         chbTranslation = (CheckBox) view.findViewById(R.id.oral_chb_translate);
         chbVoice = (CheckBox) view.findViewById(R.id.oral_chb_hide_voice);
-
-        txtViSentence = (TextView) view.findViewById(R.id.oral_vi_sentence);
-
-        reListen = (ImageView) view.findViewById(R.id.oral_re_listen);
-
-        viewChecking = view.findViewById(R.id.oral_checking_ll);
-        viewChecking.setVisibility(View.INVISIBLE);
-
         chronometer = (Chronometer) view.findViewById(R.id.timer);
 
 
@@ -197,6 +181,12 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
     protected void initListener(View view) {
 
         btnStart.setOnClickListener(this);
+        viewNext.setOnClickListener(this);
+        submit.setOnClickListener(this);
+        viewPrev.setOnClickListener(this);
+        googleTest1.setOnClickListener(this);
+        googleTest2.setOnClickListener(this);
+        viewVolume.setOnClickListener(this);
         chbVoice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -224,150 +214,79 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
                 isAutoNext = isChecked;
             }
         });
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                currentPoint++;
 
-                if (currentPoint >= list.size()) {
-
-                    currentPoint = 0;
-                    if (isTest) {
-                        isEnd = true;
-                        showTop();
-                    } else {
-                        updateSentence();
-                        playSentence();
-                    }
-                } else {
-                    updateSentence();
-                    playSentence();
-                }
-
-            }
-        });
-
-        reListen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playSentence();
-            }
-        });
-
-        view.findViewById(R.id.oral_btn_try).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startVoiceRecognitionActivity();
-            }
-        });
+        viewExam.setOnViewRowHcDailyClickCallback(onViewRowHcDailyClick);
 
 
     }
 
-    private void initPlayer() {
-        player = new MediaPlayer();
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                if (!isSafe()) {
-                    return;
-                }
-
-                if (chbVoice.isChecked()) {
-                    if (!isEnd) {
-                        startVoiceRecognitionActivity();
-                    }
-                } else {
-                    if (isAutoNext) {
-                        currentPoint++;
-                        if (currentPoint >= list.size()) {
-                            currentPoint = 0;
-                        }
-                        updateSentence();
-                        playSentence();
-
-                    }
-                }
-
-
+    ViewRowHcDaily.OnViewRowHcDailyClick onViewRowHcDailyClick = new ViewRowHcDaily.OnViewRowHcDailyClick() {
+        @Override
+        public void onClick(HelloChaoDaily data) {
+            if (musicService != null) {
+                musicService.processAddRequest(data);
             }
-        });
-
-        player.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                playSentence();
-                return false;
-            }
-        });
-    }
+        }
+    };
 
 
     @Override
     protected void updateLayout() {
-        viewTryAgain.setVisibility(View.GONE);
-        txtScore.setText("Score:0");
-        btnStart.setText("Loading...");
-        btnStart.setEnabled(false);
-        AppAPI.getInstance().helloChaoGetDailyQuestions();
+        txtScore.setText("0");
+        btnStart.setText("Start");
+        btnStart.setEnabled(true);
         chbVoice.setEnabled(!isTest);
-
-
-        updateSentence();
-//        playSentence();
     }
 
-
-    private void playSentence() {
-        resetLayoutWhenOpenNewSentence();
-        try {
-            player.reset();
-            player.setDataSource(list.get(currentPoint).getLinkMp3());
-            player.prepare();
-            player.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Subscribe
-    public void goDownload(GoDownload download) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(download.getCount()).append("-").append(download.getHeroID());
-        txtEngSentence.setText(stringBuilder.toString());
-        if (download.getCount() == -1) {
-            //speak
-//            if (mediaService != null) {
-//                mediaService.play(list.get(currentPoint).getLinkMp3());
-//            }
-
-
-        }
-
-
-    }
 
     //this is the case download questions from hellochap
 
 
     private void updateSentence() {
         Logger.debug(TAG, ">>>" + "updateSentence");
-
+        if (currentPoint == 0) {
+            viewPrev.setVisibility(View.INVISIBLE);
+        } else {
+            viewPrev.setVisibility(View.VISIBLE);
+        }
         if (list == null || list.isEmpty()) {
             Logger.error(TAG, ">>>" + "updateSentence list NULL OR ENPTY");
             return;
         }
-        Logger.debug(TAG, ">>>" + "List size:" + list.size());
-        txtEngSentence.setText(currentPoint + 1 + "." + list.get(currentPoint).getSentenceEng());
-        txtViSentence.setText(list.get(currentPoint).getSentenceVi());
-        txtEngSentence.setVisibility(chbText.isChecked() ? View.VISIBLE : View.INVISIBLE);
-        txtViSentence.setVisibility(chbTranslation.isChecked() ? View.VISIBLE : View.INVISIBLE);
+        if (currentPoint >= list.size()) {
+            return;
+        }
 
-        txtYourVoice.setText("");
-        txtYourVoice.setBackgroundColor(getResources().getColor(R.color.transparent));
+        if (currentPoint >= list.size() - 1) {
+            viewNext.setVisibility(View.INVISIBLE);
+        } else {
+            viewNext.setVisibility(View.VISIBLE);
+        }
+
+        //update exam
+        HelloChaoDaily dto = list.get(currentPoint);
+        viewExam.setData(dto);
+        switch (dto.typeCheck) {
+            case HelloChaoDaily.TYPE_NEW:
+                viewStatus.setBG(R.color.md_white_1000);
+                break;
+            case HelloChaoDaily.TYPE_CORRECT:
+                viewStatus.setBG(R.color.md_green_500);
+                break;
+            case HelloChaoDaily.TYPE_WRONG:
+                viewStatus.setBG(R.color.md_red_500);
+                break;
+        }
 
 
+        //update record
+        txtResult.setText("------------------");
+
+
+        //update total and score
+        txtScore.setText("" + score);
+        txtTotal.setText("" + (currentPoint + 1) + "/" + list.size());
     }
 
 
@@ -382,7 +301,7 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, list.get(currentPoint).getSentenceEng());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, list.get(currentPoint).getText());
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -394,72 +313,37 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
             ArrayList<String> matches = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             final String yourVoice = matches.get(0);
-            txtYourVoice.setText(matches.get(0));
-            viewChecking.setVisibility(View.VISIBLE);
-            viewTryAgain.setVisibility(View.GONE);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    int spaceYours = yourVoice.split(" ").length;
-                    viewChecking.setVisibility(View.INVISIBLE);
 
-                    String fromOther = list.get(currentPoint).getSentenceEng().toLowerCase().trim();
-
-                    fromOther = fromOther.replace(" - ", " ").replace(". ", " ").replace(", ", " ").replace("? ", " ");
-                    int spaceCorrect = fromOther.split(" ").length;
-                    if (fromOther.contains(yourVoice.toLowerCase()) && spaceCorrect == spaceYours) {
-//                        txtYourVoice.setBackgroundColor(getResources().getColor(R.color.md_green_500));
-                        imgResult.setVisibility(View.VISIBLE);
-                        imgResult.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_right_answer));
-                        score++;
-                        txtScore.setText("Score:" + score);
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!isSafe()) {
-                                    return;
-                                }
-                                if (isAutoNext) {
-                                    currentPoint++;
-
-                                    if (currentPoint >= list.size()) {
-                                        currentPoint = 0;
-                                        if (isTest) {
-                                            showTop();
-                                        } else {
-                                            if (isAutoNext) {
-                                                updateSentence();
-                                                playSentence();
-                                            }
-                                        }
-                                    } else {
-                                        if (isAutoNext) {
-                                            updateSentence();
-                                            playSentence();
-                                        }
-                                    }
-                                }
-                            }
-                        }, 1500);
-
-
-                    } else {
-
-//                        txtYourVoice.setBackgroundColor(getResources().getColor(R.color.md_red_500));
-                        imgResult.setVisibility(View.VISIBLE);
-                        imgResult.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_wrong_answer));
-                        viewTryAgain.setVisibility(View.VISIBLE);
-                    }
-
-                }
-            }, 1000);
-
-
-        } else {
-            viewTryAgain.setVisibility(View.VISIBLE);
+            processResult(yourVoice, txtResult, list.get(currentPoint));
         }
     }
 
+    void processResult(String text, TextView txtWriteResult, HelloChaoDaily helloChaoDaily) {
+        text = text.trim();
+        txtWriteResult.setText(text);
+        int spaceYours = text.split(" ").length;
+
+        String fromOther = helloChaoDaily.getText().toLowerCase().trim();
+
+        fromOther = fromOther.replace(" - ", " ").replace(". ", " ").replace(", ", " ").replace("? ", " ");
+        int spaceCorrect = fromOther.split(" ").length;
+        if (fromOther.contains(text.toLowerCase()) && spaceCorrect == spaceYours) {
+            txtWriteResult.setBackgroundResource(R.drawable.box_bg_green_with_corner_white);
+            if (list.get(currentPoint).typeCheck != HelloChaoDaily.TYPE_CORRECT) {
+
+                score++;
+                list.get(currentPoint).typeCheck = HelloChaoDaily.TYPE_CORRECT;
+            }
+            txtScore.setText("" + score);
+
+        } else {
+            txtWriteResult.setBackgroundResource(R.drawable.box_bg_red_with_corner_white);
+            if (list.get(currentPoint).typeCheck != HelloChaoDaily.TYPE_CORRECT) {
+
+                list.get(currentPoint).typeCheck = HelloChaoDaily.TYPE_WRONG;
+            }
+        }
+    }
 
     long timeBase;
 
@@ -512,9 +396,6 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
                                 p.saveInBackground(new SaveCallback() {
                                     @Override
                                     public void done(ParseException e) {
-
-
-                                        btnNext.setEnabled(false);
                                         progressDialog.dismiss();
                                         if (e != null) {
                                             Toast.makeText(getActivity(), R.string.updated_your_score, Toast.LENGTH_SHORT).show();
@@ -546,9 +427,6 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
                     p.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
-
-
-                            btnNext.setEnabled(false);
                             progressDialog.dismiss();
                             mListener.onTop();
 
@@ -575,16 +453,7 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     OnFragmentInteractionListener mListener;
 
     public interface OnFragmentInteractionListener {
@@ -592,14 +461,8 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
         public void onFragmentInteraction(Uri uri);
 
         void onTop();
-    }
 
-    private void initRecorder() {
-        mediaRecorder = new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        mediaRecorder.setOutputFile(ResourceManager.getInstance().folderBlur + File.separator + "t1.mp3");
+        void onVolume ();
     }
 
     //TODO onclick
@@ -608,9 +471,9 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
         switch (view.getId()) {
 
             case R.id.btn_start:
-                if (player == null) {
-                    return;
-                }
+                currentPoint = 0;
+                updateSentence();
+
                 viewHelp.setVisibility(View.GONE);
 
                 if (isTest) {
@@ -628,44 +491,92 @@ public class OralFragment extends AFragment implements View.OnClickListener, IHe
                 } else {
                     chronometer.setVisibility(View.GONE);
                 }
-                playSentence();
+                break;
+            case R.id.oral_google_test:
+            case R.id.oral_google_test_1:
+            case R.id.oral_google_test_2:
+                startVoiceRecognitionActivity();
+                break;
+            case R.id.oral_next:
+                currentPoint++;
+                updateSentence();
+                break;
+            case R.id.oral_previous:
+                currentPoint--;
+                updateSentence();
+                break;
+            case R.id.oral_submit:
+                processSubmit();
+break;
+
+            case R.id.oral_volume:
+                mListener.onVolume();
+
                 break;
         }
     }
 
+    private void processSubmit() {
+        totalTimes = (int) ((SystemClock.elapsedRealtime() - timeBase) / 1000);
+        Logger.debug(TAG, ">>>" + "showTop currentPoint:" + currentPoint + ";timeTest:" + totalTimes);
+        chronometer.stop();
+        if (score == 0) {
+            Toast.makeText(getActivity(), "Your score is too low for submitting !!!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (ParseUser.getCurrentUser() == null) {
+            Logger.debug(TAG, ">>>" + "You need to login first ...");
+            return;
+        }
+        showProgressDialog("Submitting....", false);
+//        DailyTopDto helloChaoSubmitDto = new DailyTopDto(ParseUser.getCurrentUser().getUsername(), score, totalTimes);
+        DailyTopDto dto = new DailyTopDto();
+        dto.setCorrectSentence(score);
+        dto.setTotalSeconds(totalTimes);
+        dto.setParseUser(ParseUser.getCurrentUser());
+        dto.setSubmitTime(Calendar.getInstance().getTime());
+        dto.setRelativeTime(DatetimeUtils.relativeTime());
+        appAPI.hcSubmitTestResult(dto);
+    }
+
+
     @Override
-    public void throwUserTop(ArrayList<TopDto> listTop) {
-
+    protected MusicPlayback.Callback getMusicPlayBackCallback() {
+        return null;
     }
 
-    //this this the case getting successful data from parse
-    @Override
-    public void throwDailySentences(ArrayList<HelloChaoDaily> listDaiLy) {
-//        list.clear();
-//        list.addAll(listDaiLy);
-//        updateSentence();
-//        btnStart.setText("Start");
-//        btnStart.setEnabled(true);
-    }
 
-    @Override
-    public void throwAllSentences(ArrayList<DailySpeakDto> listDaiLy) {
+    IHelloChao.HcCallback hcCallback = new IHelloChao.HcCallback() {
+        @Override
+        public void throwUserTop(ArrayList<DailyTopDto> listTop) {
 
-    }
+        }
 
-    @Subscribe
-    public void onGettingDailyQuestions(GoOnList goDaiLyTest) {
-        list.clear();
-        list.addAll(goDaiLyTest.list);
-        updateSentence();
-        btnStart.setText("Start");
-        btnStart.setEnabled(true);
-    }
+        @Override
+        public void throwDailySentences(ArrayList<HelloChaoDaily> listDaiLy) {
 
-    private void resetLayoutWhenOpenNewSentence() {
-        viewTryAgain.setVisibility(View.GONE);
-        viewChecking.setVisibility(View.GONE);
-        imgResult.setVisibility(View.GONE);
+        }
 
-    }
+        @Override
+        public void throwAllSentences(ArrayList<DailySpeakDto> listDaiLy) {
+
+        }
+
+        @Override
+        public void throwSubmitDaily(boolean isUpdate, String error) {
+            hideProgressDialog();
+            score = 0;
+            totalTimes = 0;
+            timeBase = SystemClock.elapsedRealtime();
+            Logger.debug(TAG, ">>>" + "throwSubmitDaily isUpdate:" + isUpdate + ";error:" + error);
+            if (!TextUtils.isEmpty(error)) {
+                Toast.makeText(getActivity(), "SORRY >>> " + error, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Toast.makeText(getActivity(), "Congratulations ! Updated your score !!!", Toast.LENGTH_SHORT).show();
+        }
+    };
+
 }

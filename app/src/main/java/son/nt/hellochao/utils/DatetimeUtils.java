@@ -114,4 +114,20 @@ public class DatetimeUtils {
         return arr;
     }
 
+    public static String relativeTime () {
+            int[] arr = DatetimeUtils.getCurrentTime();
+            int day = arr[0];
+            int month = arr[1];
+            int year = arr[2];
+            StringBuilder dates = new StringBuilder();
+            dates.append(day < 10 ? "0" + day : String.valueOf(day));
+            dates.append("_");
+            dates.append(month < 10 ? "0" + month : String.valueOf(month));
+            dates.append("_");
+            dates.append(String.valueOf(year));
+
+            return dates.toString();
+
+    }
+
 }

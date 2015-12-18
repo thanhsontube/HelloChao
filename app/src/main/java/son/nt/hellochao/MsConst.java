@@ -8,4 +8,8 @@ public class MsConst {
     public static final String KEY_SHOW_ENG = "KEY_SHOW_ENG";
     public static final String KEY_SHOW_VI = "KEY_SHOW_VI";
     public static final String KEY_VOICE = "KEY_VOICE";
+    public static final int REQUEST_CODE_SENTENCE = 70;
+
+
+
 }

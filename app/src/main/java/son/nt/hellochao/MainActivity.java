@@ -168,4 +168,9 @@ public class MainActivity extends AActivity implements MainActivityFragment.IInt
     public void onSignUp(String email, String password) {
 
     }
+
+    @Override
+    public void onVolume() {
+
+    }
 }

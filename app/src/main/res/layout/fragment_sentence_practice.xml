@@ -1,4 +1,5 @@
 <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sentence_sliding_layout"
     android:layout_width="match_parent"
@@ -7,12 +8,10 @@
     sothree:umanoPanelHeight="0dp"
     sothree:umanoShadowHeight="0dp">
 
-    <FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent">
 
-        tools:context="son.nt.hellochao.fragment.SentencePracticeFragment">
 
         <android.support.design.widget.CoordinatorLayout
             android:id="@+id/sentence_coordinator"
@@ -39,7 +38,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="256dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/temp_1"
+                        android:src="@drawable/side_nav_bar"
                         app:layout_collapseMode="parallax" />
 
                     <android.support.v7.widget.Toolbar
@@ -63,6 +62,7 @@
                     <son.nt.hellochao.widget.MovieDetailCardLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:seeMore="false"
                         app:title="Sentence">
 
                         <son.nt.hellochao.widget.ViewRowHcDaily
@@ -75,17 +75,83 @@
                     <son.nt.hellochao.widget.MovieDetailCardLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:seeMore="false"
                         app:title="Record">
 
                         <include layout="@layout/record_layout"></include>
 
                     </son.nt.hellochao.widget.MovieDetailCardLayout>
 
+                    <!--Practice with your voice-->
+
                     <son.nt.hellochao.widget.MovieDetailCardLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:title="Text">
+                        app:seeMore="false"
+                        app:title="Wanna Talk">
 
+                        <TextView
+                            style="@style/AppTextViewStyle.Normal.Grey_600"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:text="Using Google engine to check your voice. Click Start Button and read this sentence." />
+
+                        <FrameLayout
+                            android:id="@+id/sentence_google_check"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <com.makeramen.roundedimageview.RoundedImageView
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:layout_gravity="center"
+                                android:background="?selectableItemBackground"
+                                android:clickable="false"
+                                android:src="@color/md_red_500"
+                                app:riv_corner_radius="48dp"
+                                app:riv_oval="true" />
+
+
+                            <TextView
+                                android:id="@+id/sentence_google_check_2"
+                                style="@style/ButtonTextStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="Start"
+                                android:textColor="@color/md_white_1000" />
+
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/AppTextViewStyle.Normal.Grey_600"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="8dp"
+                                android:gravity="center"
+                                android:text="@string/explain_wrong" />
+
+                            <TextView
+                                android:id="@+id/sentence_txt_result"
+                                style="@style/txt_white_14"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="8dp"
+                                android:background="@drawable/box_bg_green_with_corner_white"
+                                android:clickable="false"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:text="@string/explain_wrong_2" />
+                        </LinearLayout>
 
 
                     </son.nt.hellochao.widget.MovieDetailCardLayout>
@@ -93,7 +159,64 @@
                     <son.nt.hellochao.widget.MovieDetailCardLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:title="Check voice">
+                        app:seeMore="false"
+                        app:title="Write the sentence">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/sentence_sample"
+                                style="@style/AppTextViewStyle.Normal.Grey_600"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="8dp"
+                                android:gravity="center"
+                                android:text="@string/explain_wrong" />
+
+                            <TextView
+                                android:id="@+id/sentence_write_result"
+                                style="@style/txt_white_14"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="8dp"
+                                android:background="@drawable/box_bg_red_with_corner_white"
+                                android:clickable="false"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:text="@string/explain_wrong_2" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:orientation="horizontal">
+
+                                <android.support.v7.widget.AppCompatEditText
+                                    android:id="@+id/sentence_write_text"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="8dp"
+                                    android:layout_weight="1"
+                                    android:hint="Write this sentence"
+                                    android:imeOptions="actionSend"
+                                    android:padding="8dp" />
+
+                                <ImageView
+                                    android:id="@+id/sentence_send"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:background="?selectableItemBackground"
+                                    android:src="@mipmap/ic_send" />
+
+                            </LinearLayout>
+                        </LinearLayout>
+
 
                     </son.nt.hellochao.widget.MovieDetailCardLayout>
                 </LinearLayout>

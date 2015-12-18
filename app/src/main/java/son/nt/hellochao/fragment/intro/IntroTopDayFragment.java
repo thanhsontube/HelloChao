@@ -14,9 +14,10 @@ import java.util.Calendar;
 
 import butterknife.Bind;
 import son.nt.hellochao.R;
+import son.nt.hellochao.ResourceManager;
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.DailySpeakDto;
-import son.nt.hellochao.dto.TopDto;
+import son.nt.hellochao.dto.DailyTopDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.interface_app.IHelloChao;
 import son.nt.hellochao.otto.GoDaiLyTest;
@@ -94,7 +95,7 @@ public class IntroTopDayFragment extends AFragment implements IHelloChao.HcCallb
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OttoBus.post(new GoDaiLyTest(null));
+                OttoBus.post(new GoDaiLyTest(ResourceManager.getInstance().getListHelloChaoDaily()));
             }
         });
         return view;
@@ -139,7 +140,7 @@ public class IntroTopDayFragment extends AFragment implements IHelloChao.HcCallb
 
     @Override
     protected void initData() {
-        AppAPI.getInstance().setHcCallback(this);
+//        AppAPI.getInstance().setHcCallback(this);
 
     }
 
@@ -158,25 +159,25 @@ public class IntroTopDayFragment extends AFragment implements IHelloChao.HcCallb
 
     @Override
     protected void updateLayout() {
-        AppAPI.getInstance().getHcUserTop();
+        AppAPI.getInstance().getHcUserDailyTop();
 
     }
 
     @Override
-    public void throwUserTop(ArrayList<TopDto> listTop) {
-        if (listTop == null || listTop.size() == 0) {
-            return;
-        }
-
-        if (listTop.size() == 1) {
-            txtTop1.setText(listTop.get(0).getName());
-        }
-        if (listTop.size() == 2) {
-            txtTop1.setText(listTop.get(1).getName());
-        }
-        if (listTop.size() == 3) {
-            txtTop1.setText(listTop.get(2).getName());
-        }
+    public void throwUserTop(ArrayList<DailyTopDto> listTop) {
+//        if (listTop == null || listTop.size() == 0) {
+//            return;
+//        }
+//
+//        if (listTop.size() == 1) {
+//            txtTop1.setText(listTop.get(0).getName());
+//        }
+//        if (listTop.size() == 2) {
+//            txtTop1.setText(listTop.get(1).getName());
+//        }
+//        if (listTop.size() == 3) {
+//            txtTop1.setText(listTop.get(2).getName());
+//        }
     }
 
     @Override
@@ -186,6 +187,11 @@ public class IntroTopDayFragment extends AFragment implements IHelloChao.HcCallb
 
     @Override
     public void throwAllSentences(ArrayList<DailySpeakDto> listDaiLy) {
+
+    }
+
+    @Override
+    public void throwSubmitDaily(boolean isUpdate, String error) {
 
     }
 }

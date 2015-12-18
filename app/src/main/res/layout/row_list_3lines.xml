@@ -22,30 +22,38 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="8dp">
-
-        <TextView
-            android:id="@+id/txt_text"
-            style="@style/AppTextViewStyle.Normal"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="How are you?\n\rOK?" />
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/txt_text"
+                style="@style/AppTextViewStyle.Normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="How are you?\n\rOK?" />
+
+            <TextView
+                android:id="@+id/txt_translate"
+                style="@style/AppTextViewStyle.Normal.Grey_600"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Ban Khoe Khong?\n\rOK" />
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/txt_translate"
-            style="@style/AppTextViewStyle.Normal.Grey_600"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Ban Khoe Khong?\n\rOK" />
-
-        <TextView
+            android:padding="16dp"
+            android:layout_gravity="center"
             android:id="@+id/txt_more"
             android:background="?selectableItemBackground"
-            android:layout_marginRight="16dp"
             style="@style/MoreTextStyle"
-            android:layout_width="match_parent"
+            android:textColor="?colorAccent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical|right|end"
             android:text="More" />

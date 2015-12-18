@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.hellochao.dto.DailySpeakDto;
-import son.nt.hellochao.dto.TopDto;
+import son.nt.hellochao.dto.DailyTopDto;
 import son.nt.hellochao.loader.ContentManager;
 import son.nt.hellochao.loader.MyPath;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
@@ -25,7 +25,7 @@ public class ResourceManager {
     private MyPath myPath;
     private ContentManager contentManager;
     private List<DailySpeakDto> dailySpeakDtoList = new ArrayList<>();
-    private List<TopDto> listTops = new ArrayList<>();
+    private List<DailyTopDto> listTops = new ArrayList<>();
 
     private ArrayList<HelloChaoDaily> listHelloChaoDaily = new ArrayList<>();
     public ESLApi eslApi;
@@ -39,16 +39,17 @@ public class ResourceManager {
         this.dailySpeakDtoList.addAll(dailySpeakDtoList);
     }
 
-    public List<TopDto> getListTops() {
+    public List<DailyTopDto> getListTops() {
         return listTops;
     }
 
-    public void setListTops(List<TopDto> listTops) {
+    public void setListTops(List<DailyTopDto> listTops) {
         this.listTops = listTops;
     }
 
     public String folderSave;
     public String folderAudio;
+    public String folderRecord;
     public String folderHero;
     public String folderBlur;
     public String folderObject;
@@ -109,6 +110,9 @@ public class ResourceManager {
             File fNoti = new File(folderSave, "/notification/");
             folderNotification = fNoti.getPath();
 
+            File fRecord = new File(folderSave, "/record/");
+            folderRecord = fRecord.getPath();
+
             File fAlarm = new File(folderSave, "/alarm/");
             if (!fAlarm.exists()) {
                 fAlarm.mkdirs();
@@ -134,7 +138,8 @@ public class ResourceManager {
     }
 
     public void setListHelloChaoDaily(ArrayList<HelloChaoDaily> listHelloChaoDaily) {
-        this.listHelloChaoDaily = listHelloChaoDaily;
+        this.listHelloChaoDaily.clear();
+        this.listHelloChaoDaily.addAll(listHelloChaoDaily);
     }
 
     public String getPathAudio (String link) {
@@ -145,6 +150,24 @@ public class ResourceManager {
         }
         return ResourceManager.getInstance().folderAudio + File.separator +  FileUtil.createPathFromUrl(link).replace(".mp3", ".dat") + ".mp3";
 //        return ResourceManager.getInstance().folderAudio + File.separator + link;
+    }
+
+    public String getRecordPath1 (String link) {
+        String path = ResourceManager.getInstance().folderRecord + File.separator;
+        File f = new File((path));
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        return path +  FileUtil.createPathFromUrl(link).replace(".mp3", ".dat") + "_01" + ".mp3";
+    }
+
+    public String getRecordPath2 (String link) {
+        String path = ResourceManager.getInstance().folderRecord + File.separator;
+        File f = new File((path));
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        return path +  FileUtil.createPathFromUrl(link).replace(".mp3", ".dat") + "_02" + ".mp3";
     }
 
     public String getPathAudio (String link, String heroID) {
