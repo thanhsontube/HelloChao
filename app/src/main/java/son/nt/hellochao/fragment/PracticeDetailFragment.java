@@ -72,7 +72,7 @@ public class PracticeDetailFragment extends AFragment {
     @Bind(R.id.smooth_bar)
     SmoothProgressBar smoothProgressBar;
 
-    @Bind(R.id.full_toolbar)
+    @Bind(R.id.toolbar)
     Toolbar toolbar;
 
     @Bind(R.id.detail_practice_CollapsingToolbarLayout)

@@ -12,6 +12,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -131,6 +132,9 @@ public class SentencePracticeFragment extends AMusicServiceFragment {
     @Bind(R.id.sentence_txt_result)
     TextView txtResult;
 
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+
     long timeBase;
     MediaRecorder mMediaRecorder;
     int recordID = 1;
@@ -188,6 +192,8 @@ public class SentencePracticeFragment extends AMusicServiceFragment {
 
     @Override
     protected void initLayout(View view) {
+        getAActivity().setSupportActionBar(toolbar);
+        getAActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         slidingUpPanelLayout.setTouchEnabled(true);
 
     }

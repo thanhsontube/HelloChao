@@ -55,17 +55,10 @@
                         android:textColor="@color/md_black_1000" />
 
                 </LinearLayout>
+                <include layout="@layout/include_toolbar"
+                    app:layout_collapseMode="pin"/>
 
 
-                <android.support.v7.widget.Toolbar
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark"
-                    android:id="@+id/full_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:background="@color/transparent"
-                    app:layout_collapseMode="pin">
-
-                </android.support.v7.widget.Toolbar>
 
 
             </android.support.design.widget.CollapsingToolbarLayout>

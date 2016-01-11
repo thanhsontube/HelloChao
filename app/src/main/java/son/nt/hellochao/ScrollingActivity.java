@@ -12,8 +12,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 
 import com.parse.ParseUser;
@@ -49,6 +51,8 @@ public class ScrollingActivity extends AActivity implements ScrollFragment.OnFra
     public final String TAG = this.getClass().getSimpleName();
 
     LoaderManager manager;
+    Toolbar toolbar;
+    TsParse tsParse;
 
 
     @Override
@@ -57,15 +61,17 @@ public class ScrollingActivity extends AActivity implements ScrollFragment.OnFra
         setProgressBarIndeterminateVisibility(true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
+
         OttoBus.register(this);
         tsParse = new TsParse();
         manager = new LoaderManager();
-//        Toolbar toolbar = (Toolbar) findViewById(Ra.id.toolbar);
-//        setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, null, R.string.app_name, R.string.app_name);
+                this, drawer, toolbar, R.string.app_name, R.string.app_name);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -157,7 +163,10 @@ public class ScrollingActivity extends AActivity implements ScrollFragment.OnFra
 
     }
 
-    TsParse tsParse;
+    private void setupNav() {
+
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -377,5 +386,25 @@ public class ScrollingActivity extends AActivity implements ScrollFragment.OnFra
         showFragment(SentencePracticeFragment.newInstance("", helloChaoDaily), true);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (mFragmentTagStack.size() > 0) {
+                    getSafeFragmentManager().popBackStackImmediate();
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    @Override
+    public void onBackStackChanged() {
+        super.onBackStackChanged();
+        if (mFragmentTagStack.size() > 0) {
+            toolbar.setVisibility(View.GONE);
+        } else {
+            toolbar.setVisibility(View.VISIBLE);
+        }
+    }
 }

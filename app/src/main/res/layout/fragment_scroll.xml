@@ -1,8 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -20,10 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize" />
+            <include layout="@layout/include_toolbar" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -47,18 +44,21 @@
                 app:title="Daily Practice">
 
             </son.nt.hellochao.widget.MovieDetailCardLayout>
+
             <son.nt.hellochao.widget.MovieDetailCardLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:title="Daily Easy">
 
             </son.nt.hellochao.widget.MovieDetailCardLayout>
+
             <son.nt.hellochao.widget.MovieDetailCardLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:title="Daily Medium">
 
             </son.nt.hellochao.widget.MovieDetailCardLayout>
+
             <son.nt.hellochao.widget.MovieDetailCardLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,35 +68,35 @@
         </LinearLayout>
 
 
-
     </android.support.v4.widget.NestedScrollView>
 
     <com.makeramen.roundedimageview.RoundedImageView
-        android:layout_marginTop="16dp"
         android:id="@+id/home_pic"
         android:layout_width="70dp"
         android:layout_height="70dp"
+        android:layout_gravity="right"
+        android:layout_marginTop="16dp"
         android:src="@drawable/ic_avatar"
         app:riv_border_color="@android:color/white"
         app:riv_border_width="4dp"
         app:riv_corner_radius="48dp"
         app:riv_oval="true" />
-        />
+    />
+
     <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
         android:id="@+id/smooth_bar"
-        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:indeterminate="true"
-        app:spb_sections_count="4"
         app:spb_color="#FF0000"
-        app:spb_speed="2.0"
-        app:spb_stroke_width="4dp"
-        app:spb_stroke_separator_length="4dp"
-        app:spb_reversed="false"
         app:spb_mirror_mode="false"
         app:spb_progressiveStart_activated="true"
         app:spb_progressiveStart_speed="1.5"
         app:spb_progressiveStop_speed="3.4"
-        />
+        app:spb_reversed="false"
+        app:spb_sections_count="4"
+        app:spb_speed="2.0"
+        app:spb_stroke_separator_length="4dp"
+        app:spb_stroke_width="4dp" />
 </FrameLayout>

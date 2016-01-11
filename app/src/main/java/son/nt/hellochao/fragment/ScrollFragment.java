@@ -353,6 +353,7 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
 
     @Subscribe
     public void updateUiFromOtto (GoUpdateDaily goUpdateDaily) {
+        ResourceManager.getInstance().setListHelloChaoDaily(goUpdateDaily.list);
         processData(goUpdateDaily.list);
 
     }

@@ -10,9 +10,17 @@
     tools:openDrawer="start">
 
     <FrameLayout
-        android:id="@+id/scroll_ll_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <FrameLayout
+            android:id="@+id/scroll_ll_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <include layout="@layout/include_toolbar"/>
+
+    </FrameLayout>
+
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

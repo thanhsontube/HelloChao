@@ -16,8 +16,8 @@ import son.nt.hellochao.utils.Logger;
 
 /**
  * this class should be implemented by
- * @see android.view.ViewGroup ViewGroup
  *
+ * @see android.view.ViewGroup ViewGroup
  */
 
 /**
@@ -34,27 +34,11 @@ public class LoginActivity extends AActivity implements LoginFragment.OnFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         toolbar = (Toolbar) findViewById(R.id.login_toolbar);
-
-        toolbar.setTitle("");
-
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Logger.debug(TAG, ">>>" + "CLICK item:");
-                if (item.getItemId() == android.R.id.home) {
-                    finish();
-                    return true;
-                }
-                return false;
-            }
-        });
-
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setTitle(null);
             getSafeActionBar().setDisplayHomeAsUpEnabled(true);
-            getSafeActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         }
 
 
@@ -89,11 +73,20 @@ public class LoginActivity extends AActivity implements LoginFragment.OnFragment
 
     @Override
     public void onClick(View view) {
-        Logger.debug(TAG, ">>>" + "onClick");
-        switch (view.getId()) {
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
-                return;
+                if (mFragmentTagStack.size() > 0) {
+                    getSafeFragmentManager().popBackStackImmediate();
+                    return true;
+                } else {
+                    finish();
+                }
         }
+        return super.onOptionsItemSelected(item);
     }
 }
