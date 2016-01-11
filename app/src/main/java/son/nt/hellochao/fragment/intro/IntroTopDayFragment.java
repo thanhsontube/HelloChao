@@ -17,7 +17,7 @@ import son.nt.hellochao.R;
 import son.nt.hellochao.ResourceManager;
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.DailySpeakDto;
-import son.nt.hellochao.dto.DailyTopDto;
+import son.nt.hellochao.dto.parse.DailyTopDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.interface_app.IHelloChao;
 import son.nt.hellochao.otto.GoDaiLyTest;

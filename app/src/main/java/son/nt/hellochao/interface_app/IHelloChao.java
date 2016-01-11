@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import son.nt.hellochao.dto.DailySpeakDto;
-import son.nt.hellochao.dto.DailyTopDto;
+import son.nt.hellochao.dto.parse.DailyTopDto;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
 
 /**

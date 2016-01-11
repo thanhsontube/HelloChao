@@ -14,7 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.parse.ParseUser;
 
 import son.nt.hellochao.R;
-import son.nt.hellochao.dto.DailyTopDto;
+import son.nt.hellochao.dto.parse.DailyTopDto;
 import son.nt.hellochao.utils.DatetimeUtils;
 
 /**

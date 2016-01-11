@@ -28,8 +28,8 @@ import son.nt.hellochao.base.AActivity;
 import son.nt.hellochao.dto.HomeEntity;
 import son.nt.hellochao.dto.LessonEntity;
 import son.nt.hellochao.dto.QuizEntity;
-import son.nt.hellochao.fragment.FullPracticeFragment;
 import son.nt.hellochao.fragment.PlayingFragment;
+import son.nt.hellochao.fragment.PracticeDetailFragment;
 import son.nt.hellochao.fragment.ScrollFragment;
 import son.nt.hellochao.fragment.SentencePracticeFragment;
 import son.nt.hellochao.loader.LessonLoader;
@@ -44,12 +44,11 @@ import son.nt.hellochao.utils.OttoBus;
 import son.nt.hellochao.utils.TsParse;
 
 public class ScrollingActivity extends AActivity implements ScrollFragment.OnFragmentInteractionListener,
-FullPracticeFragment.OnFragmentInteractionListener{
+        PracticeDetailFragment.OnFragmentInteractionListener, AActivity.OnBackPressListener {
 
     public final String TAG = this.getClass().getSimpleName();
 
     LoaderManager manager;
-    DataManager d;
 
 
     @Override
@@ -61,8 +60,7 @@ FullPracticeFragment.OnFragmentInteractionListener{
         OttoBus.register(this);
         tsParse = new TsParse();
         manager = new LoaderManager();
-        d = DataManager.getInstance();
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(Ra.id.toolbar);
 //        setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -154,7 +152,7 @@ FullPracticeFragment.OnFragmentInteractionListener{
             }
         });
 
-        setRecurringAlarm(this);
+//        setRecurringAlarm(this);
 
     }
 
@@ -369,12 +367,20 @@ FullPracticeFragment.OnFragmentInteractionListener{
 
     @Override
     public void onPracticeFull() {
-        showFragment(FullPracticeFragment.newInstance("",""), true);
+        showFragment(PracticeDetailFragment.newInstance("", ""), true);
 
     }
 
     @Override
     public void onMore(HelloChaoDaily helloChaoDaily) {
         showFragment(SentencePracticeFragment.newInstance("", helloChaoDaily), true);
+    }
+
+    @Override
+    public boolean onBackPress() {
+        if (mFragmentTagStack.size() >=0 ) {
+            getSafeFragmentManager().popBackStackImmediate();
+        }
+        return false;
     }
 }

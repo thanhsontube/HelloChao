@@ -3,7 +3,7 @@ package son.nt.hellochao.interface_app;
 import com.parse.ParseException;
 
 import son.nt.hellochao.dto.UpdateUserInfoDto;
-import son.nt.hellochao.dto.UserDto;
+import son.nt.hellochao.dto.parse.UserDto;
 
 /**
  * Created by Sonnt on 11/14/15.

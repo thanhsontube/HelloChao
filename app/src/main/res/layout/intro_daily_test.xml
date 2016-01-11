@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <son.nt.hellochao.widget.MovieDetailCardLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="How to make a test"
+            app:seeMore="false">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppTextViewStyle.Normal.Grey_600"
+                    android:text="Click on "/>
+                <FrameLayout
+                    android:id="@+id/oral_google_test"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:id="@+id/oral_google_test_1"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_gravity="center"
+                        android:background="?selectableItemBackground"
+                        android:clickable="false"
+                        android:src="@color/md_red_500"
+                        app:riv_corner_radius="48dp"
+                        app:riv_oval="true" />
+
+
+                    <TextView
+
+                        android:id="@+id/oral_google_test_2"
+                        style="@style/ButtonTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Start"
+                        android:textAllCaps="true"
+                        android:textColor="@color/md_white_1000" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:layout_marginLeft="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" to start Record,  after Google voice appears, you have to read the sentence"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+                <TextView
+                    android:padding="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="After you read the sentence, the result will be show up below START button. \n If the background turns to GREEN, you're read well and you got 1 score \n If there is something wrong, it will turn RED."/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+                <TextView
+                    android:padding="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You can go to another sentence or go back with NEXT and PREVIOUS button on the screen."/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+                <TextView
+                    android:padding="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="When you think you're done all sentence, click on I FINISHED IT ! button to submit your result to server\n Top user is identified based on the Score and total time to finish 10 sentences."/>
+            </LinearLayout>
+
+        </son.nt.hellochao.widget.MovieDetailCardLayout>
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

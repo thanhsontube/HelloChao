@@ -1,4 +1,4 @@
-package son.nt.hellochao.dto;
+package son.nt.hellochao.dto.parse;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
@@ -12,23 +12,6 @@ import java.util.Date;
  */
 @ParseClassName("DailyTopDto")
 public class DailyTopDto extends ParseObject {
-//    public Date submitTime;
-//    public String username;
-//    public int correctSentence;
-//    public int totalSeconds;
-//    public String relativeTime;
-//    public ParseUser parseUser;
-//
-//    public DailyTopDto(String username, int correctSentence, int totalSeconds) {
-//        this.username = username;
-//        this.correctSentence = correctSentence;
-//        this.totalSeconds = totalSeconds;
-//        Calendar calendar = Calendar.getInstance();
-//        submitTime = calendar.getTime();
-//        relativeTime = DatetimeUtils.relativeTime();
-//    }
-
-
 
     public Date getSubmitTime() {
         return getDate("submitTime");

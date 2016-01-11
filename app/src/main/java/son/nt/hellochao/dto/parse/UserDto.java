@@ -1,9 +1,11 @@
-package son.nt.hellochao.dto;
+package son.nt.hellochao.dto.parse;
 
 /**
  * Created by Sonnt on 11/14/15.
  */
 public class UserDto {
+
+
     String email;
     String password;
     String name;

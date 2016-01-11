@@ -10,5 +10,4 @@ public class MusicItem extends AObject{
     public String audio;
     public  String image;
 
-
 }

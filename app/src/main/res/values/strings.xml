@@ -153,4 +153,5 @@
     <string name="explain_start_record">Click Start Button and read the sentence.</string>
     <string name="exam">Exam</string>
     <string name="record">Record</string>
+    <style name="help_test"></style>
 </resources>

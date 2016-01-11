@@ -1,7 +1,6 @@
 package son.nt.hellochao.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +20,7 @@ import com.apptimize.ApptimizeTest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.parse.ParseUser;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +35,13 @@ import son.nt.hellochao.adapter.AdapterHot;
 import son.nt.hellochao.adapter.AdapterListEsl;
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.DailySpeakDto;
-import son.nt.hellochao.dto.DailyTopDto;
 import son.nt.hellochao.dto.HomeEntity;
 import son.nt.hellochao.dto.HotEntity;
 import son.nt.hellochao.dto.MusicItem;
+import son.nt.hellochao.dto.parse.DailyTopDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.interface_app.IHelloChao;
+import son.nt.hellochao.otto.GoUpdateDaily;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.service.MusicPlayback;
 import son.nt.hellochao.service.MusicService;
@@ -51,12 +52,6 @@ import son.nt.hellochao.widget.MovieDetailCardLayout;
 import son.nt.hellochao.widget.ViewRowHcDaily;
 import son.nt.hellochao.widget.ViewRowTopDaily;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ScrollFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- */
 public class ScrollFragment extends AFragment implements View.OnClickListener {
 
     private OnFragmentInteractionListener mListener;
@@ -114,18 +109,6 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Apptimize.runTest("Avatar click", new ApptimizeTest() {
-            @Override
-            public void baseline() {
-// Variant: original
-            }
-
-            @SuppressWarnings("unused")
-            public void variation1() {
-// Variant: new Arvatar
-            }
-        });
-
         getAActivity().bindService(MusicService.getService(getContext()), musicServiceConnection, Context.BIND_AUTO_CREATE);
 
     }
@@ -155,7 +138,7 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
 
-        void onPracticeFull ();
+        void onPracticeFull();
     }
 
 
@@ -296,15 +279,16 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
         @Override
         public void throwUserTop(ArrayList<DailyTopDto> listTop) {
             Logger.debug(TAG, ">>>" + "throwUserTop:" + listTop.size());
-            if(!listTop.isEmpty()) {
+            if (!listTop.isEmpty()) {
                 ResourceManager.getInstance().setListTops(listTop);
             }
-            processTopData (listTop);
+            processTopData(listTop);
 
         }
 
         @Override
         public void throwDailySentences(ArrayList<HelloChaoDaily> listDaiLy) {
+            Logger.debug(TAG, ">>>" + "throwDailySentences:" + listDaiLy);
             if (!listDaiLy.isEmpty()) {
                 ResourceManager.getInstance().setListHelloChaoDaily(listDaiLy);
             }
@@ -367,5 +351,10 @@ public class ScrollFragment extends AFragment implements View.OnClickListener {
         }
     };
 
+    @Subscribe
+    public void updateUiFromOtto (GoUpdateDaily goUpdateDaily) {
+        processData(goUpdateDaily.list);
+
+    }
 
 }

@@ -8,7 +8,7 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 
-import son.nt.hellochao.dto.DailyTopDto;
+import son.nt.hellochao.dto.parse.DailyTopDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.loader.HTTPParseUtils;
 import son.nt.hellochao.utils.Logger;
@@ -25,7 +25,7 @@ public class MyApplication extends Application {
         DataManager.createInstance(getApplicationContext());
         HTTPParseUtils.createInstance(getApplicationContext());
 
-        Parse.enableLocalDatastore(this);
+//        Parse.enableLocalDatastore(this);
         Parse.initialize(this, "iGLwcZLU6J6t5IAbpB70RvpwxmM5zgBGh9iSlmyo", "9c9qi1jbDWMkwT8WFwzo2uURHAD8OaOoDsUwMSEu");
         ParseInstallation.getCurrentInstallation().saveInBackground();
         ParseFacebookUtils.initialize(getApplicationContext());

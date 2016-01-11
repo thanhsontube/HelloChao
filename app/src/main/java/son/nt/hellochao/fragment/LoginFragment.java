@@ -15,7 +15,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.Profile;
 import com.parse.LogInCallback;
 import com.parse.LogOutCallback;
@@ -26,6 +25,7 @@ import com.parse.RequestPasswordResetCallback;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 
 import butterknife.Bind;
@@ -33,10 +33,13 @@ import son.nt.hellochao.R;
 import son.nt.hellochao.activity.ProfileActivity;
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.UpdateUserInfoDto;
+import son.nt.hellochao.dto.parse.DailyTopDto;
 import son.nt.hellochao.interface_app.AppAPI;
+import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.FacebookUtils;
 import son.nt.hellochao.utils.KeyBoardUtils;
 import son.nt.hellochao.utils.Logger;
+import son.nt.hellochao.utils.PreferenceUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,6 +78,8 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
     @Bind(R.id.login_password)
     AppCompatEditText txtPassword;
     View viewReset;
+
+    AppAPI appAPI;
 
     private Collection<String> permissions = new ArrayList<>();
 
@@ -200,6 +205,8 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        appAPI = new AppAPI(getContext());
     }
 
     @Override
@@ -263,6 +270,7 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
     private void loginByFacebook () {
         permissions.clear();
         permissions.add("email");
+        permissions.add("user_friends");
         Logger.debug(TAG, ">>>" + "loginByFacebook");
         ParseFacebookUtils.logInWithReadPermissionsInBackground(this, permissions, new LogInCallback() {
             @Override
@@ -282,28 +290,46 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
                     Logger.debug(TAG, ">>>" + "Email:" + user.getEmail() + ";name:" + user.getUsername());
                 }
 
-                if (user != null) {
-                    if (!ParseFacebookUtils.isLinked(user)) {
-                        ParseFacebookUtils.linkInBackground(user, AccessToken.getCurrentAccessToken(), new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                Logger.debug(TAG, ">>>" + "linkInBackground:" + e);
-                                if (e != null) {
-                                    return;
-                                }
-
-                                if (ParseFacebookUtils.isLinked(user)) {
-                                    Logger.debug("MyApp", ">>> Woohoo, user logged in with Facebook!");
-                                    Logger.debug(TAG, ">>>" + "Email:" + user.getEmail() + ";name:" + user.getUsername());
-                                    getUserInfo();
-                                }
-                            }
-                        });
-                    } else {
-                        Logger.debug(TAG, ">>>" + "LINKED");
-                        getUserInfo();
-                    }
+                if (user == null) {
+                    return;
                 }
+
+                if (ParseFacebookUtils.isLinked(user)) {
+                    Logger.debug(TAG, ">>>" + "user link fb already");
+                    getUserInfo();
+                    return;
+                }
+
+                ParseFacebookUtils.linkWithReadPermissionsInBackground(user, LoginFragment.this, permissions, new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+
+
+                    }
+                });
+
+//                if (user != null) {
+//                    if (!ParseFacebookUtils.isLinked(user)) {
+//                        ParseFacebookUtils.linkInBackground(user, AccessToken.getCurrentAccessToken(), new SaveCallback() {
+//                            @Override
+//                            public void done(ParseException e) {
+//                                Logger.debug(TAG, ">>>" + "linkInBackground:" + e);
+//                                if (e != null) {
+//                                    return;
+//                                }
+//
+//                                if (ParseFacebookUtils.isLinked(user)) {
+//                                    Logger.debug("MyApp", ">>> Woohoo, user logged in with Facebook!");
+//                                    Logger.debug(TAG, ">>>" + "Email:" + user.getEmail() + ";name:" + user.getUsername());
+//                                    getUserInfo();
+//                                }
+//                            }
+//                        });
+//                    } else {
+//                        Logger.debug(TAG, ">>>" + "LINKED");
+//                        getUserInfo();
+//                    }
+//                }
 
             }
         });
@@ -317,11 +343,26 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
         }
         String name = profile.getName();
         String fbId = profile.getId();
-        Uri image = profile.getProfilePictureUri(120,120);
+        Uri image = profile.getProfilePictureUri(480,480);
         Logger.debug(TAG, ">>>" + "image:" + image.toString() + " ;name:" + name +";fbId:" + profile.getId() + ";info:" + profile.describeContents());
         Logger.debug(TAG, ">>>" + "parse user:" + ParseUser.getCurrentUser().getUsername() + ";email:" + ParseUser.getCurrentUser().getEmail());
 
-        AppAPI.getInstance().updateUserInfo(new UpdateUserInfoDto(name, fbId, image.toString(), profile.getLinkUri().toString()));
+        appAPI.updateUserInfo(new UpdateUserInfoDto(name, fbId, image.toString(), profile.getLinkUri().toString()));
+
+        int score = PreferenceUtil.getPreference(getContext(), "score", 0);
+        if (score != 0 && ParseUser.getCurrentUser() != null) {
+            int totalTimes = PreferenceUtil.getPreference(getContext(), "totalTimes", 0);
+
+            DailyTopDto dto = new DailyTopDto();
+            dto.setCorrectSentence(score);
+            dto.setTotalSeconds(totalTimes);
+            dto.setParseUser(ParseUser.getCurrentUser());
+            dto.setSubmitTime(Calendar.getInstance().getTime());
+            dto.setRelativeTime(DatetimeUtils.relativeTime());
+
+            PreferenceUtil.setPreference(getContext(), "score", 0);
+            appAPI.hcSubmitTestResult(dto);
+        }
 
         getAActivity().startActivity(new Intent(getContext(), ProfileActivity.class));
         getActivity().finish();

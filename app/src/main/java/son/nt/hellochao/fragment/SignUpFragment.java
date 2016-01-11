@@ -21,16 +21,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.lang.ref.WeakReference;
+import java.util.Calendar;
 
 import butterknife.Bind;
 import son.nt.hellochao.R;
 import son.nt.hellochao.base.AFragment;
-import son.nt.hellochao.dto.UserDto;
+import son.nt.hellochao.dto.parse.DailyTopDto;
+import son.nt.hellochao.dto.parse.UserDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.interface_app.IUserParse;
+import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.KeyBoardUtils;
+import son.nt.hellochao.utils.PreferenceUtil;
 import son.nt.hellochao.utils.StringUtils;
 
 /**
@@ -54,6 +59,8 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
     private String password;
     private String passwordConfirm;
     private String gender;
+
+    AppAPI appAPI;
 
     private OnFragmentInteractionListener mListener;
 
@@ -178,7 +185,9 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
             password = getArguments().getString(ARG_PARAM2);
         }
         handle = new HandlerCheckEmailValid(this);
+        appAPI = new AppAPI(getContext());
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -477,6 +486,20 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
             hideProgressDialog();
             if (error == null) {
                 Toast.makeText(getActivity(), "Create Account Successful", Toast.LENGTH_SHORT).show();
+                int score = PreferenceUtil.getPreference(getContext(), "score", 0);
+                if (score != 0 && ParseUser.getCurrentUser() != null) {
+                    int totalTimes = PreferenceUtil.getPreference(getContext(), "totalTimes", 0);
+
+                    DailyTopDto dto = new DailyTopDto();
+                    dto.setCorrectSentence(score);
+                    dto.setTotalSeconds(totalTimes);
+                    dto.setParseUser(ParseUser.getCurrentUser());
+                    dto.setSubmitTime(Calendar.getInstance().getTime());
+                    dto.setRelativeTime(DatetimeUtils.relativeTime());
+
+                    PreferenceUtil.setPreference(getContext(), "score", 0);
+                    appAPI.hcSubmitTestResult(dto);
+                }
 
             } else {
                 Toast.makeText(getActivity(), getString(R.string.error_create_account) +">>>"+ error.toString(), Toast.LENGTH_SHORT).show();
@@ -484,6 +507,7 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
             }
         }
     };
+
 
 
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -19,11 +20,11 @@ import java.util.Date;
 import java.util.List;
 
 import son.nt.hellochao.dto.DailySpeakDto;
-import son.nt.hellochao.dto.DailyTopDto;
 import son.nt.hellochao.dto.RankDto;
 import son.nt.hellochao.dto.TopDto;
 import son.nt.hellochao.dto.UpdateUserInfoDto;
-import son.nt.hellochao.dto.UserDto;
+import son.nt.hellochao.dto.parse.DailyTopDto;
+import son.nt.hellochao.dto.parse.UserDto;
 import son.nt.hellochao.loader.HTTPParseUtils;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.utils.DatetimeUtils;
@@ -107,6 +108,9 @@ public class AppAPI implements IHelloChao, IUserParse {
         query.findInBackground(new FindCallback<DailyTopDto>() {
             @Override
             public void done(List<DailyTopDto> list, ParseException e) {
+                if (e != null) {
+                    return;
+                }
                 if (hcCallback != null) {
                     hcCallback.throwUserTop(new ArrayList<DailyTopDto>(list));
                 }
@@ -143,44 +147,97 @@ public class AppAPI implements IHelloChao, IUserParse {
 
     @Override
     public void getHcDaily() {
-        Logger.debug(TAG, ">>>" + "getHcDaily");
-
-        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(HelloChaoDaily.class.getSimpleName());
-        query.whereContainedIn("dates", Arrays.asList(getDates()));
+        Logger.debug(TAG, ">>>" + "getHcDaily:" + getCurrentDates());
+        final ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(HelloChaoDaily.class.getSimpleName());
+        query.whereContainedIn("dates", Arrays.asList(getCurrentDates()));
+        query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
-                if (e != null || list == null || list.size() == 0 || list.size() != 10) {
-                    Logger.error(TAG, ">>>" + "getHcDaily ERROR:" + e);
+                if (e != null) {
+                    query.clearCachedResult();
+                    return;
+                }
+
+                if (list.isEmpty()) {
+                    query.clearCachedResult();
+                    Logger.debug(TAG, ">>>" + "empty List");
                     HTTPParseUtils.getInstance().withHcDaily();
                     return;
                 }
-                Logger.debug(TAG, ">>>" + "getHcDaily done:" + e + ";list:" + list.size());
-                ArrayList<HelloChaoDaily> dailyList = new ArrayList<HelloChaoDaily>();
-                for (ParseObject p : list) {
-                    Date date = p.getDate("");
-                    String audio = p.getString("audio");
-                    String text = p.getString("text");
-                    String translate = p.getString("translate");
-                    int level = p.getInt("level");
-                    int value = p.getInt("value");
-                    HelloChaoDaily h = new HelloChaoDaily(audio, text, translate, level, value);
-                    dailyList.add(h);
+                Logger.debug(TAG, ">>>" + "List daily size:" + list.size());
+
+                if (list.size() != 10) {
+                    //need remove and try again
+                    query.clearCachedResult();
+                    for (ParseObject p : list) {
+                        String id = p.getObjectId();
+                        List<String> listDates = p.getList("dates");
+
+                        if (listDates.size() == 1) {
+                            try {
+                                p.deleteInBackground(new DeleteCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        Logger.debug(TAG, ">>>" + "delete:" + e);
+                                    }
+                                });
+
+                            } catch (Exception ex) {
+                                ex.toString();
+
+                            }
+                        } else {
+
+
+                            for (int i = listDates.size() - 1; i >= 0; i--) {
+                                if (listDates.get(i).equals(getCurrentDates())) {
+                                    listDates.remove(i);
+                                }
+                            }
+                            p.put("dates", listDates);
+
+                            try {
+                                p.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        Logger.debug(TAG, ">>>" + "Update:" + e);
+                                    }
+                                });
+                            } catch (Exception ex) {
+                                ex.toString();
+
+                            }
+
+                        }
+
+                    }
+
+
+                } else {
+                    // list.size ==10
+                    ArrayList<HelloChaoDaily> dailyList = new ArrayList<HelloChaoDaily>();
+                    for (ParseObject p : list) {
+                        Date date = p.getDate("");
+                        String audio = p.getString("audio");
+                        String text = p.getString("text");
+                        String translate = p.getString("translate");
+                        int level = p.getInt("level");
+                        int value = p.getInt("value");
+                        HelloChaoDaily h = new HelloChaoDaily(audio, text, translate, level, value);
+                        dailyList.add(h);
+                    }
+                    if (hcCallback != null) {
+                        hcCallback.throwDailySentences(dailyList);
+                    }
                 }
-//                OttoBus.post(new GoDaiLyTest(dailyList));
-                if (hcCallback != null) {
-                    Logger.debug(TAG, ">>>" + "AAAAAAA hcCallback.throwDailySentences(dailyList)");
-                    hcCallback.throwDailySentences(dailyList);
-                }
+
 
             }
         });
-
-
-
     }
 
-    private String getDates () {
+    private String getCurrentDates() {
         int[] arr = DatetimeUtils.getCurrentTime();
         int day = arr[0];
         int month = arr[1];
@@ -257,89 +314,6 @@ public class AppAPI implements IHelloChao, IUserParse {
                 }
             }
         });
-
-//        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("DailyTopDto");
-//
-//        query.whereEqualTo("relativeTime", dto.getRelativeTime());
-//        query.whereEqualTo("user", dto.getParseUser());
-//        query.getFirstInBackground(new GetCallback<ParseObject>() {
-//            @Override
-//            public void done(ParseObject parseObject, ParseException e) {
-//                if (parseObject != null) {
-//                    int beforeScore = parseObject.getInt("correctSentence");
-//                    int total = parseObject.getInt("totalSeconds");
-//                    if (beforeScore < dto.getCorrectSentence() || (beforeScore == dto.getCorrectSentence() && dto.getTotalSeconds() < total)) {
-//
-//                        parseObject.put("correctSentence", dto.getCorrectSentence());
-//                        parseObject.put("totalSeconds", dto.getTotalSeconds());
-//                        parseObject.put("submitTime", dto.getSubmitTime());
-//                        parseObject.saveInBackground(new SaveCallback() {
-//                            @Override
-//                            public void done(ParseException e) {
-//                                if (e != null) {
-//                                    Logger.debug(TAG, ">>>" + "ERROR update score");
-//                                    if (hcCallback != null) {
-//                                        hcCallback.throwSubmitDaily(true, e.toString());
-//                                    }
-//                                    return;
-//                                }
-//                                Logger.debug(TAG, ">>>" + "Update score successful!");
-//                                if (hcCallback != null) {
-//                                    hcCallback.throwSubmitDaily(true, null);
-//                                }
-//
-//                            }
-//                        });
-//                    } else {
-//                        if (hcCallback != null) {
-//                            hcCallback.throwSubmitDaily(true, "Your score this time is NOT better than before ! Cancel Update Score.");
-//                        }
-//                    }
-//
-//
-//                } else {
-//                    dto.saveInBackground(new SaveCallback() {
-//                        @Override
-//                        public void done(ParseException e) {
-//                            if (e != null) {
-//                                Logger.debug(TAG, ">>>" + "ERROR update score");
-//                                if (hcCallback != null) {
-//                                    hcCallback.throwSubmitDaily(false, e.toString());
-//                                }
-//                                return;
-//                            }
-//                            Logger.debug(TAG, ">>>" + "Update score successful!");
-//                            if (hcCallback != null) {
-//                                hcCallback.throwSubmitDaily(false, null);
-//                            }
-//                        }
-//                    });
-////                    ParseObject p = new ParseObject("DailyTopDto");
-////                    p.put("correctSentence", dto.correctSentence);
-////                    p.put("totalSeconds", dto.totalSeconds);
-////                    p.put("submitTime", dto.submitTime);
-////                    p.put("userName", dto.username);
-////                    p.put("relativeTime", dto.relativeTime);
-////
-////                    p.saveInBackground(new SaveCallback() {
-////                        @Override
-////                        public void done(ParseException e) {
-////                            if (e != null) {
-////                                Logger.debug(TAG, ">>>" + "ERROR update score");
-////                                if (hcCallback != null) {
-////                                    hcCallback.throwSubmitDaily(false, e.toString());
-////                                }
-////                                return;
-////                            }
-////                            Logger.debug(TAG, ">>>" + "Update score successful!");
-////                            if (hcCallback != null) {
-////                                hcCallback.throwSubmitDaily(false, null);
-////                            }
-////                        }
-////                    });
-//                }
-//            }
-//        });
 
     }
 
@@ -480,7 +454,7 @@ public class AppAPI implements IHelloChao, IUserParse {
     public void updateUserInfo(UpdateUserInfoDto d) {
         ParseUser parseUser = ParseUser.getCurrentUser();
         if (parseUser == null) {
-            Toast.makeText(context, "ERROR : updateUserInfo parseUser is NULL" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "ERROR : updateUserInfo parseUser is NULL", Toast.LENGTH_SHORT).show();
             return;
         }
 

@@ -38,12 +38,12 @@ import son.nt.hellochao.utils.OttoBus;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FullPracticeFragment.OnFragmentInteractionListener} interface
+ * {@link PracticeDetailFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link FullPracticeFragment#newInstance} factory method to
+ * Use the {@link PracticeDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FullPracticeFragment extends AFragment {
+public class PracticeDetailFragment extends AFragment {
     public static final String TAG = "FullPracticeFragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -93,13 +93,13 @@ public class FullPracticeFragment extends AFragment {
         }
     };
 
-    public FullPracticeFragment() {
+    public PracticeDetailFragment() {
         // Required empty public constructor
     }
 
 
-    public static FullPracticeFragment newInstance(String param1, String param2) {
-        FullPracticeFragment fragment = new FullPracticeFragment();
+    public static PracticeDetailFragment newInstance(String param1, String param2) {
+        PracticeDetailFragment fragment = new PracticeDetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -116,6 +116,8 @@ public class FullPracticeFragment extends AFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override

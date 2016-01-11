@@ -37,7 +37,7 @@ import son.nt.hellochao.R;
 import son.nt.hellochao.ResourceManager;
 import son.nt.hellochao.base.AMusicServiceFragment;
 import son.nt.hellochao.dto.DailySpeakDto;
-import son.nt.hellochao.dto.DailyTopDto;
+import son.nt.hellochao.dto.parse.DailyTopDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.interface_app.IHelloChao;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
@@ -463,6 +463,8 @@ public class OralFragment extends AMusicServiceFragment implements View.OnClickL
         void onTop();
 
         void onVolume ();
+
+        void onRegister();
     }
 
     //TODO onclick
@@ -527,6 +529,11 @@ break;
 
         if (ParseUser.getCurrentUser() == null) {
             Logger.debug(TAG, ">>>" + "You need to login first ...");
+            PreferenceUtil.setPreference(getContext(), "score", score);
+            PreferenceUtil.setPreference(getContext(), "totalTimes", totalTimes);
+            if (mListener != null) {
+                mListener.onRegister();
+            }
             return;
         }
         showProgressDialog("Submitting....", false);
