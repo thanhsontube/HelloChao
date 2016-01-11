@@ -44,7 +44,7 @@ import son.nt.hellochao.utils.OttoBus;
 import son.nt.hellochao.utils.TsParse;
 
 public class ScrollingActivity extends AActivity implements ScrollFragment.OnFragmentInteractionListener,
-        PracticeDetailFragment.OnFragmentInteractionListener, AActivity.OnBackPressListener {
+        PracticeDetailFragment.OnFragmentInteractionListener {
 
     public final String TAG = this.getClass().getSimpleName();
 
@@ -73,6 +73,7 @@ public class ScrollingActivity extends AActivity implements ScrollFragment.OnFra
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
+                Logger.debug(TAG, ">>>" + "onNavigationItemSelected");
                 int id = item.getItemId();
 
                 if (id == R.id.nav_camara) {
@@ -376,11 +377,5 @@ public class ScrollingActivity extends AActivity implements ScrollFragment.OnFra
         showFragment(SentencePracticeFragment.newInstance("", helloChaoDaily), true);
     }
 
-    @Override
-    public boolean onBackPress() {
-        if (mFragmentTagStack.size() >=0 ) {
-            getSafeFragmentManager().popBackStackImmediate();
-        }
-        return false;
-    }
+
 }

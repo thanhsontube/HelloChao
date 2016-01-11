@@ -6,6 +6,7 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -74,6 +75,8 @@ public class PracticeDetailFragment extends AFragment {
     @Bind(R.id.full_toolbar)
     Toolbar toolbar;
 
+    @Bind(R.id.detail_practice_CollapsingToolbarLayout)
+    CollapsingToolbarLayout collapsingToolbarLayout;
     @Bind(R.id.full_play)
     FloatingActionButton playButton;
 
@@ -110,6 +113,8 @@ public class PracticeDetailFragment extends AFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
         MusicService.bindToMe(getContext(), musicServiceConnection);
 
         if (getArguments() != null) {
@@ -147,8 +152,6 @@ public class PracticeDetailFragment extends AFragment {
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_full_practice, container, false);
     }
-
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -180,6 +183,8 @@ public class PracticeDetailFragment extends AFragment {
 
         getAActivity().setSupportActionBar(toolbar);
         getAActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getAActivity().getSupportActionBar().setTitle("Practice");
+        collapsingToolbarLayout.setTitle("My Practice");
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
@@ -358,4 +363,7 @@ public class PracticeDetailFragment extends AFragment {
 
         musicService.processAllList(list);
     }
+
+
+
 }

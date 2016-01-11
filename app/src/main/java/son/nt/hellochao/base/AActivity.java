@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import java.util.Collection;
 import java.util.Stack;
 
+import son.nt.hellochao.utils.Logger;
+
 /**
  * Created by Sonnt on 9/14/15.
  */
@@ -18,6 +20,7 @@ abstract public class AActivity extends AppCompatActivity implements FragmentMan
 
     protected static final String FRAGMENT_KEY = "main";
     protected static final String SAVE_KEY_STACK = "tag_stack";
+    public static final String TAG = "AActivity";
 
     protected final Stack<String> mFragmentTagStack = new Stack<String>();
 
@@ -54,6 +57,7 @@ abstract public class AActivity extends AppCompatActivity implements FragmentMan
 
     @Override
     public void onBackPressed() {
+        Logger.debug(TAG, ">>>" + "onBackPressed");
         final FragmentManager fm = getSupportFragmentManager();
         final Fragment f;
         if (mFragmentTagStack.size() > 0) {
