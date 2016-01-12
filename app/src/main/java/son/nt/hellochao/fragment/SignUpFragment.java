@@ -1,7 +1,6 @@
 package son.nt.hellochao.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,22 +37,12 @@ import son.nt.hellochao.utils.KeyBoardUtils;
 import son.nt.hellochao.utils.PreferenceUtil;
 import son.nt.hellochao.utils.StringUtils;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SignUpFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SignUpFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class SignUpFragment extends AFragment implements View.OnClickListener {
     public static final int WHAT_SEARCH = 10;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String email;
     private String yourName;
     private String password;
@@ -102,7 +91,8 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
     @Bind(R.id.sign_up_password1st_til_confirm)
     TextInputLayout textPasswordConfirm;
 
-    @Bind(R.id.sign_up_txt_enter_password)TextView txtHiEnterPassword;
+    @Bind(R.id.sign_up_txt_enter_password)
+    TextView txtHiEnterPassword;
 
     @Bind(R.id.sign_up_email_Clp)
     ContentLoadingProgressBar contentLoadingProgressBar;
@@ -111,11 +101,16 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
     View viewEmail;
     @Bind(R.id.sign_up_ll_name)
     View viewYourName;
-    @Bind(R.id.sign_up_ll_password) View viewPassword;
-    @Bind(R.id.sign_up_ll_password_confirm) View viewPasswordConfirm;
-    @Bind(R.id.sign_up_ll_gender) View viewGender;
-    @Bind(R.id.sign_up_view_male) View viewMale;
-    @Bind(R.id.sign_up_view_female) View vieFemale;
+    @Bind(R.id.sign_up_ll_password)
+    View viewPassword;
+    @Bind(R.id.sign_up_ll_password_confirm)
+    View viewPasswordConfirm;
+    @Bind(R.id.sign_up_ll_gender)
+    View viewGender;
+    @Bind(R.id.sign_up_view_male)
+    View viewMale;
+    @Bind(R.id.sign_up_view_female)
+    View vieFemale;
 
     @Bind(R.id.sign_up_check_male)
     RadioButton radioButtonMale;
@@ -145,8 +140,6 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
         txtYourName.addTextChangedListener(textWatcherYourName);
         txtPassword1St.addTextChangedListener(textWatcherPassword1St);
         txtPasswordConfirm.addTextChangedListener(textWatcherPasswordConfirm);
-
-
 
 
     }
@@ -218,26 +211,17 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
 
         void onRegister();
+
+        void finishRegister (boolean isSuccess);
     }
 
     @Override
     protected void initData() {
-        AppAPI.getInstance().setIUserParseCallback(iUserParseCallback);
+        appAPI.setIUserParseCallback(iUserParseCallback);
     }
 
 
@@ -261,7 +245,7 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
             return;
         }
 
-        AppAPI.getInstance().isUserExist(email);
+        appAPI.isUserExist(email);
 
 
     }
@@ -302,14 +286,14 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
             case YOUR_NAME:
                 viewYourName.setVisibility(View.GONE);
                 viewGender.setVisibility(View.VISIBLE);
-                status= SIGN_UP.GENDER;
+                status = SIGN_UP.GENDER;
 
                 break;
             case GENDER:
 
                 viewGender.setVisibility(View.GONE);
                 viewPassword.setVisibility(View.VISIBLE);
-                status= SIGN_UP.PASSWORD;
+                status = SIGN_UP.PASSWORD;
                 txtPassword1St.requestFocus();
                 txtHiEnterPassword.setText(String.format(getString(R.string.explain_password), yourName));
                 break;
@@ -322,7 +306,7 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
             case RE_PASSWORD:
                 txtPasswordConfirm.clearFocus();
                 showProgressDialog(getString(R.string.creating_account), false);
-                AppAPI.getInstance().createAccount(new UserDto(email, password, yourName, gender));
+                appAPI.createAccount(new UserDto(email, password, yourName, gender));
                 break;
         }
     }
@@ -365,7 +349,8 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
             doCheckYourName();
 
         }
-    };TextWatcher textWatcherPassword1St = new TextWatcher() {
+    };
+    TextWatcher textWatcherPassword1St = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -407,9 +392,11 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
 
     private void doCheckYourName() {
         txtNext.setEnabled(TextUtils.isEmpty(yourName.trim()) ? false : true);
-    }private void doCheckPassword1St() {
+    }
 
-        if (TextUtils.isEmpty(password.trim()) || password.length() < 6 ) {
+    private void doCheckPassword1St() {
+
+        if (TextUtils.isEmpty(password.trim()) || password.length() < 6) {
             txtNext.setEnabled(false);
             textPassword1St.setEnabled(true);
             textPassword1St.setError(getString(R.string.error_less_than_6_letters));
@@ -466,8 +453,14 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
     }
 
     IUserParse.Callback iUserParseCallback = new IUserParse.Callback() {
+
         @Override
-        public void onCheckingUserExit(String email, boolean isExist) {
+        public void onFinishResetPw(ParseException error) {
+
+        }
+
+        @Override
+        public void onCheckingUserExist(String email, boolean isExist) {
             contentLoadingProgressBar.setVisibility(View.GONE);
             if (isExist) {
                 textInputLayout.setEnabled(true);
@@ -501,13 +494,19 @@ public class SignUpFragment extends AFragment implements View.OnClickListener {
                     appAPI.hcSubmitTestResult(dto);
                 }
 
+                if (mListener != null) {
+                    mListener.finishRegister(true);
+                }
+
             } else {
-                Toast.makeText(getActivity(), getString(R.string.error_create_account) +">>>"+ error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.error_create_account) + ">>>" + error.toString(), Toast.LENGTH_SHORT).show();
                 txtNext.setVisibility(View.VISIBLE);
+                if (mListener != null) {
+                    mListener.finishRegister(false);
+                }
             }
         }
     };
-
 
 
 }

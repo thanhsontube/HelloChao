@@ -153,5 +153,8 @@
     <string name="explain_start_record">Click Start Button and read the sentence.</string>
     <string name="exam">Exam</string>
     <string name="record">Record</string>
-    <style name="help_test"></style>
+    <string name="enter_your_email">Enter Your Email</string>
+    <string name="invalid_email_address">InValid Email Address</string>
+    <string name="error_reset_pw">Can not reset password at this time !!!</string>
+    <string name="success_reset_pw">An email was successfully sent with reset instructions.</string>
 </resources>

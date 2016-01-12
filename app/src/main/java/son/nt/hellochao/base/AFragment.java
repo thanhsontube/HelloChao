@@ -4,9 +4,11 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import butterknife.ButterKnife;
+import son.nt.hellochao.R;
 
 /**
  * Created by Sonnt on 9/14/15.
@@ -21,7 +23,6 @@ public abstract class AFragment extends Fragment {
     protected abstract void updateLayout();
 
     protected ProgressDialog mProgressDialog;
-
 
 
     @Override
@@ -43,31 +44,26 @@ public abstract class AFragment extends Fragment {
         super.onDestroy();
     }
 
-    protected AppCompatActivity getAActivity () {
+    protected AppCompatActivity getAActivity() {
         return (AppCompatActivity) getActivity();
     }
 
-    protected boolean isSafe()
-    {
+    protected boolean isSafe() {
         if (this.isRemoving() || this.getActivity() == null || this.isDetached() || !this.isAdded()
-                || this.getView() == null)
-        {
+                || this.getView() == null) {
             return false;
         }
 
         return true;
     }
 
-    public void showProgressDialog(final String message, boolean isCancelable)
-    {
-        if (!this.isSafe())
-        {
+    public void showProgressDialog(final String message, boolean isCancelable) {
+        if (!this.isSafe()) {
             return;
 
         }
 
-        if (this.mProgressDialog == null)
-        {
+        if (this.mProgressDialog == null) {
             this.mProgressDialog = new ProgressDialog(getAActivity());
             this.mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         }
@@ -75,8 +71,7 @@ public abstract class AFragment extends Fragment {
         this.mProgressDialog.setMessage(message);
         this.mProgressDialog.setCancelable(isCancelable);
 
-        if (this.mProgressDialog.isShowing())
-        {
+        if (this.mProgressDialog.isShowing()) {
             return;
         }
 
@@ -84,14 +79,19 @@ public abstract class AFragment extends Fragment {
 
     }
 
-    public void hideProgressDialog()
-    {
-        if (this.mProgressDialog == null)
-        {
+    public void hideProgressDialog() {
+        if (this.mProgressDialog == null) {
             return;
         }
 
         this.mProgressDialog.dismiss();
         this.mProgressDialog = null;
+    }
+
+    protected void setupToolbarIfNeeded(View view, String title) {
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        getAActivity().setSupportActionBar(toolbar);
+        getAActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getAActivity().getSupportActionBar().setTitle(title);
     }
 }

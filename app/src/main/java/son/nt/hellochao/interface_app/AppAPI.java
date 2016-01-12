@@ -11,6 +11,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.RequestPasswordResetCallback;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
@@ -421,22 +422,19 @@ public class AppAPI implements IHelloChao, IUserParse {
 
     @Override
     public void isUserExist(final String email) {
-        Logger.debug(TAG, ">>>" + "isUserExist:" + email);
         ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.whereEqualTo("username", email);
+        query.whereEqualTo("email", email);
         query.getFirstInBackground(new GetCallback<ParseUser>() {
             @Override
             public void done(ParseUser parseUser, ParseException e) {
-                Logger.debug(TAG, ">>>" + "parseUser:" + parseUser + ";e:" + e);
                 if (parseUser != null) {
                     if (parseUserCallback != null) {
-                        parseUserCallback.onCheckingUserExit(email, true);
+                        parseUserCallback.onCheckingUserExist(email, true);
                         return;
                     }
                 }
                 if (parseUserCallback != null) {
-                    parseUserCallback.onCheckingUserExit(email, false);
-                    return;
+                    parseUserCallback.onCheckingUserExist(email, false);
                 }
 
             }
@@ -500,5 +498,18 @@ public class AppAPI implements IHelloChao, IUserParse {
                 }
             }
         });
+    }
+
+    @Override
+    public void resetPassWord(String email) {
+        ParseUser.requestPasswordResetInBackground(email, new RequestPasswordResetCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (parseUserCallback != null) {
+                    parseUserCallback.onFinishResetPw( e);
+                }
+            }
+        });
+
     }
 }

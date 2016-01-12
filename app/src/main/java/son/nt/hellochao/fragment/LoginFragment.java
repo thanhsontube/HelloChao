@@ -85,11 +85,9 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
 
     @Override
     protected void initLayout(View view) {
-        Logger.debug(TAG, ">>>" + "initLayout");
+
+        setupToolbarIfNeeded(view, getString(R.string.login));
         FacebookUtils.getHashKey(getAActivity());
-
-//        getAActivity().getSupportActionBar().setTitle("Login");
-
         viewReset = view.findViewById(R.id.login_reset_ll);
         viewReset.setVisibility(View.GONE);
 
@@ -247,6 +245,8 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
         void onLoginSuccess();
 
         void onSignUp(String email, String password);
+
+        void onResetPw (String email);
     }
 
     @Override
@@ -267,7 +267,7 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void loginByFacebook () {
+    private void loginByFacebook() {
         permissions.clear();
         permissions.add("email");
         permissions.add("user_friends");
@@ -335,7 +335,7 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
         });
     }
 
-    private void getUserInfo () {
+    private void getUserInfo() {
         Logger.debug(TAG, ">>>" + "getUserInfo");
         Profile profile = Profile.getCurrentProfile();
         if (profile == null) {
@@ -343,8 +343,8 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
         }
         String name = profile.getName();
         String fbId = profile.getId();
-        Uri image = profile.getProfilePictureUri(480,480);
-        Logger.debug(TAG, ">>>" + "image:" + image.toString() + " ;name:" + name +";fbId:" + profile.getId() + ";info:" + profile.describeContents());
+        Uri image = profile.getProfilePictureUri(480, 480);
+        Logger.debug(TAG, ">>>" + "image:" + image.toString() + " ;name:" + name + ";fbId:" + profile.getId() + ";info:" + profile.describeContents());
         Logger.debug(TAG, ">>>" + "parse user:" + ParseUser.getCurrentUser().getUsername() + ";email:" + ParseUser.getCurrentUser().getEmail());
 
         appAPI.updateUserInfo(new UpdateUserInfoDto(name, fbId, image.toString(), profile.getLinkUri().toString()));
@@ -374,6 +374,7 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
         KeyBoardUtils.close(getAActivity());
         switch (view.getId()) {
             case R.id.login_forgot_password:
+                mListener.onResetPw(txtEmail.getText().toString().trim());
                 break;
             case R.id.login_txt_sign_up:
                 if (mListener != null) {

@@ -17,10 +17,15 @@ public interface IUserParse {
 
     void updateUserInfo (UpdateUserInfoDto updateUserInfoDto);
 
+    void resetPassWord (String email);
+
     interface Callback {
-        void onCheckingUserExit(String email, boolean isExist);
+
+        void onCheckingUserExist(String email, boolean isExist);
 
         void onUserCreated(UserDto userDto, ParseException error);
+
+        void onFinishResetPw (ParseException error);
     }
 
 }

@@ -12,6 +12,7 @@ import son.nt.hellochao.R;
 import son.nt.hellochao.base.AActivity;
 import son.nt.hellochao.fragment.LoginFragment;
 import son.nt.hellochao.fragment.SignUpFragment;
+import son.nt.hellochao.fragment.profile.ForGetPwFragment;
 import son.nt.hellochao.utils.Logger;
 
 /**
@@ -24,7 +25,8 @@ import son.nt.hellochao.utils.Logger;
  * @see android.view.LayoutInflater.Factory
  */
 
-public class LoginActivity extends AActivity implements LoginFragment.OnFragmentInteractionListener, View.OnClickListener {
+public class LoginActivity extends AActivity implements LoginFragment.OnFragmentInteractionListener, View.OnClickListener,
+SignUpFragment.OnFragmentInteractionListener{
     public static final String TAG = "LoginActivity";
     Toolbar toolbar;
 
@@ -33,15 +35,6 @@ public class LoginActivity extends AActivity implements LoginFragment.OnFragment
         Logger.debug(TAG, ">>>" + "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        toolbar = (Toolbar) findViewById(R.id.login_toolbar);
-        setSupportActionBar(toolbar);
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(null);
-            getSafeActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
-
     }
 
     @Override
@@ -88,5 +81,25 @@ public class LoginActivity extends AActivity implements LoginFragment.OnFragment
                 }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRegister() {
+
+    }
+
+    @Override
+    public void finishRegister(boolean isSuccess) {
+        if (isSuccess) {
+            startActivity(new Intent(this, ProfileActivity.class));
+            finish();
+        } else {
+            getSafeFragmentManager().popBackStackImmediate();
+        }
+    }
+
+    @Override
+    public void onResetPw(String email) {
+        showFragment(ForGetPwFragment.newInstance(email), true);
     }
 }
