@@ -459,10 +459,10 @@ public class AppAPI implements IHelloChao, IUserParse {
         if (!TextUtils.isEmpty(d.fbID)) {
             parseUser.put("fbId", d.fbID);
         }
-
-        if (!TextUtils.isEmpty(d.name)) {
-            parseUser.put("name", d.name);
-        }
+//
+//        if (!TextUtils.isEmpty(d.name)) {
+//            parseUser.put("name", d.name);
+//        }
         if (!TextUtils.isEmpty(d.avatar)) {
             parseUser.put("avatar", d.avatar);
         }

@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="son.nt.hellochao.fragment.profile.ProfileFragment">
+    <include layout="@layout/include_toolbar_dark"/>
 
-   <include layout="@layout/profile_view_basic_info"></include>
+   <include layout="@layout/profile_view_basic_info"/>
 
 </LinearLayout>

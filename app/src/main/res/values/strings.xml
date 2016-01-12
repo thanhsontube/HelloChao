@@ -157,4 +157,6 @@
     <string name="invalid_email_address">InValid Email Address</string>
     <string name="error_reset_pw">Can not reset password at this time !!!</string>
     <string name="success_reset_pw">An email was successfully sent with reset instructions.</string>
+    <string name="profile">Profile</string>
+    <string name="link_to_your_fb">Link To Your Facebook</string>
 </resources>

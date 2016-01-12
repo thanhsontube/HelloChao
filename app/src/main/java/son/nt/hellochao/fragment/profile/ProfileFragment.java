@@ -6,13 +6,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.apptimize.Apptimize;
-import com.apptimize.ApptimizeTest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.Profile;
@@ -52,9 +54,10 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
     @Bind(R.id.link_with_facebook)
     TextView txtLinkWithFb;
 
-    @Bind(R.id.logout_ll) View logoutView;
-    @Bind(R.id.profile_follows) TextView txtFollows;
+    @Bind(R.id.profile_follows)
+    TextView txtFollows;
 
+    AppAPI appAPI;
 
 
     Collection<String> pers = new ArrayList<>();
@@ -76,6 +79,8 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pers.add("email");
+        appAPI = new AppAPI(getContext());
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -132,26 +137,12 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
 
     @Override
     protected void initLayout(View view) {
-        Apptimize.runTest("180 Follows", new ApptimizeTest() {
-            @Override
-            public void baseline() {
-// Variant: original
-                txtFollows.setText("you have 150 people following");
-            }
-
-            @SuppressWarnings("unused")
-            public void variation1() {
-// Variant: 180 f
-                txtFollows.setText("you have 180 people following");
-            }
-        });
-
+        setupToolbarIfNeeded(view, getString(R.string.profile));
     }
 
     @Override
     protected void initListener(View view) {
         txtLinkWithFb.setOnClickListener(this);
-        logoutView.setOnClickListener(this);
 
     }
 
@@ -160,33 +151,22 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
         ParseUser parseUser = ParseUser.getCurrentUser();
         Logger.debug(TAG, ">>>" + "updateLayout:" + parseUser);
         if (parseUser == null) {
-            logoutView.setVisibility(View.GONE);
             return;
         }
         if (ParseFacebookUtils.isLinked(parseUser)) {
+            linkFB.setVisibility(View.GONE);
             String avatar = parseUser.getString("avatar");
             if (!TextUtils.isEmpty(avatar)) {
 
                 Glide.with(this).load(avatar).diskCacheStrategy(DiskCacheStrategy.ALL).fitCenter().into(imgAvatar);
             }
         } else {
-            Glide.with(this).load(R.drawable.ic_no_avatar).diskCacheStrategy(DiskCacheStrategy.ALL).fitCenter().into(imgAvatar);
+            linkFB.setVisibility(View.VISIBLE);
+            Glide.with(this).load(R.drawable.ic_no_avatar).fitCenter().into(imgAvatar);
         }
-        logoutView.setVisibility(View.VISIBLE);
-
-//        linkFB.setVisibility(ParseFacebookUtils.isLinked(parseUser) ? View.GONE : View.VISIBLE);
-        txtLinkWithFb.setText(ParseFacebookUtils.isLinked(parseUser) ? "UnLink with Facebook" : "link with Facebook");
 
         String name = parseUser.getString("name");
-        Logger.debug(TAG, ">>>" + "name:" + name);
-
-
-        if (!TextUtils.isEmpty(name)) {
-
-            txtName.setText(name);
-        }
-
-
+        txtName.setText(name);
     }
 
     private void linkWithFb() {
@@ -194,33 +174,27 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
         if (user == null) {
             return;
         }
-        Logger.debug(TAG, ">>>" + "linkWithFb user:" + user.getUsername());
         if (!ParseFacebookUtils.isLinked(user)) {
 
             ParseFacebookUtils.linkWithReadPermissionsInBackground(user, this, pers, new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
-                    Logger.debug(TAG, ">>>" + "linkWithFb done:" + e);
-                    if (ParseFacebookUtils.isLinked(user)) {
-                        Logger.debug(TAG, ">>>" + "Woohoo, user logged in with Facebook!");
+                    if (e != null) {
+                        Toast.makeText(getActivity(), "Sorry ! There was something wrong. ", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
                         getUserInfo();
                         updateLayout();
                     }
                 }
             });
 
-        } else {
-            Logger.debug(TAG, ">>>" + "Un Link");
-            ParseFacebookUtils.unlinkInBackground(user, new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    Logger.debug(TAG, ">>>" + "Unlink Done:" + e);
-                }
-            });
         }
     }
 
-    private void getUserInfo () {
+    private void getUserInfo() {
         Logger.debug(TAG, ">>>" + "getUserInfo");
         Profile profile = Profile.getCurrentProfile();
         if (profile == null) {
@@ -228,14 +202,15 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
         }
         String name = profile.getName();
         String fbId = profile.getId();
-        Uri image = profile.getProfilePictureUri(120,120);
-        Logger.debug(TAG, ">>>" + "image:" + image.toString() + " ;name:" + name +";fbId:" + profile.getId() + ";info:" + profile.describeContents());
+        Uri image = profile.getProfilePictureUri(120, 120);
+        Logger.debug(TAG, ">>>" + "image:" + image.toString() + " ;name:" + name + ";fbId:" + profile.getId() + ";info:" + profile.describeContents());
         Logger.debug(TAG, ">>>" + "parse user:" + ParseUser.getCurrentUser().getUsername() + ";email:" + ParseUser.getCurrentUser().getEmail());
 
-        AppAPI.getInstance().updateUserInfo(new UpdateUserInfoDto(name, fbId, image.toString(), profile.getLinkUri().toString()));
+        appAPI.updateUserInfo(new UpdateUserInfoDto(name, fbId, image.toString(), profile.getLinkUri().toString()));
 
 
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -248,17 +223,31 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
             case R.id.link_with_facebook:
                 linkWithFb();
                 break;
-            case R.id.logout_ll:
-                Apptimize.track("Profile logout");
-                ParseUser.getCurrentUser().logOutInBackground(new LogOutCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        getActivity().finish();
-                    }
-                });
-                break;
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.profile_menu, menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                processLogout();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void processLogout() {
+        ParseUser.getCurrentUser().logOutInBackground(new LogOutCallback() {
+            @Override
+            public void done(ParseException e) {
+                getActivity().finish();
+            }
+        });
+    }
 }
