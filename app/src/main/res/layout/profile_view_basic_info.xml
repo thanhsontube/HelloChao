@@ -35,6 +35,7 @@
             android:text="Son Nguyen Thanh" />
 
         <ImageView
+            android:id="@+id/profile_rank_icon"
             android:layout_width="50dp"
             android:layout_height="30dp"
             android:layout_gravity="center_horizontal"

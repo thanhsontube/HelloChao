@@ -34,12 +34,13 @@ import son.nt.hellochao.utils.Logger;
 /**
  * Created by Sonnt on 11/9/15.
  */
-public class AppAPI implements IHelloChao, IUserParse {
+public class AppAPI implements IHelloChao, IUserParse, IRank{
     public static final String TAG = "AppAPI";
     private Context context;
 
     HcCallback hcCallback = null;
     IUserParse.Callback parseUserCallback = null;
+    IRank.Callback rankCallback = null;
     ArrayList<TopDto> list = new ArrayList<>();
     static AppAPI INSTANCE = null;
 
@@ -443,7 +444,7 @@ public class AppAPI implements IHelloChao, IUserParse {
     }
 
     @Override
-    public void setIUserParseCallback(Callback callback) {
+    public void setIUserParseCallback(IUserParse.Callback callback) {
         this.parseUserCallback = callback;
 
     }
@@ -506,10 +507,48 @@ public class AppAPI implements IHelloChao, IUserParse {
             @Override
             public void done(ParseException e) {
                 if (parseUserCallback != null) {
-                    parseUserCallback.onFinishResetPw( e);
+                    parseUserCallback.onFinishResetPw(e);
                 }
             }
         });
 
+    }
+
+    @Override
+    public void getRankSystem() {
+        final List<RankDto> data = new ArrayList<>();
+        final ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(RankDto.class.getSimpleName());
+        query.addDescendingOrder("rankNo");
+        query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if (e != null) {
+                    query.clearCachedResult();
+                    return;
+                }
+                RankDto dto;
+
+                for (ParseObject p :list) {
+                    dto = new RankDto();
+                    dto.setRankIcon(p.getString("rankIcon"));
+                    dto.setRankName(p.getString("rankName"));
+                    dto.setRankNo(p.getInt("rankNo"));
+                    dto.setRankScoreStandard(p.getInt("rankScoreStandard"));
+                    data.add(dto);
+                }
+
+                if (rankCallback != null) {
+                    rankCallback.onRankSystem(data);
+                }
+            }
+        });
+
+
+    }
+
+    @Override
+    public void setRankCallback(IRank.Callback callback) {
+        this.rankCallback = callback;
     }
 }

@@ -57,6 +57,9 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
     @Bind(R.id.profile_follows)
     TextView txtFollows;
 
+    @Bind(R.id.profile_rank_icon)
+    ImageView profileRank;
+
     AppAPI appAPI;
 
 
@@ -78,7 +81,7 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pers.add("email");
+//        pers.add("email");
         appAPI = new AppAPI(getContext());
         setHasOptionsMenu(true);
         if (getArguments() != null) {
@@ -116,18 +119,10 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
+
+        void onRankSystem();
     }
 
     @Override
@@ -143,6 +138,7 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
     @Override
     protected void initListener(View view) {
         txtLinkWithFb.setOnClickListener(this);
+        profileRank.setOnClickListener(this);
 
     }
 
@@ -153,19 +149,27 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
         if (parseUser == null) {
             return;
         }
+
+        String name = parseUser.getString("name");
+        String avatar = "";
         if (ParseFacebookUtils.isLinked(parseUser)) {
             linkFB.setVisibility(View.GONE);
-            String avatar = parseUser.getString("avatar");
-            if (!TextUtils.isEmpty(avatar)) {
+            Profile profile = Profile.getCurrentProfile();
+            if (profile != null) {
 
-                Glide.with(this).load(avatar).diskCacheStrategy(DiskCacheStrategy.ALL).fitCenter().into(imgAvatar);
+                avatar = Profile.getCurrentProfile().getProfilePictureUri(600, 600).toString();
+                name = Profile.getCurrentProfile().getName();
             }
+            if (TextUtils.isEmpty(avatar)) {
+                avatar = parseUser.getString("avatar");
+            }
+
+            Glide.with(this).load(avatar).diskCacheStrategy(DiskCacheStrategy.ALL).fitCenter().into(imgAvatar);
         } else {
             linkFB.setVisibility(View.VISIBLE);
             Glide.with(this).load(R.drawable.ic_no_avatar).fitCenter().into(imgAvatar);
         }
 
-        String name = parseUser.getString("name");
         txtName.setText(name);
     }
 
@@ -195,7 +199,6 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
     }
 
     private void getUserInfo() {
-        Logger.debug(TAG, ">>>" + "getUserInfo");
         Profile profile = Profile.getCurrentProfile();
         if (profile == null) {
             return;
@@ -203,9 +206,6 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
         String name = profile.getName();
         String fbId = profile.getId();
         Uri image = profile.getProfilePictureUri(120, 120);
-        Logger.debug(TAG, ">>>" + "image:" + image.toString() + " ;name:" + name + ";fbId:" + profile.getId() + ";info:" + profile.describeContents());
-        Logger.debug(TAG, ">>>" + "parse user:" + ParseUser.getCurrentUser().getUsername() + ";email:" + ParseUser.getCurrentUser().getEmail());
-
         appAPI.updateUserInfo(new UpdateUserInfoDto(name, fbId, image.toString(), profile.getLinkUri().toString()));
 
 
@@ -222,6 +222,12 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.link_with_facebook:
                 linkWithFb();
+                break;
+
+            case R.id.profile_rank_icon:
+                if (mListener != null) {
+                    mListener.onRankSystem();;
+                }
                 break;
         }
     }
