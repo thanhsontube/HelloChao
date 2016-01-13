@@ -11,6 +11,8 @@ import com.parse.ParseObject;
 import son.nt.hellochao.dto.parse.DailyTopDto;
 import son.nt.hellochao.interface_app.AppAPI;
 import son.nt.hellochao.loader.HTTPParseUtils;
+import son.nt.hellochao.parse_object.PointDto;
+import son.nt.hellochao.parse_object.UserPointDto;
 import son.nt.hellochao.utils.Logger;
 
 /**
@@ -41,5 +43,7 @@ public class MyApplication extends Application {
 
     private void parseRegisterSubClass () {
         ParseObject.registerSubclass(DailyTopDto.class);
+        ParseObject.registerSubclass(PointDto.class);
+        ParseObject.registerSubclass(UserPointDto.class);
     }
 }

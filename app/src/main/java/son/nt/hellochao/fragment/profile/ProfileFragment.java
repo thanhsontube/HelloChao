@@ -18,9 +18,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.Profile;
+import com.parse.GetCallback;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -48,6 +50,9 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
     ImageView imgAvatar;
     @Bind(R.id.profile_name)
     TextView txtName;
+
+    @Bind(R.id.profile_rank_name)
+    TextView txtRankName;
 
     @Bind(R.id.profile_link_fb)
     View linkFB;
@@ -171,6 +176,26 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
         }
 
         txtName.setText(name);
+
+        //this one will update the rank icon and rank name if it is available in User Object.
+
+        ParseObject pRank = parseUser.getParseObject("rank");
+        if (pRank != null) {
+            pRank.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject parseObject, ParseException e) {
+                    if (e != null) {
+                        return;
+                    }
+                    String rankIcon = parseObject.getString("rankIcon");
+                    String rankName = parseObject.getString("rankName");
+                    Glide.with(getContext()).load(rankIcon).diskCacheStrategy(DiskCacheStrategy.ALL).fitCenter().into(profileRank);
+                    txtRankName.setText(rankName);
+                }
+            });
+
+
+        }
     }
 
     private void linkWithFb() {
