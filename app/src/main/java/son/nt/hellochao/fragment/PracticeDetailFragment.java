@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,21 +32,12 @@ import son.nt.hellochao.otto.GoFullItemClick;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.service.MusicPlayback;
 import son.nt.hellochao.service.MusicService;
+import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.OttoBus;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PracticeDetailFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PracticeDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PracticeDetailFragment extends AFragment {
     public static final String TAG = "FullPracticeFragment";
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -80,7 +70,25 @@ public class PracticeDetailFragment extends AFragment {
     @Bind(R.id.full_play)
     FloatingActionButton playButton;
 
+    @Bind(R.id.timezone) TextView txtTimeZone;
+    @Bind(R.id.update_time) TextView txtUpdateTime;
+
     MusicService musicService;
+
+    public static PracticeDetailFragment newInstance(String param1, String param2) {
+        PracticeDetailFragment fragment = new PracticeDetailFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_full_practice, container, false);
+    }
 
     ServiceConnection musicServiceConnection = new ServiceConnection() {
         @Override
@@ -101,14 +109,7 @@ public class PracticeDetailFragment extends AFragment {
     }
 
 
-    public static PracticeDetailFragment newInstance(String param1, String param2) {
-        PracticeDetailFragment fragment = new PracticeDetailFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -147,11 +148,7 @@ public class PracticeDetailFragment extends AFragment {
         OttoBus.unRegister(this);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_full_practice, container, false);
-    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -206,6 +203,8 @@ public class PracticeDetailFragment extends AFragment {
 
     @Override
     protected void updateLayout() {
+        txtTimeZone.setText("Your TimeZone : " + DatetimeUtils.getTimeZone(System.currentTimeMillis()));
+        txtUpdateTime.setText("Data will be updated at hour:" + DatetimeUtils.getTimeUpdated() + " everyday");
 
     }
 

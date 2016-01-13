@@ -21,18 +21,17 @@
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/detail_practice_CollapsingToolbarLayout"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="false"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark"
                 app:contentScrim="@color/blue_transparent"
                 app:expandedTitleMarginEnd="64dp"
                 app:expandedTitleMarginStart="48dp"
                 app:layout_scrollFlags="scroll"
-                app:title="Daily Practice"
-                >
+                app:title="Daily Practice">
 
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="false"
@@ -47,18 +46,35 @@
                         android:src="@drawable/side_nav_bar"
                         app:layout_collapseMode="parallax" />
 
-                    <TextView
-                        android:visibility="gone"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/large_text"
-                        android:textColor="@color/md_black_1000" />
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
 
-                </LinearLayout>
-                <include layout="@layout/include_toolbar"
-                    app:layout_collapseMode="pin"/>
+                        <TextView
+
+                            android:id="@+id/timezone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="TimeZone:GMT +9" />
+
+                        <TextView
+                            android:id="@+id/update_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Data will be updated at 5AM everyday" />
+
+                    </LinearLayout>
 
 
+                </FrameLayout>
+
+                <include
+                    layout="@layout/include_toolbar"
+                    app:layout_collapseMode="pin" />
 
 
             </android.support.design.widget.CollapsingToolbarLayout>

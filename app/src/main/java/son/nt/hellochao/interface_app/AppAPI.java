@@ -34,7 +34,7 @@ import son.nt.hellochao.utils.Logger;
 /**
  * Created by Sonnt on 11/9/15.
  */
-public class AppAPI implements IHelloChao, IUserParse, IRank{
+public class AppAPI implements IHelloChao, IUserParse, IRank {
     public static final String TAG = "AppAPI";
     private Context context;
 
@@ -118,33 +118,6 @@ public class AppAPI implements IHelloChao, IUserParse, IRank{
                 }
             }
         });
-
-//        query.findInBackground(new FindCallback<ParseObject>() {
-//            @Override
-//            public void done(List<ParseObject> l, ParseException e) {
-//                if (e != null) {
-//                    return;
-//                }
-//                ArrayList<TopDto> list = new ArrayList<TopDto>();
-//                TopDto dto;
-//                int i = 1;
-//                for (ParseObject p : l) {
-//                    dto = new TopDto();
-//                    dto.setNo(i);
-//                    dto.setName(p.getString("userName"));
-//                    dto.setScore(p.getInt("correctSentence"));
-//                    dto.setTotalTime(p.getInt("totalSeconds"));
-//                    dto.setSubmitTime(p.getDate("submitTime"));
-//                    i++;
-//                    list.add(dto);
-//                }
-//
-//                if (hcCallback != null) {
-//                    hcCallback.throwUserTop(list);
-//                }
-//            }
-//        });
-
     }
 
     @Override
@@ -529,7 +502,7 @@ public class AppAPI implements IHelloChao, IUserParse, IRank{
                 }
                 RankDto dto;
 
-                for (ParseObject p :list) {
+                for (ParseObject p : list) {
                     dto = new RankDto();
                     dto.setRankIcon(p.getString("rankIcon"));
                     dto.setRankName(p.getString("rankName"));

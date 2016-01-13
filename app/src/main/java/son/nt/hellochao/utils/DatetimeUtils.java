@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import son.nt.hellochao.MsConst;
+
 public class DatetimeUtils {
     // SimpleDateFormat can be used to control the date/time display format:
     //   E (day of week): 3E or fewer (in text xxx), >3E (in full text)
@@ -93,41 +95,73 @@ public class DatetimeUtils {
     }
 
 
-    public static String covertMillisToMediaTime (long millis) {
+    public static String covertMillisToMediaTime(long millis) {
         try {
             String hms = String.format("%02d:%02d",
                     TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
                     TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
             return hms;
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
         return "00:00";
     }
 
-    public static int [] getCurrentTime () {
-        int []arr = new int[3];
+    public static int[] getCurrentTime() {
+        int[] arr = new int[3];
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone(MsConst.VN_TIMEZONE_ID));
         arr[0] = calendar.get(Calendar.DAY_OF_MONTH);
         arr[1] = calendar.get(Calendar.MONTH) + 1;
         arr[2] = calendar.get(Calendar.YEAR);
         return arr;
     }
 
-    public static String relativeTime () {
-            int[] arr = DatetimeUtils.getCurrentTime();
-            int day = arr[0];
-            int month = arr[1];
-            int year = arr[2];
-            StringBuilder dates = new StringBuilder();
-            dates.append(day < 10 ? "0" + day : String.valueOf(day));
-            dates.append("_");
-            dates.append(month < 10 ? "0" + month : String.valueOf(month));
-            dates.append("_");
-            dates.append(String.valueOf(year));
 
-            return dates.toString();
+
+    public static String relativeTime() {
+        int[] arr = DatetimeUtils.getCurrentTime();
+        int day = arr[0];
+        int month = arr[1];
+        int year = arr[2];
+        StringBuilder dates = new StringBuilder();
+        dates.append(day < 10 ? "0" + day : String.valueOf(day));
+        dates.append("_");
+        dates.append(month < 10 ? "0" + month : String.valueOf(month));
+        dates.append("_");
+        dates.append(String.valueOf(year));
+
+        return dates.toString();
 
     }
+
+    public static String getTimeZone(long millis) {
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millis);
+        TimeZone timeZone = calendar.getTimeZone();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'GMT' Z");
+        String format = simpleDateFormat.format(calendar.getTime());
+        return timeZone.getID() + " " + format;
+    }
+
+    public static String getTimeUpdated() {
+        long millis = System.currentTimeMillis();
+        Calendar calendar = Calendar.getInstance();
+
+        int offsetVN = TimeZone.getTimeZone(MsConst.VN_TIMEZONE_ID).getOffset(millis);
+        int offsetLocal = TimeZone.getTimeZone(calendar.getTimeZone().getID()).getOffset(millis);
+
+        int hourDifference = (offsetLocal - offsetVN) / (1000 * 60 * 60);
+
+        int hourUpdated = MsConst.HOUR_UPDATED + hourDifference;
+
+        if (hourUpdated < 0) {
+            hourUpdated = 24 - hourUpdated;
+        }
+        return String.valueOf(hourUpdated);
+    }
+
 
 }
