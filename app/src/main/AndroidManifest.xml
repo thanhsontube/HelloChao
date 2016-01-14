@@ -21,27 +21,27 @@
         <service android:name=".service.DownloadIntentService" />
         <service android:name=".service.ServiceMedia" />
 
-        <activity android:name=".ScrollingActivity" android:launchMode="singleTask">
+        <activity
+            android:name=".ScrollingActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.OralActivity"
-             />
+        <activity android:name=".activity.OralActivity" />
 
-        <receiver android:name=".schedule.AutoGetDailyTestReceiver"></receiver>
+        <receiver android:name=".schedule.AutoGetDailyTestReceiver" />
 
         <activity
             android:name=".activity.HtmlCleanerActivity"
             android:label="@string/title_activity_html_cleaner"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
 
         <!-- facebook sdk -->
         <meta-data
@@ -56,12 +56,14 @@
         <activity
             android:name=".activity.ProfileActivity"
             android:label="@string/title_activity_profile"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
 
         <service
             android:name=".service.MusicService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".test.TestActivity"></activity>
     </application>
 
 </manifest>

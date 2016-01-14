@@ -41,6 +41,7 @@ import son.nt.hellochao.otto.GoDaiLyTest;
 import son.nt.hellochao.otto.GoHot;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
 import son.nt.hellochao.schedule.AutoGetDailyTestReceiver;
+import son.nt.hellochao.test.TestActivity;
 import son.nt.hellochao.utils.Logger;
 import son.nt.hellochao.utils.OttoBus;
 import son.nt.hellochao.utils.TsParse;
@@ -150,6 +151,8 @@ public class ScrollingActivity extends AActivity implements ScrollFragment.OnFra
 
                 } else if (id == R.id.nav_send) {
                     new UpdateFulltext().execute();
+                } else if (id == R.id.nav_test) {
+                    startActivity(new Intent(getApplicationContext(), TestActivity.class));
                 }
 
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -294,7 +294,8 @@ public class LoginFragment extends AFragment implements View.OnClickListener {
                     return;
                 }
 
-                if (ParseFacebookUtils.isLinked(user)) {
+                if (ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
+                    appAPI.setLinkWithFacebook();
                     Logger.debug(TAG, ">>>" + "user link fb already");
                     getUserInfo();
                     return;

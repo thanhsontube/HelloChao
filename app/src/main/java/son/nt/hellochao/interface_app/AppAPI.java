@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import son.nt.hellochao.MsConst;
 import son.nt.hellochao.dto.DailySpeakDto;
 import son.nt.hellochao.dto.RankDto;
 import son.nt.hellochao.dto.TopDto;
@@ -28,19 +29,22 @@ import son.nt.hellochao.dto.parse.DailyTopDto;
 import son.nt.hellochao.dto.parse.UserDto;
 import son.nt.hellochao.loader.HTTPParseUtils;
 import son.nt.hellochao.parse_object.HelloChaoDaily;
+import son.nt.hellochao.parse_object.PointDto;
+import son.nt.hellochao.parse_object.UserPointDto;
 import son.nt.hellochao.utils.DatetimeUtils;
 import son.nt.hellochao.utils.Logger;
 
 /**
  * Created by Sonnt on 11/9/15.
  */
-public class AppAPI implements IHelloChao, IUserParse, IRank {
+public class AppAPI implements IHelloChao, IUserParse, IRank, IPoint {
     public static final String TAG = "AppAPI";
     private Context context;
 
     HcCallback hcCallback = null;
     IUserParse.Callback parseUserCallback = null;
     IRank.Callback rankCallback = null;
+    IPoint.Callback pointCallback = null;
     ArrayList<TopDto> list = new ArrayList<>();
     static AppAPI INSTANCE = null;
 
@@ -523,5 +527,44 @@ public class AppAPI implements IHelloChao, IUserParse, IRank {
     @Override
     public void setRankCallback(IRank.Callback callback) {
         this.rankCallback = callback;
+    }
+
+    @Override
+    public void setLinkWithFacebook() {
+        ParseQuery<PointDto> query = PointDto.getQuery();
+        query.whereEqualTo("objectId", "EHtJC6RXtc");
+        query.getFirstInBackground(new GetCallback<PointDto>() {
+            @Override
+            public void done(final PointDto pointDto, ParseException e) {
+                if (e != null) {
+                    return;
+                }
+
+                UserPointDto userPointDto = new UserPointDto();
+                userPointDto.setParseUser(ParseUser.getCurrentUser());
+                userPointDto.setPoint(pointDto);
+                userPointDto.setType(MsConst.POINT_TYPE_SOCIAL);
+                userPointDto.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e!= null) {
+                            return;
+                        }
+                        if (pointCallback != null) {
+
+                            pointCallback.onAddedPoint(pointDto);
+                        }
+                    }
+                });
+
+            }
+        });
+
+
+    }
+
+    @Override
+    public void setPointCallback(IPoint.Callback callback) {
+        pointCallback = callback;
     }
 }

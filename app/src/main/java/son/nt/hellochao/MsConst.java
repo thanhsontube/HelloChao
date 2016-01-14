@@ -10,6 +10,8 @@ public class MsConst {
     public static final String KEY_VOICE = "KEY_VOICE";
     public static final int REQUEST_CODE_SENTENCE = 70;
     public static final int HOUR_UPDATED = 0;
+    public static final int POINT_TYPE_LEARNING = 1;
+    public static final int POINT_TYPE_SOCIAL = 2;
     public static final String VN_TIMEZONE_ID = "Asia/Saigon";
 
 

@@ -2,6 +2,7 @@ package son.nt.hellochao.parse_object;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 /**
  * Created by Sonnt on 1/13/16.
@@ -26,4 +27,8 @@ public class PointDto extends ParseObject {
     public String getId () {
         return getString("objectId");
     }
+    public static ParseQuery<PointDto> getQuery () {
+        return ParseQuery.getQuery(PointDto.class);
+    }
+
 }

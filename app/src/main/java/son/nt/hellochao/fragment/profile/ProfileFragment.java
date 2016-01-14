@@ -34,6 +34,8 @@ import son.nt.hellochao.R;
 import son.nt.hellochao.base.AFragment;
 import son.nt.hellochao.dto.UpdateUserInfoDto;
 import son.nt.hellochao.interface_app.AppAPI;
+import son.nt.hellochao.interface_app.IPoint;
+import son.nt.hellochao.parse_object.PointDto;
 import son.nt.hellochao.utils.Logger;
 
 public class ProfileFragment extends AFragment implements View.OnClickListener {
@@ -88,6 +90,7 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 //        pers.add("email");
         appAPI = new AppAPI(getContext());
+        appAPI.setPointCallback(pointCallback);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -214,6 +217,7 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
                     }
 
                     if (ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
+                        appAPI.setLinkWithFacebook();
                         getUserInfo();
                         updateLayout();
                     }
@@ -281,4 +285,13 @@ public class ProfileFragment extends AFragment implements View.OnClickListener {
             }
         });
     }
+
+    IPoint.Callback pointCallback = new IPoint.Callback() {
+        @Override
+        public void onAddedPoint(PointDto pointDto) {
+            if (pointDto != null) {
+                Toast.makeText(getActivity(), "Congratulations! You got 1000 points !", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 }
